@@ -8,7 +8,7 @@ import './index.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <BrowserRouter basename="/Synapse-iiserk.github.io">
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </HelmetProvider>
