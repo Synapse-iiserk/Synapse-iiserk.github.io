@@ -6,6 +6,7 @@ const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
     { name: 'Pricing', path: '/pricing' },
+    { name: 'Live Chart', path: '/chart.html' },
     { name: 'Team', path: '/team' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
@@ -29,6 +30,54 @@ export const Header: React.FC = () => {
         setIsMobileMenuOpen(false);
     };
 
+    const renderLink = (link: { name: string; path: string }, isMobile = false) => {
+        const isExternal = link.path.endsWith('.html');
+        const active = location.pathname === link.path;
+
+        const desktopClasses = `text-sm font-medium transition-colors relative ${active
+            ? 'text-[var(--color-accent)]'
+            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+            }`;
+        const mobileClasses = `block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${active
+            ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+            : 'text-[var(--color-text-muted)] hover:bg-[var(--color-border)] hover:text-[var(--color-text)]'
+            }`;
+
+        if (isExternal) {
+            return (
+                <a
+                    key={link.path}
+                    href={link.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={isMobile ? closeMobileMenu : undefined}
+                    className={isMobile ? mobileClasses : desktopClasses}
+                >
+                    {link.name}
+                </a>
+            );
+        }
+
+        return (
+            <Link
+                key={link.path}
+                to={link.path}
+                onClick={isMobile ? closeMobileMenu : undefined}
+                className={isMobile ? mobileClasses : desktopClasses}
+            >
+                {link.name}
+                {active && !isMobile && (
+                    <motion.div
+                        layoutId="activeNav"
+                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--color-accent)]"
+                        initial={false}
+                    />
+                )}
+            </Link>
+        );
+    };
+
+
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
@@ -48,25 +97,7 @@ export const Header: React.FC = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-8">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                className={`text-sm font-medium transition-colors relative ${location.pathname === link.path
-                                    ? 'text-[var(--color-accent)]'
-                                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
-                                    }`}
-                            >
-                                {link.name}
-                                {location.pathname === link.path && (
-                                    <motion.div
-                                        layoutId="activeNav"
-                                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--color-accent)]"
-                                        initial={false}
-                                    />
-                                )}
-                            </Link>
-                        ))}
+                        {navLinks.map((link) => renderLink(link))}
                     </div>
 
                     {/* CTA Button */}
@@ -121,19 +152,7 @@ export const Header: React.FC = () => {
                         className="lg:hidden bg-[var(--color-primary-light)] border-b border-[var(--color-border)]"
                     >
                         <div className="px-4 py-4 space-y-2">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.path}
-                                    to={link.path}
-                                    onClick={closeMobileMenu}
-                                    className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${location.pathname === link.path
-                                        ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
-                                        : 'text-[var(--color-text-muted)] hover:bg-[var(--color-border)] hover:text-[var(--color-text)]'
-                                        }`}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
+                            {navLinks.map((link) => renderLink(link, true))}
                             <div className="pt-4">
                                 <Link
                                     to="/contact"
