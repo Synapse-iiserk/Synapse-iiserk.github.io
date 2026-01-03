@@ -8,21 +8,16 @@
     <!-- Libraries (Stable Version 4.0.1) -->
     <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom Styles -->
     <style>
         :root {
             --bg-dark: #0b0e11;
             --bg-panel: #1e2329;
-            --bg-elev: #11151c;
             --border: #2b3139;
             --text-main: #eaecef;
             --text-muted: #848e9c;
             --primary: #fcd535; /* Synapse Yellow */
-            --accent-1: #2962ff;
-            --accent-2: #ff6d00;
-            --accent-3: #9c27b0;
             --up: #0ecb81;
             --down: #f6465d;
         }
@@ -30,8 +25,7 @@
         body { 
             background-color: var(--bg-dark); 
             color: var(--text-main); 
-            font-family: 'Space Grotesk', 'Inter', sans-serif; 
-            letter-spacing: -0.01em;
+            font-family: 'Inter', sans-serif; 
             overflow: hidden; 
             height: 100vh;
             width: 100vw;
@@ -176,17 +170,6 @@
         /* Refresh Button Animation */
         .spin-anim { animation: spin 0.5s linear infinite; }
 
-        /* Utility Cards & Inputs */
-        .card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; }
-        .input-dark { background: #0f131a; border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 6px 8px; font-size: 12px; width: 100%; }
-        .input-dark:focus { outline: 1px solid var(--primary); border-color: var(--primary); }
-        .pill { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); font-size: 11px; }
-        .chip { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 11px; background: rgba(255,255,255,0.03); }
-        .side-btn { flex: 1; border: 1px solid var(--border); padding: 6px 0; border-radius: 8px; font-weight: 600; font-size: 12px; background: #0f131a; color: var(--text-muted); }
-        .side-btn.active { border-color: var(--primary); color: #0b0e11; background: var(--primary); }
-        .cta-btn { background: var(--primary); color: #0b0e11; font-weight: 700; border-radius: 8px; padding: 8px 10px; font-size: 12px; width: 100%; }
-        .text-mini { font-size: 11px; }
-
         /* Mobile Responsive */
         @media (max-width: 1024px) {
             .dashboard { 
@@ -256,13 +239,6 @@
                     class="w-full bg-[#2b3139] border border-[#474d57] rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-[#fcd535] uppercase">
                 <div id="search-results" class="search-results text-sm"></div>
             </div>
-
-            <!-- Live Micro-Metrics -->
-            <div class="hidden xl:flex items-center gap-2 text-xs font-mono">
-                <div class="chip" id="chip-spread">Spread --</div>
-                <div class="chip" id="chip-atr">ATR --</div>
-                <div class="chip" id="chip-rr">R:R --</div>
-            </div>
         </div>
 
         <div class="hidden md:flex items-center gap-4 text-xs font-mono">
@@ -297,83 +273,6 @@
         <div class="mb-4">
             <h3 class="text-xs font-bold text-gray-500 uppercase px-2 mb-2">Chart Settings</h3>
             <button id="toggle-log" class="btn-tool">📈 Logarithmic Scale</button>
-        </div>
-
-        <!-- Trader Desk: Risk & Position Sizer -->
-        <div class="mb-4 card p-3 space-y-2">
-            <div class="flex items-center justify-between text-xs text-gray-400">
-                <span class="font-semibold">Trade Planner</span>
-                <button id="risk-reset" class="text-[10px] text-gray-500 hover:text-[#fcd535]">reset</button>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-mini">
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Balance ($)</span>
-                    <input id="risk-balance" type="number" value="1000" class="input-dark" min="0" step="10">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Risk %</span>
-                    <input id="risk-percent" type="number" value="1" class="input-dark" min="0" step="0.1">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Entry</span>
-                    <input id="risk-entry" type="number" class="input-dark" step="0.1">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Stop</span>
-                    <input id="risk-stop" type="number" class="input-dark" step="0.1">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Take Profit</span>
-                    <input id="risk-tp" type="number" class="input-dark" step="0.1">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Leverage</span>
-                    <input id="risk-lev" type="number" value="5" class="input-dark" min="1" max="125" step="1">
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button class="side-btn active" data-side="long" id="risk-long">Long</button>
-                <button class="side-btn" data-side="short" id="risk-short">Short</button>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-mini font-mono text-gray-200" id="risk-summary">
-                <div class="flex flex-col">
-                    <span class="text-gray-500">Size (USDT)</span>
-                    <span id="risk-size">-</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-500">Qty</span>
-                    <span id="risk-qty">-</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-500">Liq Est.</span>
-                    <span id="risk-liq">-</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-500">R:R</span>
-                    <span id="risk-rr">-</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-500">Risk $</span>
-                    <span id="risk-dollar">-</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-500">TP PnL</span>
-                    <span id="risk-pnl">-</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Price Alert -->
-        <div class="mb-4 card p-3 space-y-2">
-            <div class="flex items-center justify-between text-xs text-gray-400">
-                <span class="font-semibold">Price Alert</span>
-                <button id="alert-clear" class="text-[10px] text-gray-500 hover:text-[#fcd535]">clear</button>
-            </div>
-            <div class="flex gap-2">
-                <input id="alert-price" type="number" class="input-dark" placeholder="Set alert price" step="0.1">
-                <button id="alert-set" class="cta-btn">Set</button>
-            </div>
-            <div id="alert-status" class="text-mini text-gray-500">No active alert</div>
         </div>
         
         <div class="mt-auto p-2 border-t border-[#2b3139]">
@@ -464,17 +363,6 @@
                         <div class="flex justify-between"><span>ATR (14):</span><span id="val-atr" class="text-white">-</span></div>
                     </div>
                 </div>
-
-                <div class="border-t border-[#2b3139] pt-2 mt-2">
-                    <h4 class="text-xs font-bold text-gray-500 mb-2">SESSION METRICS</h4>
-                    <div class="space-y-1 text-xs font-mono">
-                        <div class="flex justify-between"><span>Spread</span><span id="metric-spread" class="text-[#fcd535]">-</span></div>
-                        <div class="flex justify-between"><span>Best Bid / Ask</span><span id="metric-bbo" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>Last Price</span><span id="metric-mark" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>WS Latency</span><span id="metric-latency" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>Last Update</span><span id="metric-updated" class="text-gray-200">-</span></div>
-                    </div>
-                </div>
             </div>
 
         </div>
@@ -550,57 +438,12 @@ const UI = {
     price: document.getElementById('current-price'),
     serverTime: document.getElementById('server-time'),
     refreshBtn: document.getElementById('refresh-btn'),
-    tfBtns: document.querySelectorAll('.tf-btn'),
-    chips: {
-        spread: document.getElementById('chip-spread'),
-        atr: document.getElementById('chip-atr'),
-        rr: document.getElementById('chip-rr')
-    },
-    metrics: {
-        spread: document.getElementById('metric-spread'),
-        bbo: document.getElementById('metric-bbo'),
-        mark: document.getElementById('metric-mark'),
-        latency: document.getElementById('metric-latency'),
-        updated: document.getElementById('metric-updated')
-    },
-    risk: {
-        balance: document.getElementById('risk-balance'),
-        percent: document.getElementById('risk-percent'),
-        entry: document.getElementById('risk-entry'),
-        stop: document.getElementById('risk-stop'),
-        tp: document.getElementById('risk-tp'),
-        lev: document.getElementById('risk-lev'),
-        longBtn: document.getElementById('risk-long'),
-        shortBtn: document.getElementById('risk-short'),
-        reset: document.getElementById('risk-reset'),
-        size: document.getElementById('risk-size'),
-        qty: document.getElementById('risk-qty'),
-        liq: document.getElementById('risk-liq'),
-        rr: document.getElementById('risk-rr'),
-        dollar: document.getElementById('risk-dollar'),
-        pnl: document.getElementById('risk-pnl')
-    },
-    alert: {
-        input: document.getElementById('alert-price'),
-        set: document.getElementById('alert-set'),
-        clear: document.getElementById('alert-clear'),
-        status: document.getElementById('alert-status')
-    }
+    tfBtns: document.querySelectorAll('.tf-btn')
 };
 
 // Chart Instances
 let chartMain, chartOsc, seriesCandle, seriesVol, seriesSMA, seriesEMA, seriesBBU, seriesBBL;
 let seriesMACD, seriesSignal, seriesHist, seriesRSI, seriesStochK, seriesStochD;
-
-const STATE = {
-    side: 'long',
-    alertPrice: null,
-    alertLine: null,
-    lastPrice: null,
-    lastUpdate: null,
-    lastWsTs: null,
-    bbo: { bid: null, ask: null }
-};
 
 /**
  * INITIALIZATION
@@ -625,19 +468,6 @@ async function init() {
             loadMarket(CONFIG.activeSymbol);
         });
     });
-
-    // Risk inputs
-    ['balance','percent','entry','stop','tp','lev'].forEach(key => {
-        UI.risk[key].addEventListener('input', recalcRisk);
-    });
-    UI.risk.longBtn.addEventListener('click', () => setSide('long'));
-    UI.risk.shortBtn.addEventListener('click', () => setSide('short'));
-    UI.risk.reset.addEventListener('click', resetRisk);
-    UI.alert.set.addEventListener('click', setPriceAlert);
-    UI.alert.clear.addEventListener('click', clearPriceAlert);
-
-    // Latency ticker
-    setInterval(updateMeta, 1000);
 
     try {
         const res = await fetch(`${CONFIG.api}/exchangeInfo`);
@@ -799,12 +629,6 @@ async function loadMarket(symbol) {
         
         seriesCandle.setData(candles);
         seriesVol.setData(candles.map(d => ({ time: d.time, value: d.volume, color: d.close >= d.open ? CHART_COLORS.candleUp : CHART_COLORS.candleDown })));
-        const last = candles[candles.length-1];
-        STATE.lastPrice = last ? last.close : null;
-        STATE.lastUpdate = last ? last.time * 1000 : null;
-        if (!UI.risk.entry.value && last) UI.risk.entry.value = last.close;
-        recalcRisk();
-        updateMeta();
         
         // 2. Ticker Info
         const tRes = await fetch(`${CONFIG.api}/ticker/24hr?symbol=${CONFIG.activeSymbol}`);
@@ -874,19 +698,11 @@ function startWS() {
             seriesVol.update({ time: candle.time, value: candle.volume, color: candle.close >= candle.open ? CHART_COLORS.candleUp : CHART_COLORS.candleDown });
             UI.price.innerText = +k.c;
             UI.price.style.color = +k.c >= +k.o ? CHART_COLORS.candleUp : CHART_COLORS.candleDown;
-            const prev = STATE.lastPrice;
-            STATE.lastPrice = candle.close;
-            STATE.lastUpdate = k.T ? k.T : Date.now();
-            STATE.lastWsTs = Date.now();
-            checkAlert(prev, candle.close);
-            updateMeta();
         }
         
         // Depth Update
         if (msg.bids && msg.asks) {
-            STATE.lastWsTs = Date.now();
             renderOrderBook(msg);
-            updateMeta();
         }
         
         // AggTrade Update
@@ -918,16 +734,6 @@ function renderOrderBook(data) {
         bidsHtml += `<div class="flex justify-between"><span>${+b[0]}</span><span>${(+b[1]).toFixed(4)}</span><span>${(+b[0]*+b[1]).toFixed(2)}</span></div>`;
     });
     document.getElementById('ob-bids').innerHTML = bidsHtml;
-
-    const bestAsk = data.asks?.[0]?.[0] ? parseFloat(data.asks[0][0]) : null;
-    const bestBid = data.bids?.[0]?.[0] ? parseFloat(data.bids[0][0]) : null;
-    if (bestAsk && bestBid) {
-        STATE.bbo = { bid: bestBid, ask: bestAsk };
-        const spread = bestAsk - bestBid;
-        if (UI.metrics.spread) UI.metrics.spread.innerText = spread.toFixed(2);
-        if (UI.metrics.bbo) UI.metrics.bbo.innerText = `${bestBid.toFixed(2)} / ${bestAsk.toFixed(2)}`;
-        if (UI.chips.spread) UI.chips.spread.innerText = `Spread ${spread.toFixed(2)}`;
-    }
 }
 
 function renderTrades(data) {
@@ -948,7 +754,6 @@ function updateTickerUI(data) {
     document.getElementById('info-vol').innerText = +data.volume;
     document.getElementById('info-qvol').innerText = +data.quoteVolume;
     document.getElementById('info-trades').innerText = +data.count;
-    if (UI.metrics.mark) UI.metrics.mark.innerText = (+data.lastPrice).toFixed(2);
 }
 
 /**
@@ -1081,16 +886,8 @@ function updateIndicators(data) {
     };
 
     // Apply
-    if (CONFIG.indicators.sma) {
-        const smaData = calcSMA(20, closes);
-        seriesSMA.setData(smaData); 
-        seriesSMA.applyOptions({visible:true});
-        const last = smaData[smaData.length-1]?.value;
-        document.getElementById('val-sma').innerText = last ? last.toFixed(2) : '-';
-    } else {
-        seriesSMA.applyOptions({visible:false});
-        document.getElementById('val-sma').innerText = '-';
-    }
+    if (CONFIG.indicators.sma) { seriesSMA.setData(calcSMA(20, closes)); seriesSMA.applyOptions({visible:true}); } 
+    else seriesSMA.applyOptions({visible:false});
 
     if (CONFIG.indicators.ema) { seriesEMA.setData(calcEMA(20, closes)); seriesEMA.applyOptions({visible:true}); } 
     else seriesEMA.applyOptions({visible:false});
@@ -1137,12 +934,9 @@ function updateIndicators(data) {
         seriesStochK.applyOptions({visible:true, title:'ATR', color: '#fff'});
         const last = atr[atr.length-1]?.value;
         document.getElementById('val-atr').innerText = last ? last.toFixed(2) : '-';
-        if (UI.chips.atr) UI.chips.atr.innerText = `ATR ${last ? last.toFixed(2) : '-'}`;
     } else if (!CONFIG.indicators.stoch) {
         seriesStochK.applyOptions({visible:false});
     }
-
-    if (!CONFIG.indicators.atr && UI.chips.atr) UI.chips.atr.innerText = 'ATR --';
 
     if (CONFIG.indicators.stoch) {
         const stoch = calcStoch(14, 3, 3);
@@ -1154,112 +948,6 @@ function updateIndicators(data) {
         seriesStochK.applyOptions({visible:false});
         seriesStochD.applyOptions({visible:false});
     }
-}
-
-/**
- * TRADER TOOLS
- */
-function recalcRisk() {
-    const fmt = (v, d = 2) => (Number.isFinite(v) ? v.toFixed(d) : '-');
-    const balance = parseFloat(UI.risk.balance.value);
-    const riskPct = parseFloat(UI.risk.percent.value);
-    const entry = parseFloat(UI.risk.entry.value);
-    const stop = parseFloat(UI.risk.stop.value);
-    const tp = parseFloat(UI.risk.tp.value);
-    const lev = Math.max(1, parseFloat(UI.risk.lev.value) || 1);
-
-    const clear = () => {
-        UI.risk.size.innerText = '-';
-        UI.risk.qty.innerText = '-';
-        UI.risk.liq.innerText = '-';
-        UI.risk.rr.innerText = '-';
-        UI.risk.dollar.innerText = '-';
-        UI.risk.pnl.innerText = '-';
-        if (UI.chips.rr) UI.chips.rr.innerText = 'R:R --';
-    };
-
-    if ([balance, riskPct, entry, stop].some(v => Number.isNaN(v))) { clear(); return; }
-    const riskDollar = balance * (riskPct / 100);
-    const move = Math.abs(entry - stop);
-    if (!move) { clear(); return; }
-    const sizeUSDT = riskDollar / move;
-    const qty = sizeUSDT / entry;
-    const liq = STATE.side === 'long' ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev);
-    const rr = Number.isFinite(tp) ? Math.abs(tp - entry) / move : null;
-    const tpPnl = Number.isFinite(tp) ? qty * (tp - entry) * (STATE.side === 'long' ? 1 : -1) : null;
-
-    UI.risk.size.innerText = fmt(sizeUSDT);
-    UI.risk.qty.innerText = fmt(qty, 5);
-    UI.risk.liq.innerText = fmt(liq);
-    UI.risk.rr.innerText = rr ? fmt(rr, 2) : '-';
-    UI.risk.dollar.innerText = fmt(riskDollar);
-    UI.risk.pnl.innerText = tpPnl !== null ? fmt(tpPnl) : '-';
-    if (UI.chips.rr) UI.chips.rr.innerText = rr ? `R:R ${fmt(rr, 2)}` : 'R:R --';
-}
-
-function setSide(side) {
-    STATE.side = side;
-    UI.risk.longBtn.classList.toggle('active', side === 'long');
-    UI.risk.shortBtn.classList.toggle('active', side === 'short');
-    recalcRisk();
-}
-
-function resetRisk() {
-    UI.risk.balance.value = 1000;
-    UI.risk.percent.value = 1;
-    UI.risk.entry.value = STATE.lastPrice ? STATE.lastPrice : '';
-    UI.risk.stop.value = '';
-    UI.risk.tp.value = '';
-    UI.risk.lev.value = 5;
-    setSide('long');
-    recalcRisk();
-}
-
-function setPriceAlert() {
-    const target = parseFloat(UI.alert.input.value);
-    if (Number.isNaN(target)) {
-        UI.alert.status.innerText = 'Enter a valid alert price';
-        return;
-    }
-    if (STATE.alertLine) seriesCandle.removePriceLine(STATE.alertLine);
-    STATE.alertLine = seriesCandle.createPriceLine({ price: target, color: '#fcd535', lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: 'ALERT' });
-    STATE.alertPrice = target;
-    UI.alert.status.innerText = `Alert set at ${target}`;
-    UI.alert.status.classList.remove('text-red-400');
-}
-
-function clearPriceAlert() {
-    if (STATE.alertLine) seriesCandle.removePriceLine(STATE.alertLine);
-    STATE.alertLine = null;
-    STATE.alertPrice = null;
-    UI.alert.status.innerText = 'No active alert';
-    UI.alert.status.classList.remove('text-red-400');
-}
-
-function checkAlert(previous, current) {
-    if (!STATE.alertPrice || previous === null) return;
-    const crossedUp = previous < STATE.alertPrice && current >= STATE.alertPrice;
-    const crossedDown = previous > STATE.alertPrice && current <= STATE.alertPrice;
-    if (crossedUp || crossedDown) {
-        UI.alert.status.innerText = `Alert hit @ ${STATE.alertPrice}`;
-        UI.alert.status.classList.add('text-red-400');
-        if (STATE.alertLine) seriesCandle.removePriceLine(STATE.alertLine);
-        STATE.alertLine = null;
-        STATE.alertPrice = null;
-    }
-}
-
-function updateMeta() {
-    const spread = (STATE.bbo.ask !== null && STATE.bbo.bid !== null) ? STATE.bbo.ask - STATE.bbo.bid : null;
-    if (spread !== null) {
-        if (UI.metrics.spread) UI.metrics.spread.innerText = spread.toFixed(2);
-        if (UI.chips.spread) UI.chips.spread.innerText = `Spread ${spread.toFixed(2)}`;
-        if (UI.metrics.bbo) UI.metrics.bbo.innerText = `${STATE.bbo.bid.toFixed(2)} / ${STATE.bbo.ask.toFixed(2)}`;
-    }
-    if (UI.metrics.mark && STATE.lastPrice !== null) UI.metrics.mark.innerText = STATE.lastPrice.toFixed(2);
-    if (UI.metrics.updated && STATE.lastUpdate) UI.metrics.updated.innerText = new Date(STATE.lastUpdate).toLocaleTimeString();
-    const latencyMs = STATE.lastWsTs ? Math.max(0, Date.now() - STATE.lastWsTs) : null;
-    if (UI.metrics.latency) UI.metrics.latency.innerText = latencyMs !== null ? `${latencyMs} ms` : '-';
 }
 
 /**
