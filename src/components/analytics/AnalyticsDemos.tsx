@@ -13,6 +13,7 @@ import {
   calculateEMA,
   fitLinear,
   fitQuadratic,
+  calculateStatistics,
   calculateMaxDrawdown,
 } from '../../lib/analytics';
 
@@ -338,12 +339,13 @@ export const BollingerBandsDemo: React.FC = () => {
 export const TrendAnalysisDemo: React.FC = () => {
   const [dataPoints, setDataPoints] = useState(50);
   
-  const { linear, quadratic } = useMemo(() => {
+  const { linear, quadratic, stats } = useMemo(() => {
     const prices = generateSampleData(dataPoints, 0.015, 0.002);
     const linear = fitLinear(prices);
     const quadratic = fitQuadratic(prices);
+    const stats = calculateStatistics(prices);
     
-    return { linear, quadratic };
+    return { linear, quadratic, stats };
   }, [dataPoints]);
   
   const bestFit = linear.rSquared > quadratic.rSquared - 0.01 ? 'Linear' : 'Quadratic';
