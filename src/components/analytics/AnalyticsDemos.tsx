@@ -8,13 +8,11 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   calculateRSI,
-  calculateMACD,
   calculateBollingerBands,
   calculateSMA,
   calculateEMA,
   fitLinear,
   fitQuadratic,
-  calculateStatistics,
   calculateMaxDrawdown,
 } from '../../lib/analytics';
 
@@ -35,7 +33,7 @@ export const RSICalculator: React.FC = () => {
   const [period, setPeriod] = useState(14);
   const [volatility, setVolatility] = useState(0.02);
   
-  const { prices, rsi, currentRSI, signal } = useMemo(() => {
+  const { rsi, currentRSI, signal } = useMemo(() => {
     const prices = generateSampleData(100, volatility);
     const rsi = calculateRSI(prices, period);
     const currentRSI = rsi[rsi.length - 1];
@@ -44,7 +42,7 @@ export const RSICalculator: React.FC = () => {
     if (currentRSI > 70) signal = 'Overbought';
     else if (currentRSI < 30) signal = 'Oversold';
     
-    return { prices, rsi, currentRSI, signal };
+    return { rsi, currentRSI, signal };
   }, [period, volatility]);
   
   const getSignalColor = () => {
@@ -237,7 +235,7 @@ export const BollingerBandsDemo: React.FC = () => {
   const [period, setPeriod] = useState(20);
   const [stdDev, setStdDev] = useState(2);
   
-  const { prices, bb, position, squeeze } = useMemo(() => {
+  const { bb, position, squeeze } = useMemo(() => {
     const prices = generateSampleData(100, 0.02);
     const bb = calculateBollingerBands(prices, period, stdDev);
     
@@ -257,7 +255,7 @@ export const BollingerBandsDemo: React.FC = () => {
     const avgBandwidth = bb.bandwidth.slice(-20).filter(v => !isNaN(v)).reduce((a, b) => a + b, 0) / 20;
     const squeeze = bandwidth < avgBandwidth * 0.8;
     
-    return { prices, bb, position, squeeze };
+    return { bb, position, squeeze };
   }, [period, stdDev]);
   
   const lastBandwidth = bb.bandwidth[bb.bandwidth.length - 1];
@@ -340,13 +338,12 @@ export const BollingerBandsDemo: React.FC = () => {
 export const TrendAnalysisDemo: React.FC = () => {
   const [dataPoints, setDataPoints] = useState(50);
   
-  const { prices, linear, quadratic, stats } = useMemo(() => {
+  const { linear, quadratic } = useMemo(() => {
     const prices = generateSampleData(dataPoints, 0.015, 0.002);
     const linear = fitLinear(prices);
     const quadratic = fitQuadratic(prices);
-    const stats = calculateStatistics(prices);
     
-    return { prices, linear, quadratic, stats };
+    return { linear, quadratic };
   }, [dataPoints]);
   
   const bestFit = linear.rSquared > quadratic.rSquared - 0.01 ? 'Linear' : 'Quadratic';
@@ -424,16 +421,15 @@ export const TrendAnalysisDemo: React.FC = () => {
 export const PortfolioRiskDemo: React.FC = () => {
   const [volatility, setVolatility] = useState(0.02);
   
-  const { equityCurve, maxDD, stats, riskLevel } = useMemo(() => {
+  const { equityCurve, maxDD, riskLevel } = useMemo(() => {
     const equityCurve = generateSampleData(252, volatility, 0.0003);
     const maxDD = calculateMaxDrawdown(equityCurve);
-    const stats = calculateStatistics(equityCurve);
     
     let riskLevel = 'Low';
     if (maxDD > 0.2) riskLevel = 'High';
     else if (maxDD > 0.1) riskLevel = 'Medium';
     
-    return { equityCurve, maxDD, stats, riskLevel };
+    return { equityCurve, maxDD, riskLevel };
   }, [volatility]);
   
   const totalReturn = (equityCurve[equityCurve.length - 1] - equityCurve[0]) / equityCurve[0];
