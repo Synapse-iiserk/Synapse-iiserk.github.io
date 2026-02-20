@@ -1,0 +1,9 @@
+# iFINN Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://synapse-iiserk.github.io/Synapse-iiserk.github.io/sitemap.xml
+
+# Disallow common non-content paths
+Disallow: /assets/

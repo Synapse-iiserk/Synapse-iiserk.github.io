@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#00ff88"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Eye outline with neural network nodes -->
+  <ellipse cx="24" cy="24" rx="20" ry="14" fill="none" stroke="url(#greenGradient)" stroke-width="2.5"/>
+  
+  <!-- Iris -->
+  <circle cx="24" cy="24" r="8" fill="none" stroke="url(#greenGradient)" stroke-width="2"/>
+  
+  <!-- Pupil with chart symbol -->
+  <circle cx="24" cy="24" r="4" fill="url(#greenGradient)"/>
+  
+  <!-- Neural nodes around eye -->
+  <circle cx="8" cy="16" r="2.5" fill="url(#greenGradient)"/>
+  <circle cx="8" cy="32" r="2.5" fill="url(#greenGradient)"/>
+  <circle cx="40" cy="16" r="2.5" fill="url(#greenGradient)"/>
+  <circle cx="40" cy="32" r="2.5" fill="url(#greenGradient)"/>
+  
+  <!-- Neural connections -->
+  <path d="M10 16 L16 20 M10 32 L16 28 M38 16 L32 20 M38 32 L32 28" 
+        stroke="url(#greenGradient)" 
+        stroke-width="1.5" 
+        stroke-linecap="round"/>
+  
+  <!-- Chart line inside pupil -->
+  <path d="M21 25 L23 23 L25 26 L27 22" 
+        stroke="#fff" 
+        stroke-width="1.2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        fill="none"/>
+</svg>
