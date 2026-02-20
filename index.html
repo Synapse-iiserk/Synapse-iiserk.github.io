@@ -32,6 +32,14 @@
   <meta name="theme-color" content="#0A0E27" />
   <meta name="color-scheme" content="dark" />
 
+  <!-- SPA redirect: restore URL from 404.html redirect -->
+  <script>
+    (function() {
+      var p = window.location.search && decodeURIComponent(window.location.search.slice(3));
+      if (p) { window.history.replaceState(null, null, p); }
+    })();
+  </script>
+
   <!-- Preconnect to external fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
