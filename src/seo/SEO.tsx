@@ -11,8 +11,8 @@ interface SEOProps {
 }
 
 const defaultMeta = {
-    siteName: 'Synapse',
-    title: 'Synapse | AI-Driven Financial Intelligence',
+    siteName: 'iFINN',
+    title: 'iFINN | AI-Driven Financial Intelligence',
     description: 'Unified AI-powered analytics for stocks, derivatives, and crypto. Advanced market monitoring, predictive analytics, and intelligent investment insights.',
     keywords: ['fintech', 'AI trading', 'financial analytics', 'stock market', 'crypto analytics', 'machine learning finance', 'algorithmic trading', 'market intelligence'],
     ogImage: '/og-image.png',
@@ -34,14 +34,14 @@ export const SEO: React.FC<SEOProps> = ({
     const defaultStructuredData = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'Synapse',
+        name: 'iFINN',
         description: defaultMeta.description,
         url: defaultMeta.siteUrl,
         logo: `${defaultMeta.siteUrl}/logo.png`,
         sameAs: [],
         contactPoint: {
             '@type': 'ContactPoint',
-            email: 'contact@synapse.finance',
+            email: 'contact@ifinn.finance',
             contactType: 'customer service',
         },
     };
@@ -72,7 +72,7 @@ export const SEO: React.FC<SEOProps> = ({
 
             {/* Additional Meta */}
             <meta name="robots" content="index, follow" />
-            <meta name="author" content="Synapse Team" />
+            <meta name="author" content="iFINN Team" />
             <meta name="theme-color" content="#0A0E27" />
 
             {/* Structured Data */}

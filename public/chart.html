@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synapse | Advanced Market Analytics</title>
+    <title>iFINN | Advanced Market Analytics</title>
     
     <!-- Libraries (Stable Version 4.0.1) -->
     <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
@@ -19,7 +19,7 @@
             --border: #2b3139;
             --text-main: #eaecef;
             --text-muted: #848e9c;
-            --primary: #fcd535; /* Synapse Yellow */
+            --primary: #fcd535; /* iFINN Yellow */
             --accent-1: #2962ff;
             --accent-2: #ff6d00;
             --accent-3: #9c27b0;
@@ -377,7 +377,7 @@
         </div>
         
         <div class="mt-auto p-2 border-t border-[#2b3139]">
-            <div class="text-xs text-gray-500 mb-1">SYNAPSE v2.1</div>
+            <div class="text-xs text-gray-500 mb-1">iFINN v2.1</div>
             <div class="text-[10px] text-gray-600">High-Frequency Market Data</div>
         </div>
     </aside>
@@ -417,9 +417,10 @@
         
         <!-- Tabs -->
         <div class="flex border-b border-[#2b3139]">
-            <button class="flex-1 py-2 text-xs font-bold text-[#fcd535] border-b-2 border-[#fcd535]" id="tab-ob">Order Book</button>
-            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-trades">Recent Trades</button>
+            <button class="flex-1 py-2 text-xs font-bold text-[#fcd535] border-b-2 border-[#fcd535]" id="tab-ob">Book</button>
+            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-trades">Trades</button>
             <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-info">Details</button>
+            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-sentiment">Sentiment</button>
         </div>
 
         <!-- Content Area -->
@@ -443,6 +444,48 @@
                     <span>TIME</span><span>PRICE</span><span>AMOUNT</span>
                 </div>
                 <div id="trades-list" class="overflow-y-auto flex-1 font-mono text-xs"></div>
+            </div>
+
+            <!-- SENTIMENT / FEAR & GREED -->
+            <div id="view-sentiment" class="h-full hidden p-3 overflow-y-auto space-y-3">
+                <!-- Fear & Greed Gauge -->
+                <div class="card p-3 text-center space-y-2">
+                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest">CRYPTO FEAR &amp; GREED</div>
+                    <div id="fg-gauge" class="relative mx-auto" style="width:110px;height:62px;">
+                        <svg viewBox="0 0 110 62" width="110" height="62">
+                            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#2b3139" stroke-width="10" stroke-linecap="round"/>
+                            <path id="fg-arc" d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#f6465d" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 141.4"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-end pb-1">
+                            <span id="fg-value" class="text-2xl font-bold font-mono text-white">--</span>
+                        </div>
+                    </div>
+                    <div id="fg-label" class="text-sm font-bold text-gray-400">Loading...</div>
+                    <div id="fg-updated" class="text-[10px] text-gray-600"></div>
+                </div>
+                <!-- Historical F&G (7d) -->
+                <div class="card p-3">
+                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">HISTORY (7d)</div>
+                    <div id="fg-history" class="space-y-1"></div>
+                </div>
+                <!-- Live CoinGecko Prices -->
+                <div class="card p-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-[10px] text-gray-500 font-semibold tracking-widest">LIVE MARKET</div>
+                        <div id="cg-updated" class="text-[10px] text-gray-600"></div>
+                    </div>
+                    <div id="cg-coins" class="space-y-1.5"></div>
+                </div>
+                <!-- BTC Dominance -->
+                <div class="card p-3">
+                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">BTC DOMINANCE</div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-2 bg-[#2b3139] rounded-full overflow-hidden">
+                            <div id="dom-bar" class="h-full rounded-full bg-[#fcd535] transition-all duration-700" style="width:0%"></div>
+                        </div>
+                        <span id="dom-pct" class="text-xs font-mono font-bold text-[#fcd535] w-10 text-right">--</span>
+                    </div>
+                </div>
             </div>
 
             <!-- DETAILS -->
@@ -543,8 +586,8 @@ const UI = {
     loader: document.getElementById('chart-loader'),
     searchIn: document.getElementById('global-search'),
     searchRes: document.getElementById('search-results'),
-    tabs: [document.getElementById('tab-ob'), document.getElementById('tab-trades'), document.getElementById('tab-info')],
-    views: [document.getElementById('view-ob'), document.getElementById('view-trades'), document.getElementById('view-info')],
+    tabs: [document.getElementById('tab-ob'), document.getElementById('tab-trades'), document.getElementById('tab-info'), document.getElementById('tab-sentiment')],
+    views: [document.getElementById('view-ob'), document.getElementById('view-trades'), document.getElementById('view-info'), document.getElementById('view-sentiment')],
     indicatorsList: document.getElementById('indicator-list'),
     watchlist: document.getElementById('watchlist'),
     price: document.getElementById('current-price'),
@@ -1398,8 +1441,113 @@ UI.refreshBtn.addEventListener('click', async () => {
     }
 });
 
+// ─── FEAR & GREED INDEX ──────────────────────────────────────────────────────
+const FG_COLORS = {
+    'Extreme Fear': '#f6465d',
+    'Fear': '#ff9800',
+    'Neutral': '#fcd535',
+    'Greed': '#0ecb81',
+    'Extreme Greed': '#00e676'
+};
+
+async function fetchFearGreed() {
+    try {
+        const res = await fetch('https://api.alternative.me/fng/?limit=8&format=json');
+        const data = await res.json();
+        if (!data || !data.data || !data.data.length) return;
+
+        const latest = data.data[0];
+        const val = parseInt(latest.value);
+        const label = latest.value_classification;
+        const color = FG_COLORS[label] || '#fcd535';
+        const ts = new Date(parseInt(latest.timestamp) * 1000);
+
+        // Update gauge arc (semi-circle arc length ≈ 141.4)
+        const arcLen = (val / 100) * 141.4;
+        const arc = document.getElementById('fg-arc');
+        if (arc) {
+            arc.setAttribute('stroke-dasharray', arcLen + ' 141.4');
+            arc.setAttribute('stroke', color);
+        }
+        const fgVal = document.getElementById('fg-value');
+        if (fgVal) { fgVal.textContent = val; fgVal.style.color = color; }
+        const fgLbl = document.getElementById('fg-label');
+        if (fgLbl) { fgLbl.textContent = label; fgLbl.style.color = color; }
+        const fgUpd = document.getElementById('fg-updated');
+        if (fgUpd) fgUpd.textContent = 'Updated: ' + ts.toLocaleDateString();
+
+        // 7-day history bars
+        const hist = document.getElementById('fg-history');
+        if (hist) {
+            hist.innerHTML = data.data.slice(0, 7).map(d => {
+                const v = parseInt(d.value);
+                const lbl = d.value_classification;
+                const c = FG_COLORS[lbl] || '#fcd535';
+                const dt = new Date(parseInt(d.timestamp) * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return '<div class="flex items-center gap-2 text-[11px]">'
+                    + '<span class="text-gray-500 w-14">' + dt + '</span>'
+                    + '<div class="flex-1 h-1.5 bg-[#2b3139] rounded-full overflow-hidden">'
+                    + '<div class="h-full rounded-full" style="width:' + v + '%;background:' + c + '"></div>'
+                    + '</div>'
+                    + '<span class="font-mono font-bold w-6 text-right" style="color:' + c + '">' + v + '</span>'
+                    + '</div>';
+            }).join('');
+        }
+    } catch (e) { console.warn('Fear & Greed fetch failed', e); }
+}
+
+// ─── COINGECKO LIVE MARKET ───────────────────────────────────────────────────
+async function fetchCoinGeckoMarket() {
+    try {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=6&page=1&sparkline=false');
+        const coins = await res.json();
+        if (!Array.isArray(coins)) return;
+
+        const container = document.getElementById('cg-coins');
+        if (container) {
+            container.innerHTML = coins.map(c => {
+                const chg = c.price_change_percentage_24h || 0;
+                const chgColor = chg >= 0 ? '#0ecb81' : '#f6465d';
+                const sign = chg >= 0 ? '+' : '';
+                const fmtPrice = c.current_price >= 1000
+                    ? c.current_price.toLocaleString('en-US', { maximumFractionDigits: 0 })
+                    : c.current_price.toLocaleString('en-US', { maximumFractionDigits: 4 });
+                return '<div class="flex items-center gap-1 text-[11px] font-mono py-0.5">'
+                    + '<img src="' + c.image + '" class="w-4 h-4 rounded-full" loading="lazy" onerror="this.style.display=\'none\'" />'
+                    + '<span class="font-bold text-white w-10 truncate">' + c.symbol.toUpperCase() + '</span>'
+                    + '<span class="flex-1 text-right text-gray-200">$' + fmtPrice + '</span>'
+                    + '<span class="w-14 text-right font-bold" style="color:' + chgColor + '">' + sign + chg.toFixed(2) + '%</span>'
+                    + '</div>';
+            }).join('');
+        }
+        const updEl = document.getElementById('cg-updated');
+        if (updEl) updEl.textContent = new Date().toLocaleTimeString();
+    } catch (e) { console.warn('CoinGecko fetch failed', e); }
+}
+
+// ─── BTC DOMINANCE ───────────────────────────────────────────────────────────
+async function fetchDominance() {
+    try {
+        const res = await fetch('https://api.coingecko.com/api/v3/global');
+        const data = await res.json();
+        const pct = (data && data.data && data.data.market_cap_percentage && data.data.market_cap_percentage.btc) || 0;
+        const bar = document.getElementById('dom-bar');
+        const lbl = document.getElementById('dom-pct');
+        if (bar) bar.style.width = pct.toFixed(1) + '%';
+        if (lbl) lbl.textContent = pct.toFixed(1) + '%';
+    } catch (e) {}
+}
+
 // Initialize
 init();
+
+// Sentiment data: load immediately, then refresh periodically
+fetchFearGreed();
+fetchCoinGeckoMarket();
+fetchDominance();
+setInterval(fetchFearGreed, 5 * 60 * 1000);
+setInterval(fetchCoinGeckoMarket, 60 * 1000);
+setInterval(fetchDominance, 5 * 60 * 1000);
 
 </script>
 </body>

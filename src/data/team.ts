@@ -15,7 +15,7 @@ export const teamMembers: TeamMember[] = [
         name: 'Shuvam Banerji Seal',
         role: 'Lead Technical Head',
         focus: 'Architecture, ML systems, infrastructure',
-        bio: 'Shuvam leads the technical vision at Synapse, overseeing the architecture of our ML-powered financial analytics platform. With deep expertise in distributed systems and machine learning infrastructure, he ensures our platform delivers institutional-grade performance while remaining accessible to individual investors.',
+        bio: 'Shuvam leads the technical vision at iFINN, overseeing the architecture of our ML-powered financial analytics platform. With deep expertise in distributed systems and machine learning infrastructure, he ensures our platform delivers institutional-grade performance while remaining accessible to individual investors.',
         expertiseHighlights: [
             'Machine Learning Systems Architecture',
             'Distributed Computing Infrastructure',
@@ -23,14 +23,14 @@ export const teamMembers: TeamMember[] = [
             'Cloud-native Application Design',
             'Financial Data Engineering',
         ],
-        visionContribution: 'Shuvam envisions Synapse as the bridge between cutting-edge AI research and practical financial intelligence, making sophisticated market analysis tools accessible to everyone while maintaining the rigor demanded by institutional investors.',
+        visionContribution: 'Shuvam envisions iFINN as the bridge between cutting-edge AI research and practical financial intelligence, making sophisticated market analysis tools accessible to everyone while maintaining the rigor demanded by institutional investors.',
     },
     {
         slug: 'youktik-sajjan',
         name: 'Youktik Sajjan',
         role: 'Finance and Marketing',
         focus: 'Market strategy, financial modeling, outreach',
-        bio: 'Youktik drives market strategy and financial operations at Synapse. His expertise in financial modeling and market dynamics ensures our products address real-world investment challenges while maintaining regulatory compliance and market credibility.',
+        bio: 'Youktik drives market strategy and financial operations at iFINN. His expertise in financial modeling and market dynamics ensures our products address real-world investment challenges while maintaining regulatory compliance and market credibility.',
         expertiseHighlights: [
             'Financial Market Strategy',
             'Quantitative Financial Modeling',
@@ -38,14 +38,14 @@ export const teamMembers: TeamMember[] = [
             'Investor Relations',
             'Growth Marketing for FinTech',
         ],
-        visionContribution: 'Youktik is committed to building Synapse as a trusted name in financial technology, ensuring our solutions meet the stringent requirements of professional investors while remaining intuitive for newcomers to algorithmic trading.',
+        visionContribution: 'Youktik is committed to building iFINN as a trusted name in financial technology, ensuring our solutions meet the stringent requirements of professional investors while remaining intuitive for newcomers to algorithmic trading.',
     },
     {
         slug: 'himanshu-prakash-singh',
         name: 'Himanshu Prakash Singh',
         role: 'Algorithm Development',
         focus: 'Quantitative models, algorithmic strategies',
-        bio: 'Himanshu architects the quantitative models and algorithmic strategies powering Synapse. His research-driven approach combines rigorous mathematical foundations with practical market insights to develop predictive models that withstand real-world market conditions.',
+        bio: 'Himanshu architects the quantitative models and algorithmic strategies powering iFINN. His research-driven approach combines rigorous mathematical foundations with practical market insights to develop predictive models that withstand real-world market conditions.',
         expertiseHighlights: [
             'Quantitative Trading Strategies',
             'Statistical Modeling & Analysis',

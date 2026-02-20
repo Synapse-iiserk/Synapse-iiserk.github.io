@@ -6,6 +6,16 @@ export const Hero: React.FC = () => {
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             {/* Animated Background */}
             <div className="absolute inset-0 bg-[var(--color-primary)]">
+                {/* Video Background */}
+                <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-screen"
+                >
+                    <source src="https://cdn.pixabay.com/video/2021/08/04/83866-584705237_large.mp4" type="video/mp4" />
+                </video>
                 {/* Gradient Orbs */}
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-accent)]/20 rounded-full blur-3xl animate-float" />
                 <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[var(--color-gold)]/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '-3s' }} />
@@ -35,21 +45,20 @@ export const Hero: React.FC = () => {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-[var(--color-primary-light)] border border-[var(--color-border)] mb-8"
                     >
                         <span className="w-2 h-2 bg-[var(--color-success)] rounded-full mr-2 animate-pulse" />
-                        <span className="text-sm text-[var(--color-text-muted)]">Now in Development</span>
+                        <span className="text-sm text-[var(--color-text-muted)]">Team iFINN @ IISER Kolkata &mdash; Building in 2025</span>
                     </motion.div>
 
                     {/* Headline */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--color-text)] mb-6 leading-tight">
-                        <span className="gradient-text">AI-Driven</span>
+                        <span className="gradient-text">Intelligent Financial</span>
                         <br />
-                        Financial Intelligence
+                        Neural Network
                     </h1>
 
                     {/* Subheadline */}
                     <p className="text-lg sm:text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto mb-10 leading-relaxed">
-                        Unified analytics for stocks, derivatives, and crypto. Harness the power of
-                        machine learning for intelligent market monitoring, predictive insights, and
-                        data-driven investment strategies.
+                        The all-in-one AI platform that democratizes institutional-grade analytics for every trader.
+                        130+ indicators, no-code ML tuning, social sentiment, backtesting, and live execution &mdash; in one unified interface.
                     </p>
 
                     {/* CTA Buttons */}
@@ -82,10 +91,10 @@ export const Hero: React.FC = () => {
                     className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
                 >
                     {[
-                        { label: 'Markets Covered', value: '50+' },
-                        { label: 'Data Points Daily', value: '1M+' },
-                        { label: 'Latency', value: '<100ms' },
-                        { label: 'Uptime', value: '99.9%' },
+                        { label: 'Technical Indicators', value: '130+' },
+                        { label: 'Pattern Detectors', value: '18+' },
+                        { label: 'Data Latency', value: '<1ms' },
+                        { label: 'Assets Tracked', value: '50+' },
                     ].map((stat, index) => (
                         <div
                             key={stat.label}

@@ -23,7 +23,7 @@ export const Contact: React.FC = () => {
 
     return (
         <>
-            <SEO title="Contact" description="Get in touch with the Synapse team. For investor inquiries, general questions, or support." canonicalUrl="/contact" />
+            <SEO title="Contact" description="Get in touch with the iFINN team. For investor inquiries, general questions, or support." canonicalUrl="/contact" />
 
             <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,15 +48,15 @@ export const Contact: React.FC = () => {
                             <div className="space-y-6">
                                 <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
                                     <h3 className="font-semibold text-[var(--color-text)] mb-1">Investor Relations</h3>
-                                    <a href="mailto:investors@synapse.finance" className="text-[var(--color-accent)] hover:underline">investors@synapse.finance</a>
+                                    <a href="mailto:investors@ifinn.finance" className="text-[var(--color-accent)] hover:underline">investors@ifinn.finance</a>
                                 </div>
                                 <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
                                     <h3 className="font-semibold text-[var(--color-text)] mb-1">General Support</h3>
-                                    <a href="mailto:support@synapse.finance" className="text-[var(--color-accent)] hover:underline">support@synapse.finance</a>
+                                    <a href="mailto:support@ifinn.finance" className="text-[var(--color-accent)] hover:underline">support@ifinn.finance</a>
                                 </div>
                                 <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
                                     <h3 className="font-semibold text-[var(--color-text)] mb-1">Press & Media</h3>
-                                    <a href="mailto:press@synapse.finance" className="text-[var(--color-accent)] hover:underline">press@synapse.finance</a>
+                                    <a href="mailto:press@ifinn.finance" className="text-[var(--color-accent)] hover:underline">press@ifinn.finance</a>
                                 </div>
                             </div>
                         </motion.div>

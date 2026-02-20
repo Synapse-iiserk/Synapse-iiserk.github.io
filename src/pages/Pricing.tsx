@@ -87,7 +87,7 @@ export const Pricing: React.FC = () => {
         <>
             <SEO
                 title="Pricing"
-                description="Explore Synapse pricing plans. From free market monitoring to institutional-grade analytics. All plans currently in development."
+                description="Explore iFINN pricing plans. From free market monitoring to institutional-grade analytics. All plans currently in development."
                 canonicalUrl="/pricing"
             />
 
@@ -222,7 +222,7 @@ export const Pricing: React.FC = () => {
                         <p className="text-sm text-[var(--color-text-muted)] text-center">
                             <strong className="text-[var(--color-gold)]">Disclaimer:</strong> All pricing displayed above is
                             preliminary and subject to change. Final pricing will be determined after completion of regulatory
-                            compliance review and platform development. Synapse reserves the right to modify pricing structures
+                            compliance review and platform development. iFINN reserves the right to modify pricing structures
                             prior to launch.
                         </p>
                     </div>

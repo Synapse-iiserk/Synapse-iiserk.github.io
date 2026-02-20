@@ -1,4 +1,4 @@
-# Synapse Analytics Library (TypeScript)
+# iFINN Analytics Library (TypeScript)
 
 A client-side financial analytics library for React applications, ported from the Python `analytics_oi_fin` package.
 
@@ -8,7 +8,7 @@ This library provides TypeScript implementations of professional trading indicat
 
 ## Installation
 
-The library is included in the Synapse website source under `src/lib/analytics/`.
+The library is included in the iFINN website source under `src/lib/analytics/`.
 
 ```typescript
 import { 

@@ -1,11 +1,3 @@
-/**
- * Analytics Components Index
- */
-
-export {
-  RSICalculator,
-  MovingAverageDemo,
-  BollingerBandsDemo,
-  TrendAnalysisDemo,
-  PortfolioRiskDemo,
-} from './AnalyticsDemos';
+export * from './AnalyticsDemos';
+export * from './CoinGeckoWidget';
+export * from './SentimentWidget';

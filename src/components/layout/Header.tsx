@@ -90,10 +90,10 @@ export const Header: React.FC = () => {
                 <div className="flex items-center justify-between h-16 lg:h-20">
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-2 group">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-gold)] flex items-center justify-center group-hover:shadow-lg group-hover:shadow-[var(--color-accent)]/30 transition-shadow">
-                            <span className="text-white font-bold text-xl">S</span>
+                        <div className="w-10 h-10 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-[var(--color-accent)]/30 transition-shadow rounded-lg">
+                            <img src="/ifinn_logo.svg" alt="iFINN Logo" className="w-8 h-8" />
                         </div>
-                        <span className="text-xl font-bold text-[var(--color-text)]">Synapse</span>
+                        <span className="text-xl font-bold text-[var(--color-text)]">iFINN</span>
                     </Link>
 
                     {/* Desktop Navigation */}

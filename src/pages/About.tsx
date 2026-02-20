@@ -11,12 +11,12 @@ export const About: React.FC = () => {
 
     return (
         <>
-            <SEO title="About Us" description="Learn about Synapse's mission to democratize AI-driven financial intelligence." canonicalUrl="/about" />
+            <SEO title="About Us" description="Learn about iFINN's mission to democratize AI-driven financial intelligence." canonicalUrl="/about" />
 
             <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">About Synapse</span>
+                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">About iFINN</span>
                         <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-text)] mb-6">
                             Democratizing Financial <span className="gradient-text">Intelligence</span>
                         </h1>
@@ -33,7 +33,7 @@ export const About: React.FC = () => {
                     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                         <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">Our Mission</h2>
                         <p className="text-lg text-[var(--color-text-muted)] leading-relaxed">
-                            Synapse bridges the gap between institutional-grade analytics and individual investors, combining cutting-edge ML with rigorous financial principles.
+                            iFINN bridges the gap between institutional-grade analytics and individual investors, combining cutting-edge ML with rigorous financial principles.
                         </p>
                     </motion.div>
 
@@ -64,7 +64,7 @@ export const About: React.FC = () => {
                     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="p-6 rounded-2xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
                         <h2 className="text-xl font-bold text-[var(--color-gold)] mb-4">Financial Responsibility Disclaimer</h2>
                         <p className="text-[var(--color-text-muted)]">
-                            Synapse provides analytical tools for informational purposes only. All investment decisions carry risk, including potential loss of principal.
+                            iFINN provides analytical tools for informational purposes only. All investment decisions carry risk, including potential loss of principal.
                         </p>
                     </motion.div>
 

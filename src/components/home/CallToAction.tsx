@@ -38,7 +38,7 @@ export const CallToAction: React.FC = () => {
                     </span>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--color-text)] mb-6">
                         Be First to{' '}
-                        <span className="gradient-text">Experience Synapse</span>
+                        <span className="gradient-text">Experience iFINN</span>
                     </h2>
                     <p className="text-lg text-[var(--color-text-muted)] mb-10 max-w-2xl mx-auto">
                         Join our early access program and be among the first to leverage AI-powered
@@ -98,10 +98,10 @@ export const CallToAction: React.FC = () => {
                             Investor Inquiries
                         </h3>
                         <p className="text-[var(--color-text-muted)] mb-6">
-                            Interested in partnering with Synapse? We're building the future of financial intelligence.
+                            Interested in partnering with iFINN? We're building the future of financial intelligence.
                         </p>
                         <a
-                            href="mailto:investors@synapse.finance"
+                            href="mailto:investors@ifinn.finance"
                             className="inline-flex items-center px-6 py-3 rounded-lg border border-[var(--color-gold)] text-[var(--color-gold)] font-medium hover:bg-[var(--color-gold)]/10 transition-colors"
                         >
                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

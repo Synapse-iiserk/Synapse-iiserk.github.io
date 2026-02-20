@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
-/* Custom CSS Variables for Synapse Theme */
+/* Custom CSS Variables for iFINN Theme (Cyberpunk/Matrix Style) */
 :root {
-  --color-primary: #0A0E27;
-  --color-primary-light: #131837;
-  --color-accent: #3B82F6;
-  --color-accent-hover: #2563EB;
-  --color-gold: #F59E0B;
-  --color-gold-hover: #D97706;
-  --color-text: #F8FAFC;
-  --color-text-muted: #94A3B8;
-  --color-border: #1E293B;
-  --color-success: #10B981;
-  --color-danger: #EF4444;
+  --color-primary: #0a0f0a;
+  --color-primary-light: #0f1a12;
+  --color-accent: #10b981;
+  --color-accent-hover: #00ff88;
+  --color-gold: #f59e0b;
+  --color-gold-hover: #d97706;
+  --color-text: #ffffff;
+  --color-text-muted: #a1a1aa;
+  --color-border: #1f3d2a;
+  --color-success: #00ff88;
+  --color-danger: #ef4444;
 }
 
 /* Base Styles */

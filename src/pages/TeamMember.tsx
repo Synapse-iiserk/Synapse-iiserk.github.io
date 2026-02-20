@@ -25,7 +25,7 @@ export const TeamMember: React.FC = () => {
                     description: member.bio,
                     worksFor: {
                         '@type': 'Organization',
-                        name: 'Synapse',
+                        name: 'iFINN',
                     },
                 }}
             />

@@ -1,4 +1,4 @@
-# Synapse Robots.txt
+# iFINN Robots.txt
 User-agent: *
 Allow: /
 

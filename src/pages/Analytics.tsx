@@ -1,7 +1,7 @@
 /**
  * Analytics Demo Page
  * ===================
- * Interactive demonstrations of Synapse analytics capabilities
+ * Interactive demonstrations of iFINN analytics capabilities
  */
 
 import { motion } from 'framer-motion';
@@ -12,6 +12,8 @@ import {
   BollingerBandsDemo,
   TrendAnalysisDemo,
   PortfolioRiskDemo,
+  CoinGeckoWidget,
+  SentimentWidget,
 } from '../components/analytics';
 
 export const Analytics: React.FC = () => {
@@ -19,7 +21,7 @@ export const Analytics: React.FC = () => {
     <>
       <SEO
         title="Analytics Demo"
-        description="Interactive demonstrations of Synapse's financial analytics capabilities including RSI, Moving Averages, Bollinger Bands, and more."
+        description="Interactive demonstrations of iFINN's financial analytics capabilities including RSI, Moving Averages, Bollinger Bands, and more."
         canonicalUrl="/analytics"
       />
 
@@ -69,6 +71,20 @@ export const Analytics: React.FC = () => {
               <span>No data leaves your browser</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Live Market Data Section */}
+      <section className="py-12 bg-[var(--color-primary)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <CoinGeckoWidget />
+        </div>
+      </section>
+
+      {/* Social Sentiment Section */}
+      <section className="py-12 bg-[var(--color-primary-light)] border-y border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SentimentWidget />
         </div>
       </section>
 

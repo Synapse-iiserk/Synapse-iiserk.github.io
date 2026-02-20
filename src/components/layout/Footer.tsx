@@ -29,17 +29,17 @@ export const Footer: React.FC = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center space-x-2 mb-4">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-gold)] flex items-center justify-center">
-                                <span className="text-white font-bold text-xl">S</span>
+                            <div className="w-10 h-10 flex items-center justify-center rounded-lg">
+                                <img src="/ifinn_logo.svg" alt="iFINN Logo" className="w-8 h-8" />
                             </div>
-                            <span className="text-xl font-bold text-[var(--color-text)]">Synapse</span>
+                            <span className="text-xl font-bold text-[var(--color-text)]">iFINN</span>
                         </Link>
                         <p className="text-[var(--color-text-muted)] text-sm leading-relaxed mb-6">
                             AI-driven financial intelligence platform providing unified analytics for stocks, derivatives, and crypto assets.
                         </p>
                         <div className="flex space-x-4">
                             <a
-                                href="mailto:contact@synapse.finance"
+                                href="mailto:contact@ifinn.finance"
                                 className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
                                 aria-label="Email"
                             >
@@ -90,14 +90,14 @@ export const Footer: React.FC = () => {
                         <ul className="space-y-3 text-sm text-[var(--color-text-muted)]">
                             <li>
                                 <span className="block text-[var(--color-text-muted)]">Investor Inquiries</span>
-                                <a href="mailto:investors@synapse.finance" className="hover:text-[var(--color-accent)] transition-colors">
-                                    investors@synapse.finance
+                                <a href="mailto:investors@ifinn.finance" className="hover:text-[var(--color-accent)] transition-colors">
+                                    investors@ifinn.finance
                                 </a>
                             </li>
                             <li>
                                 <span className="block text-[var(--color-text-muted)]">General Support</span>
-                                <a href="mailto:support@synapse.finance" className="hover:text-[var(--color-accent)] transition-colors">
-                                    support@synapse.finance
+                                <a href="mailto:support@ifinn.finance" className="hover:text-[var(--color-accent)] transition-colors">
+                                    support@ifinn.finance
                                 </a>
                             </li>
                         </ul>
@@ -108,17 +108,17 @@ export const Footer: React.FC = () => {
                 <div className="mt-12 pt-8 border-t border-[var(--color-border)]">
                     <div className="bg-[var(--color-primary-light)] rounded-lg p-4 mb-6">
                         <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
-                            <strong className="text-[var(--color-gold)]">Financial Disclaimer:</strong> Synapse provides analytical tools and insights for informational purposes only.
+                            <strong className="text-[var(--color-gold)]">Financial Disclaimer:</strong> iFINN provides analytical tools and insights for informational purposes only.
                             Nothing on this platform constitutes financial, investment, legal, or tax advice. Past performance does not guarantee future results.
                             Trading in financial markets involves substantial risk of loss. Users should conduct their own research and consult with qualified
-                            financial advisors before making investment decisions. Synapse does not guarantee the accuracy, completeness, or timeliness of any
+                            financial advisors before making investment decisions. iFINN does not guarantee the accuracy, completeness, or timeliness of any
                             information provided. All products and features marked as "Coming Soon" are under development and subject to change.
                         </p>
                     </div>
 
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         <p className="text-sm text-[var(--color-text-muted)]">
-                            © {currentYear} Synapse. All rights reserved.
+                            © {currentYear} iFINN. All rights reserved.
                         </p>
                         <div className="flex space-x-6">
                             {footerLinks.legal.map((link) => (

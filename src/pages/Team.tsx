@@ -8,7 +8,7 @@ export const Team: React.FC = () => {
         <>
             <SEO
                 title="Our Team"
-                description="Meet the team behind Synapse. Technical leaders, financial experts, and algorithm developers building the future of AI-driven financial intelligence."
+                description="Meet the team behind iFINN. Technical leaders, financial experts, and algorithm developers building the future of AI-driven financial intelligence."
                 canonicalUrl="/team"
             />
 
@@ -25,7 +25,7 @@ export const Team: React.FC = () => {
                         </span>
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--color-text)] mb-6">
                             The People Behind{' '}
-                            <span className="gradient-text">Synapse</span>
+                            <span className="gradient-text">iFINN</span>
                         </h1>
                         <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
                             A dedicated team of engineers, analysts, and domain experts committed to

@@ -1,6 +1,6 @@
-# Synapse — AI-Driven Fintech Platform
+# iFINN — AI-Driven Fintech Platform
 
-A modern, ultra-fast, and SEO-optimized landing website for Synapse, an AI-driven financial intelligence platform. Built with React, TypeScript, and Vite.
+A modern, ultra-fast, and SEO-optimized landing website for iFINN, an AI-driven financial intelligence platform. Built with React, TypeScript, and Vite.
 
 ## 🚀 Live Demo
 [https://synapse-iiserk.github.io/Synapse-iiserk.github.io/](https://synapse-iiserk.github.io/Synapse-iiserk.github.io/)

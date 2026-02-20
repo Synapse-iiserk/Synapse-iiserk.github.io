@@ -1,5 +1,5 @@
 /**
- * Synapse Analytics Library
+ * iFINN Analytics Library
  * =========================
  * Client-side financial analytics for React applications
  * 

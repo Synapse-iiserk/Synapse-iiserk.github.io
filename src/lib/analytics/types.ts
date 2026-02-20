@@ -1,7 +1,7 @@
 /**
  * Analytics Library Types
  * =======================
- * Type definitions for the Synapse analytics library
+ * Type definitions for the iFINN analytics library
  */
 
 // OHLCV Data Types
