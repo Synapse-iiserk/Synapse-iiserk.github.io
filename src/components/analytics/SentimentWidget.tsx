@@ -56,7 +56,7 @@ export const SentimentWidget: React.FC = () => {
         const res = await fetch('https://api.alternative.me/fng/?limit=1&format=json');
         const data = await res.json();
         if (data?.data?.[0]) setFgData(data.data[0]);
-      } catch (_) {/* silently fail */}
+      } catch {/* silently fail */}
       finally { setLoading(false); }
     };
     fetchFG();
