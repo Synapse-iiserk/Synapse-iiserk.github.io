@@ -853,7 +853,9 @@ async function startSession(){
     chosen.forEach(a=>{
         let bal=perAlgo;
         if(allocMode==='weighted'&&btResults){const f=btResults.find(r=>r.key===a.key);if(f)bal=amount*(f.accuracy/100)/chosen.reduce((s,b2)=>{const g=btResults.find(r=>r.key===b2.key);return s+(g?g.accuracy/100:0.5);},0);}
-        lvSess.algos[a.key]={name:a.name,group:a.group,key:a.key,balance:bal,trades:0,wins:0,losses:0,flats:0,currentSignal:0,entryPrice:0,pendingVerify:false,history:[]};
+        // Clamp to minimum 1 unit so no algo starts with 0 balance in weighted mode
+        bal=Math.max(bal,0.0001);
+        lvSess.algos[a.key]={name:a.name,group:a.group,key:a.key,balance:bal,startingBalance:bal,trades:0,wins:0,losses:0,flats:0,currentSignal:0,entryPrice:0,pendingVerify:false,history:[]};
     });
     lvEqHist=[{round:0,total:amount}];lvRoundLog=[];
     document.getElementById('lv-idle').style.display='none';document.getElementById('lv-done').style.display='none';
@@ -862,6 +864,14 @@ async function startSession(){
     document.getElementById('lv-history').innerHTML='';
     renderCards();updatePortHdr();
     lvLog(`Session started: ${lvSym} ${tf} | ${chosen.length} algos | ${amount} ${currency}`,'ok');
+    if(allocMode==='weighted'&&btResults){
+        lvLog(`Allocation: WEIGHTED (backtest-accuracy weighted). Balances differ per algo.`,'info');
+        const sorted=Object.values(lvSess.algos).sort((a,b)=>b.startingBalance-a.startingBalance);
+        lvLog(`  Top: ${sorted[0].name} = ${sorted[0].startingBalance.toFixed(2)} ${currency}`);
+        lvLog(`  Bottom: ${sorted[sorted.length-1].name} = ${sorted[sorted.length-1].startingBalance.toFixed(2)} ${currency}`);
+    } else {
+        lvLog(`Allocation: EQUAL — ${perAlgo.toFixed(2)} ${currency} per algo`,'info');
+    }
     await runRound();
 }
 
@@ -981,7 +991,7 @@ function endSession(){
     const ranked=Object.values(s.algos).sort((a,b)=>b.balance-a.balance);
     document.getElementById('lv-standings').innerHTML=ranked.map((a,i)=>{
         const rc2=i===0?'#fcd535':i===1?'#c0c0c0':i===2?'#cd7f32':'#2b3139';
-        const c=a.balance>=s.perAlgo?'#0ecb81':'#f6465d';
+        const c=a.balance>=(a.startingBalance||s.perAlgo)?'#0ecb81':'#f6465d';
         const wr=a.trades>0?((a.wins/a.trades)*100).toFixed(0)+'%':'--';
         const flatNote=a.flats>0?` · ${a.flats}↔`:'';
         return`<div class="round-row"><span class="rank-badge" style="background:${rc2}22;color:${rc2}">#${i+1}</span><span style="font-size:12px;font-weight:700;flex:1">${a.name}</span><span style="font-size:11px;color:var(--text-muted);margin-right:12px">${wr} WR · ${a.trades}T${flatNote}</span><span style="font-size:13px;font-weight:700;color:${c}">${a.balance.toFixed(4)} ${s.currency}</span></div>`;
@@ -996,7 +1006,7 @@ function renderCards(phase='idle'){
         const sig=a.currentSignal,sigCls=sig===1?'signal-buy':sig===-1?'signal-sell':'signal-hold';
         const badge=sig===1?'BUY':sig===-1?'SELL':'HOLD',bdgCls=sig===1?'badge-buy':sig===-1?'badge-sell':'badge-hold';
         const sigC=sig===1?'#0ecb81':sig===-1?'#f6465d':'#fcd535';
-        const pnl=a.balance-lvSess.perAlgo,last=a.history[a.history.length-1];
+        const pnl=a.balance-(a.startingBalance||lvSess.perAlgo),last=a.history[a.history.length-1];
         let vrCls='',emoji='';
         if(phase==='verified'&&last&&last.round===lvSess.round){
             if(last.flat){vrCls='';emoji='➖';}
@@ -1049,8 +1059,8 @@ function exportLive(){
     if(!lvSess)return;
     const s=lvSess,rows=['Round,EntryPrice,ExitPrice,Wins,Losses,Flats,RoundPnL'];
     lvRoundLog.forEach(r=>rows.push(`${r.round},${r.entryPrice},${r.exitPrice},${r.wins},${r.losses},${r.flats||0},${r.pnl.toFixed(6)}`));
-    rows.push('','Algorithm,Balance,Trades,Wins,Losses,Flats,WinRate%');
-    Object.values(s.algos).forEach(a=>rows.push(`"${a.name}",${a.balance.toFixed(6)},${a.trades},${a.wins},${a.losses},${a.flats},${a.trades>0?((a.wins/a.trades)*100).toFixed(1):0}`));
+    rows.push('','Algorithm,StartBalance,FinalBalance,NetPnL,PnL%,Trades,Wins,Losses,Flats,WinRate%');
+    Object.values(s.algos).forEach(a=>{const sb=a.startingBalance||s.perAlgo,pnl=a.balance-sb,pnlP=sb>0?(pnl/sb*100):0;rows.push(`"${a.name}",${sb.toFixed(6)},${a.balance.toFixed(6)},${pnl.toFixed(6)},${pnlP.toFixed(4)},${a.trades},${a.wins},${a.losses},${a.flats},${a.trades>0?((a.wins/a.trades)*100).toFixed(1):0}`);});
     dlCSV(rows.join('\n'),`live_${lvSym}_${Date.now()}.csv`);
 }
 
