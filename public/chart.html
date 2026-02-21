@@ -417,10 +417,11 @@
         
         <!-- Tabs -->
         <div class="flex border-b border-[#2b3139]">
-            <button class="flex-1 py-2 text-xs font-bold text-[#fcd535] border-b-2 border-[#fcd535]" id="tab-ob">Book</button>
-            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-trades">Trades</button>
-            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-info">Details</button>
-            <button class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-gray-300" id="tab-sentiment">Sentiment</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#fcd535] border-b-2 border-[#fcd535]" id="tab-ob">Book</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-trades">Trades</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-info">Details</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-sentiment">Senti.</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-stats">Stats</button>
         </div>
 
         <!-- Content Area -->
@@ -520,8 +521,60 @@
                 </div>
             </div>
 
-        </div>
-    </aside>
+            <!-- STATS PANEL -->
+            <div id="view-stats" class="h-full hidden p-3 overflow-y-auto space-y-3">
+                <!-- Returns Distribution Histogram -->
+                <div class="card p-3">
+                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">LOG-RETURNS DISTRIBUTION</div>
+                    <canvas id="returns-canvas" width="260" height="100" style="width:100%;height:100px;border-radius:4px;"></canvas>
+                </div>
+                <!-- Key Statistics -->
+                <div class="card p-3">
+                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">KEY STATISTICS</div>
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Hurst Exponent</span>
+                            <div class="text-right">
+                                <span id="stat-hurst" class="font-bold text-[#fcd535]">--</span>
+                                <span id="stat-hurst-desc" class="text-gray-500 text-[10px] ml-1"></span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Hist. Volatility (20d ann.)</span>
+                            <span id="stat-hv" class="font-bold text-[#ffca28]">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Max Drawdown</span>
+                            <span id="stat-maxdd" class="font-bold text-[#f06292]">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Sharpe Ratio (approx)</span>
+                            <span id="stat-sharpe" class="font-bold text-gray-200">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Skewness</span>
+                            <span id="stat-skew" class="font-bold text-gray-200">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Kurtosis (excess)</span>
+                            <span id="stat-kurt" class="font-bold text-gray-200">--</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Regime Guide -->
+                <div class="card p-3 text-[10px] text-gray-500 leading-4">
+                    <div class="font-semibold text-gray-400 mb-1">Hurst Exponent Guide</div>
+                    H &gt; 0.55 → Trending (momentum) · H &lt; 0.45 → Mean-reverting · H ≈ 0.5 → Random walk (GBM)
+                </div>
+                <!-- Annotation -->
+                <div class="card p-3 text-[10px] text-gray-500 leading-4">
+                    <div class="font-semibold text-gray-400 mb-1">Returns Histogram</div>
+                    Green bars = positive returns · Red bars = negative returns · Dashed line = zero
+                </div>
+            </div>
+
+        </div><!-- /panel-content -->
+    </aside><!-- /right-panel -->
 
     <!-- MOBILE BOTTOM NAV -->
     <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-[#1e2329] border-t border-[#2b3139] flex justify-around items-center h-14 z-50">
@@ -558,8 +611,17 @@ const CONFIG = {
     activeInterval: '1h',
     watchlist: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'],
     indicators: {
-        sma: false, ema: false, bb: false, 
-        macd: false, rsi: false, atr: false, stoch: false
+        // Existing
+        sma: false, ema: false, bb: false,
+        macd: false, rsi: false, atr: false, stoch: false,
+        // Overlay – price chart
+        vwap: false, ichimoku: false, sar: false, keltner: false,
+        pivots: false, lrchannel: false,
+        // Oscillators
+        obv: false, cmf: false, mfi: false,
+        adx: false, cci: false, willr: false,
+        bbpct: false, zscore: false, squeeze: false,
+        hv: false, drawdown: false
     }
 };
 
@@ -578,7 +640,19 @@ const CHART_COLORS = {
     histUp: 'rgba(14, 203, 129, 0.5)',
     histDown: 'rgba(246, 70, 93, 0.5)',
     stochK: '#00bcd4',
-    stochD: '#ff9800'
+    stochD: '#ff9800',
+    // New
+    vwap: '#00e5ff', vwapBand: 'rgba(0,229,255,0.25)',
+    keltner: '#ff4081',
+    ichiTenkan: '#e91e63', ichiKijun: '#1976d2',
+    ichiA: 'rgba(14,203,129,0.18)', ichiB: 'rgba(246,70,93,0.18)',
+    lr: '#ffd600', lrBand: 'rgba(255,214,0,0.15)',
+    obv: '#26c6da', cmf: '#ab47bc', mfi: '#ef5350',
+    adx: '#ffffff', diPlus: '#0ecb81', diMinus: '#f6465d',
+    cci: '#ff7043', willr: '#29b6f6',
+    bbpct: '#ce93d8', bbbw: '#80deea',
+    zscore: '#80cbc4',
+    hv: '#ffca28', drawdown: '#f06292',
 };
 
 // DOM Refs
@@ -586,8 +660,8 @@ const UI = {
     loader: document.getElementById('chart-loader'),
     searchIn: document.getElementById('global-search'),
     searchRes: document.getElementById('search-results'),
-    tabs: [document.getElementById('tab-ob'), document.getElementById('tab-trades'), document.getElementById('tab-info'), document.getElementById('tab-sentiment')],
-    views: [document.getElementById('view-ob'), document.getElementById('view-trades'), document.getElementById('view-info'), document.getElementById('view-sentiment')],
+    tabs: [document.getElementById('tab-ob'), document.getElementById('tab-trades'), document.getElementById('tab-info'), document.getElementById('tab-sentiment'), document.getElementById('tab-stats')],
+    views: [document.getElementById('view-ob'), document.getElementById('view-trades'), document.getElementById('view-info'), document.getElementById('view-sentiment'), document.getElementById('view-stats')],
     indicatorsList: document.getElementById('indicator-list'),
     watchlist: document.getElementById('watchlist'),
     price: document.getElementById('current-price'),
@@ -634,6 +708,20 @@ const UI = {
 // Chart Instances
 let chartMain, chartOsc, seriesCandle, seriesVol, seriesSMA, seriesEMA, seriesBBU, seriesBBL;
 let seriesMACD, seriesSignal, seriesHist, seriesRSI, seriesStochK, seriesStochD;
+// New overlay series
+let seriesVWAP, seriesVWAPU1, seriesVWAPL1;
+let seriesKeltnerU, seriesKeltnerL;
+let seriesIchiTenkan, seriesIchiKijun, seriesIchiSenkouA, seriesIchiSenkouB;
+let seriesLRMid, seriesLRU, seriesLRL;
+let pivotLines = [];
+// New oscillator series
+let seriesOBV, seriesCMF, seriesMFI;
+let seriesADX, seriesDIPlus, seriesDIMinus;
+let seriesCCI, seriesWilliamsR;
+let seriesBBPct, seriesBBBW;
+let seriesZScore;
+let seriesSqueezeHist;
+let seriesHV, seriesDrawdown;
 
 const STATE = {
     side: 'long',
@@ -799,6 +887,36 @@ function initCharts() {
     seriesRSI = chartOsc.addLineSeries({ color: '#9c27b0', lineWidth: 1, visible: false });
     seriesStochK = chartOsc.addLineSeries({ color: CHART_COLORS.stochK, lineWidth: 1, visible: false });
     seriesStochD = chartOsc.addLineSeries({ color: CHART_COLORS.stochD, lineWidth: 1, visible: false });
+
+    // New overlay series
+    seriesVWAP  = chartMain.addLineSeries({ color: CHART_COLORS.vwap, lineWidth: 2, visible: false, title: 'VWAP' });
+    seriesVWAPU1 = chartMain.addLineSeries({ color: CHART_COLORS.vwapBand, lineWidth: 1, lineStyle: 2, visible: false });
+    seriesVWAPL1 = chartMain.addLineSeries({ color: CHART_COLORS.vwapBand, lineWidth: 1, lineStyle: 2, visible: false });
+    seriesKeltnerU = chartMain.addLineSeries({ color: CHART_COLORS.keltner, lineWidth: 1, lineStyle: 2, visible: false });
+    seriesKeltnerL = chartMain.addLineSeries({ color: CHART_COLORS.keltner, lineWidth: 1, lineStyle: 2, visible: false });
+    seriesIchiTenkan = chartMain.addLineSeries({ color: CHART_COLORS.ichiTenkan, lineWidth: 1, visible: false, title: 'T' });
+    seriesIchiKijun  = chartMain.addLineSeries({ color: CHART_COLORS.ichiKijun,  lineWidth: 2, visible: false, title: 'K' });
+    seriesIchiSenkouA = chartMain.addLineSeries({ color: CHART_COLORS.ichiA, lineWidth: 1, lineStyle: 1, visible: false });
+    seriesIchiSenkouB = chartMain.addLineSeries({ color: CHART_COLORS.ichiB, lineWidth: 1, lineStyle: 1, visible: false });
+    seriesLRMid = chartMain.addLineSeries({ color: CHART_COLORS.lr, lineWidth: 1, lineStyle: 1, visible: false, title: 'LR' });
+    seriesLRU   = chartMain.addLineSeries({ color: CHART_COLORS.lrBand, lineWidth: 1, lineStyle: 2, visible: false });
+    seriesLRL   = chartMain.addLineSeries({ color: CHART_COLORS.lrBand, lineWidth: 1, lineStyle: 2, visible: false });
+
+    // New oscillator series
+    seriesOBV     = chartOsc.addLineSeries({ color: CHART_COLORS.obv, lineWidth: 1, visible: false, title: 'OBV' });
+    seriesCMF     = chartOsc.addLineSeries({ color: CHART_COLORS.cmf, lineWidth: 1, visible: false, title: 'CMF' });
+    seriesMFI     = chartOsc.addLineSeries({ color: CHART_COLORS.mfi, lineWidth: 1, visible: false, title: 'MFI' });
+    seriesADX     = chartOsc.addLineSeries({ color: CHART_COLORS.adx, lineWidth: 2, visible: false, title: 'ADX' });
+    seriesDIPlus  = chartOsc.addLineSeries({ color: CHART_COLORS.diPlus, lineWidth: 1, visible: false, title: 'DI+' });
+    seriesDIMinus = chartOsc.addLineSeries({ color: CHART_COLORS.diMinus, lineWidth: 1, visible: false, title: 'DI-' });
+    seriesCCI     = chartOsc.addLineSeries({ color: CHART_COLORS.cci, lineWidth: 1, visible: false, title: 'CCI' });
+    seriesWilliamsR = chartOsc.addLineSeries({ color: CHART_COLORS.willr, lineWidth: 1, visible: false, title: '%R' });
+    seriesBBPct   = chartOsc.addLineSeries({ color: CHART_COLORS.bbpct, lineWidth: 1, visible: false, title: '%B' });
+    seriesBBBW    = chartOsc.addLineSeries({ color: CHART_COLORS.bbbw, lineWidth: 1, visible: false, title: 'BW' });
+    seriesZScore  = chartOsc.addLineSeries({ color: CHART_COLORS.zscore, lineWidth: 1, visible: false, title: 'Z' });
+    seriesSqueezeHist = chartOsc.addHistogramSeries({ color: CHART_COLORS.candleUp, priceFormat: { type: 'price' }, visible: false });
+    seriesHV      = chartOsc.addLineSeries({ color: CHART_COLORS.hv, lineWidth: 1, visible: false, title: 'HV%' });
+    seriesDrawdown = chartOsc.addLineSeries({ color: CHART_COLORS.drawdown, lineWidth: 1, visible: false, title: 'DD%' });
 
     // Resize Observer (Critical for responsiveness)
     const resizeObserver = new ResizeObserver(entries => {
@@ -1018,185 +1136,537 @@ function selectSymbol(sym) {
 }
 
 /**
- * TECHNICAL INDICATORS
+ * TECHNICAL INDICATORS  — all 20 tools
  */
 function updateIndicators(data) {
     if (!data || data.length < 50) return;
-    const closes = data.map(d => d.close);
-    const times = data.map(d => d.time);
+    const closes  = data.map(d => d.close);
+    const highs   = data.map(d => d.high);
+    const lows    = data.map(d => d.low);
+    const volumes = data.map(d => d.volume);
+    const times   = data.map(d => d.time);
 
-    // Helpers
+    // ── CORE HELPERS ─────────────────────────────────────────────────────────
     const calcSMA = (period, arr) => {
         const res = [];
-        for(let i=period-1; i<arr.length; i++) {
-            let s=0; for(let j=0; j<period; j++) s+=arr[i-j];
-            res.push({ time: times[i], value: s/period });
-        }
-        return res;
-    };
-    
-    const calcEMA = (period, arr) => {
-        const res = [];
-        const k = 2/(period+1);
-        let ema = arr[0];
-        for(let i=0; i<arr.length; i++) {
-            ema = (arr[i]*k) + (ema*(1-k));
-            res.push({ time: times[i], value: ema });
+        for (let i = period - 1; i < arr.length; i++) {
+            let s = 0; for (let j = 0; j < period; j++) s += arr[i - j];
+            res.push({ time: times[i], value: s / period });
         }
         return res;
     };
 
-    const calcRSI = (period, arr) => {
-        let gains=0, losses=0;
-        for(let i=1; i<=period; i++) { const ch=arr[i]-arr[i-1]; if(ch>=0) gains+=ch; else losses-=ch; }
-        let avgGain=gains/period, avgLoss=losses/period;
-        const res = [];
-        for(let i=period+1; i<arr.length; i++) {
-            const ch=arr[i]-arr[i-1];
-            avgGain=(avgGain*(period-1)+(ch>0?ch:0))/period;
-            avgLoss=(avgLoss*(period-1)+(ch<0?-ch:0))/period;
-            const rs = avgLoss===0?100:avgGain/avgLoss;
-            res.push({ time: times[i], value: 100-(100/(1+rs)) });
-        }
+    const calcEMA = (period, arr) => {
+        const k = 2 / (period + 1); let ema = arr[0]; const res = [];
+        for (let i = 0; i < arr.length; i++) { ema = arr[i] * k + ema * (1 - k); res.push({ time: times[i], value: ema }); }
         return res;
     };
 
     const calcATR = (period) => {
-        const highs = data.map(d=>d.high), lows = data.map(d=>d.low), closes = data.map(d=>d.close);
-        const res = [];
-        let tr = 0;
-        for(let i=1; i<data.length; i++) {
-            const hl = highs[i] - lows[i];
-            const hc = Math.abs(highs[i] - closes[i-1]);
-            const lc = Math.abs(lows[i] - closes[i-1]);
-            const trueRange = Math.max(hl, hc, lc);
-            if(i === 1) tr = trueRange;
-            else tr = (tr * (period-1) + trueRange) / period;
-            res.push({ time: times[i], value: tr });
+        const res = []; let atr = 0;
+        for (let i = 1; i < data.length; i++) {
+            const tr = Math.max(highs[i]-lows[i], Math.abs(highs[i]-closes[i-1]), Math.abs(lows[i]-closes[i-1]));
+            atr = i === 1 ? tr : (atr*(period-1)+tr)/period;
+            res.push({ time: times[i], value: atr });
         }
         return res;
     };
 
-    const calcBB = (period, stdDev, arr) => {
-        const sma = calcSMA(period, arr);
-        const res = { upper: [], lower: [], middle: sma };
-        for(let i=0; i<sma.length; i++) {
-            const slice = arr.slice(i, i + period);
+    const calcBB = (period, sd, arr) => {
+        const sma = calcSMA(period, arr); const upper = [], lower = [];
+        for (let i = 0; i < sma.length; i++) {
+            const sl = arr.slice(i, i+period);
             const mean = sma[i].value;
-            const variance = slice.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / period;
-            const sd = Math.sqrt(variance);
-            res.upper.push({ time: sma[i].time, value: mean + (stdDev * sd) });
-            res.lower.push({ time: sma[i].time, value: mean - (stdDev * sd) });
+            const v = sl.reduce((a,b) => a+(b-mean)**2, 0)/period;
+            upper.push({ time: sma[i].time, value: mean+sd*Math.sqrt(v) });
+            lower.push({ time: sma[i].time, value: mean-sd*Math.sqrt(v) });
+        }
+        return { upper, lower, middle: sma };
+    };
+
+    const calcKeltner = (emaPer, atrPer, mult) => {
+        const ema = calcEMA(emaPer, closes); const atrD = calcATR(atrPer);
+        const upper = [], lower = [];
+        for (let i = 0; i < atrD.length; i++) {
+            upper.push({ time: atrD[i].time, value: ema[i+1].value + mult*atrD[i].value });
+            lower.push({ time: atrD[i].time, value: ema[i+1].value - mult*atrD[i].value });
+        }
+        return { upper, lower };
+    };
+
+    // ── RSI ───────────────────────────────────────────────────────────────────
+    const calcRSI = (period, arr) => {
+        let g=0,l=0; for(let i=1;i<=period;i++){const c=arr[i]-arr[i-1];if(c>=0)g+=c;else l-=c;}
+        let ag=g/period, al=l/period; const res=[];
+        for(let i=period+1;i<arr.length;i++){
+            const c=arr[i]-arr[i-1]; ag=(ag*(period-1)+(c>0?c:0))/period; al=(al*(period-1)+(c<0?-c:0))/period;
+            res.push({time:times[i],value:100-100/(1+(al===0?100:ag/al))});
         }
         return res;
     };
 
-    const calcStoch = (kPeriod, dPeriod, slowing) => {
-        const resK = [], resD = [];
-        for(let i=kPeriod-1; i<data.length; i++) {
-            const slice = data.slice(i-kPeriod+1, i+1);
-            const low = Math.min(...slice.map(d=>d.low));
-            const high = Math.max(...slice.map(d=>d.high));
-            const k = ((data[i].close - low) / (high - low)) * 100;
-            resK.push({ time: times[i], value: k });
+    // ── STOCHASTIC ────────────────────────────────────────────────────────────
+    const calcStoch = (kP, dP) => {
+        const K = [];
+        for(let i=kP-1;i<data.length;i++){
+            const sl=data.slice(i-kP+1,i+1);
+            const lo=Math.min(...sl.map(d=>d.low)),hi=Math.max(...sl.map(d=>d.high));
+            K.push({time:times[i],value:hi===lo?50:((data[i].close-lo)/(hi-lo))*100});
         }
-        // D is SMA of K
-        const kValues = resK.map(v => v.value);
-        const dValues = calcSMA(dPeriod, kValues);
-        return { k: resK, d: dValues.map((v, idx) => ({ time: resK[idx + dPeriod - 1].time, value: v.value })) };
+        const D=calcSMA(dP,K.map(v=>v.value));
+        return{k:K,d:D.map((v,i)=>({time:K[i+dP-1].time,value:v.value}))};
     };
 
+    // ── MACD ──────────────────────────────────────────────────────────────────
     const calcMACD = (arr) => {
-        const ema12 = calcEMA(12, arr);
-        const ema26 = calcEMA(26, arr);
-        const macdLine = [];
-        const offset = 26 - 12;
-        for(let i=0; i<ema26.length; i++) {
-            macdLine.push({ time: ema26[i].time, value: ema12[i+offset].value - ema26[i].value });
-        }
-        const signalLine = calcEMA(9, macdLine.map(m => m.value));
-        const hist = [];
-        for(let i=0; i<macdLine.length; i++) {
-            const val = macdLine[i].value - signalLine[i].value;
-            hist.push({ time: macdLine[i].time, value: val, color: val>=0?CHART_COLORS.histUp:CHART_COLORS.histDown });
-        }
-        return { macd: macdLine, signal: signalLine.map((s,i)=>({time:s.time,value:s.value})), hist: hist };
+        const e12=calcEMA(12,arr),e26=calcEMA(26,arr),off=26-12;
+        const ml=e26.map((v,i)=>({time:v.time,value:e12[i+off].value-v.value}));
+        const sl=calcEMA(9,ml.map(m=>m.value));
+        const hist=ml.map((m,i)=>{const v=m.value-sl[i].value;return{time:m.time,value:v,color:v>=0?CHART_COLORS.histUp:CHART_COLORS.histDown};});
+        return{macd:ml,signal:sl.map((s,i)=>({time:ml[i].time,value:s.value})),hist};
     };
 
-    // Apply
-    if (CONFIG.indicators.sma) {
-        const smaData = calcSMA(20, closes);
-        seriesSMA.setData(smaData); 
-        seriesSMA.applyOptions({visible:true});
-        const last = smaData[smaData.length-1]?.value;
-        document.getElementById('val-sma').innerText = last ? last.toFixed(2) : '-';
-    } else {
-        seriesSMA.applyOptions({visible:false});
-        document.getElementById('val-sma').innerText = '-';
-    }
+    // ── VWAP + 1σ bands ───────────────────────────────────────────────────────
+    const calcVWAP = () => {
+        let cpv=0,cpv2=0,cv=0; const res=[],up=[],dn=[];
+        for(let i=0;i<data.length;i++){
+            const tp=(highs[i]+lows[i]+closes[i])/3,v=volumes[i];
+            cpv+=tp*v; cpv2+=tp*tp*v; cv+=v;
+            const vwap=cpv/cv, sd=Math.sqrt(Math.max(0,cpv2/cv-vwap*vwap));
+            res.push({time:times[i],value:vwap});
+            up.push({time:times[i],value:vwap+sd});
+            dn.push({time:times[i],value:vwap-sd});
+        }
+        return{vwap:res,upper:up,lower:dn};
+    };
 
-    if (CONFIG.indicators.ema) { seriesEMA.setData(calcEMA(20, closes)); seriesEMA.applyOptions({visible:true}); } 
+    // ── ICHIMOKU (Tenkan/Kijun/Senkou A&B) ───────────────────────────────────
+    const calcIchimoku = () => {
+        const mid=(n,i)=>{let h=-Infinity,l=Infinity;for(let k=Math.max(0,i-n+1);k<=i;k++){h=Math.max(h,highs[k]);l=Math.min(l,lows[k]);}return(h+l)/2;};
+        const tenkan=[],kijun=[],sA=[],sB=[];
+        for(let i=8;i<data.length;i++) tenkan.push({time:times[i],value:mid(9,i)});
+        for(let i=25;i<data.length;i++){
+            const kv=mid(26,i); kijun.push({time:times[i],value:kv});
+            sA.push({time:times[i],value:(tenkan[i-8].value+kv)/2});
+        }
+        for(let i=51;i<data.length;i++) sB.push({time:times[i],value:mid(52,i)});
+        return{tenkan,kijun,senkouA:sA,senkouB:sB};
+    };
+
+    // ── PARABOLIC SAR ─────────────────────────────────────────────────────────
+    const calcSAR = () => {
+        const af0=0.02,afMax=0.2,step=0.02;
+        let bull=true,af=af0,ep=highs[0],sar=lows[0];
+        const markers=[];
+        for(let i=1;i<data.length;i++){
+            sar=sar+af*(ep-sar);
+            if(bull){
+                sar=Math.min(sar,lows[Math.max(0,i-1)],i>=2?lows[i-2]:sar);
+                if(lows[i]<sar){bull=false;sar=ep;ep=lows[i];af=af0;}
+                else if(highs[i]>ep){ep=highs[i];af=Math.min(af+step,afMax);}
+            }else{
+                sar=Math.max(sar,highs[Math.max(0,i-1)],i>=2?highs[i-2]:sar);
+                if(highs[i]>sar){bull=true;sar=ep;ep=highs[i];af=af0;}
+                else if(lows[i]<ep){ep=lows[i];af=Math.min(af+step,afMax);}
+            }
+            markers.push({time:times[i],position:bull?'belowBar':'aboveBar',color:bull?CHART_COLORS.candleUp:CHART_COLORS.candleDown,shape:'circle',text:''});
+        }
+        return markers;
+    };
+
+    // ── LR CHANNEL ────────────────────────────────────────────────────────────
+    const calcLRChannel = (lb) => {
+        const n=Math.min(lb,closes.length),sl=closes.slice(-n),tl=times.slice(-n);
+        let sx=0,sy=0,sxy=0,sx2=0;
+        for(let i=0;i<n;i++){sx+=i;sy+=sl[i];sxy+=i*sl[i];sx2+=i*i;}
+        const D=n*sx2-sx*sx,slope=D?((n*sxy-sx*sy)/D):0,intc=(sy-slope*sx)/n;
+        const fit=sl.map((_,i)=>intc+slope*i);
+        const rsd=Math.sqrt(sl.reduce((a,_,i)=>a+(sl[i]-fit[i])**2,0)/n);
+        return{
+            mid:tl.map((t,i)=>({time:t,value:fit[i]})),
+            upper:tl.map((t,i)=>({time:t,value:fit[i]+2*rsd})),
+            lower:tl.map((t,i)=>({time:t,value:fit[i]-2*rsd}))
+        };
+    };
+
+    // ── PIVOT POINTS (Classic) ────────────────────────────────────────────────
+    const calcPivots = () => {
+        if(data.length<2)return null;
+        const p=data[data.length-2],P=(p.high+p.low+p.close)/3;
+        return{P,R1:2*P-p.low,R2:P+(p.high-p.low),S1:2*P-p.high,S2:P-(p.high-p.low)};
+    };
+
+    // ── OBV ───────────────────────────────────────────────────────────────────
+    const calcOBV = () => {
+        let obv=0; const res=[{time:times[0],value:0}];
+        for(let i=1;i<data.length;i++){
+            obv+=closes[i]>closes[i-1]?volumes[i]:closes[i]<closes[i-1]?-volumes[i]:0;
+            res.push({time:times[i],value:obv});
+        }
+        return res;
+    };
+
+    // ── CMF (21-period) ───────────────────────────────────────────────────────
+    const calcCMF = (period) => {
+        const res=[];
+        for(let i=period-1;i<data.length;i++){
+            let smfv=0,sv=0;
+            for(let j=i-period+1;j<=i;j++){
+                const hl=highs[j]-lows[j],mf=hl===0?0:((closes[j]-lows[j])-(highs[j]-closes[j]))/hl;
+                smfv+=mf*volumes[j];sv+=volumes[j];
+            }
+            res.push({time:times[i],value:sv>0?smfv/sv:0});
+        }
+        return res;
+    };
+
+    // ── MFI (14-period) ───────────────────────────────────────────────────────
+    const calcMFI = (period) => {
+        const res=[];
+        for(let i=period;i<data.length;i++){
+            let pos=0,neg=0;
+            for(let j=i-period+1;j<=i;j++){
+                const tp=(highs[j]+lows[j]+closes[j])/3,ptp=(highs[j-1]+lows[j-1]+closes[j-1])/3;
+                const mf=tp*volumes[j];
+                if(tp>ptp)pos+=mf;else if(tp<ptp)neg+=mf;
+            }
+            res.push({time:times[i],value:neg===0?100:100-100/(1+pos/neg)});
+        }
+        return res;
+    };
+
+    // ── ADX + DI+/DI- (14-period) ────────────────────────────────────────────
+    const calcADX = (period) => {
+        let smTR=0,smDMP=0,smDMM=0; const adxArr=[],diP=[],diM=[],dxBuf=[];
+        for(let i=1;i<data.length;i++){
+            const tr=Math.max(highs[i]-lows[i],Math.abs(highs[i]-closes[i-1]),Math.abs(lows[i]-closes[i-1]));
+            const dmp=Math.max(0,highs[i]-highs[i-1])>Math.max(0,lows[i-1]-lows[i])?Math.max(0,highs[i]-highs[i-1]):0;
+            const dmm=Math.max(0,lows[i-1]-lows[i])>Math.max(0,highs[i]-highs[i-1])?Math.max(0,lows[i-1]-lows[i]):0;
+            if(i<=period){smTR+=tr;smDMP+=dmp;smDMM+=dmm;}
+            else{
+                smTR=smTR-smTR/period+tr;smDMP=smDMP-smDMP/period+dmp;smDMM=smDMM-smDMM/period+dmm;
+                const pdi=smTR===0?0:100*smDMP/smTR,mdi=smTR===0?0:100*smDMM/smTR;
+                const dx=(pdi+mdi)===0?0:100*Math.abs(pdi-mdi)/(pdi+mdi);
+                diP.push({time:times[i],value:pdi});diM.push({time:times[i],value:mdi});dxBuf.push(dx);
+                if(dxBuf.length>=period) adxArr.push({time:times[i],value:dxBuf.slice(-period).reduce((a,b)=>a+b,0)/period});
+            }
+        }
+        return{adx:adxArr,diPlus:diP,diMinus:diM};
+    };
+
+    // ── CCI (20-period) ───────────────────────────────────────────────────────
+    const calcCCI = (period) => {
+        const res=[];
+        for(let i=period-1;i<data.length;i++){
+            const tps=[];for(let j=i-period+1;j<=i;j++)tps.push((highs[j]+lows[j]+closes[j])/3);
+            const mean=tps.reduce((a,b)=>a+b,0)/period;
+            const mad=tps.reduce((a,b)=>a+Math.abs(b-mean),0)/period;
+            res.push({time:times[i],value:mad===0?0:(tps[tps.length-1]-mean)/(0.015*mad)});
+        }
+        return res;
+    };
+
+    // ── WILLIAMS %R (14-period) ───────────────────────────────────────────────
+    const calcWilliamsR = (period) => {
+        const res=[];
+        for(let i=period-1;i<data.length;i++){
+            let h=-Infinity,l=Infinity;
+            for(let j=i-period+1;j<=i;j++){h=Math.max(h,highs[j]);l=Math.min(l,lows[j]);}
+            res.push({time:times[i],value:h===l?-50:((h-closes[i])/(h-l))*-100});
+        }
+        return res;
+    };
+
+    // ── BB %B and BANDWIDTH ───────────────────────────────────────────────────
+    const calcBBPctBW = (period, sd) => {
+        const bb=calcBB(period,sd,closes);
+        const pct=bb.upper.map((u,i)=>{
+            const bw=u.value-bb.lower[i].value;
+            return{time:u.time,value:bw===0?50:((closes[period-1+i]-bb.lower[i].value)/bw)*100};
+        });
+        const bw=bb.upper.map((u,i)=>({time:u.time,value:bb.middle[i].value===0?0:((u.value-bb.lower[i].value)/bb.middle[i].value)*100}));
+        return{pct,bw};
+    };
+
+    // ── Z-SCORE (20-period) ───────────────────────────────────────────────────
+    const calcZScore = (period) => {
+        const res=[];
+        for(let i=period-1;i<closes.length;i++){
+            let s=0,s2=0;for(let j=i-period+1;j<=i;j++){s+=closes[j];s2+=closes[j]*closes[j];}
+            const mean=s/period,sd=Math.sqrt(Math.max(0,s2/period-mean*mean));
+            res.push({time:times[i],value:sd===0?0:(closes[i]-mean)/sd});
+        }
+        return res;
+    };
+
+    // ── SQUEEZE MOMENTUM (LazyBear style) ─────────────────────────────────────
+    const calcSqueeze = () => {
+        const bb=calcBB(20,2,closes),kc=calcKeltner(20,20,1.5),hist=[];
+        for(let i=20;i<data.length;i++){
+            const bbI=i-19,kcI=i-1;
+            if(bbI<0||bbI>=bb.upper.length||kcI>=kc.upper.length)continue;
+            // Value for linreg
+            const lookback=12;if(i<lookback)continue;
+            let sx=0,sy=0,sxy=0,sx2=0;
+            for(let k=0;k<lookback;k++){
+                const j=i-lookback+1+k;
+                let hh=-Infinity,ll=Infinity;
+                for(let m=Math.max(0,j-19);m<=j;m++){hh=Math.max(hh,highs[m]);ll=Math.min(ll,lows[m]);}
+                let smaS=0,smaN=Math.min(20,j+1);
+                for(let m=Math.max(0,j-19);m<=j;m++)smaS+=closes[m];
+                const val=closes[j]-((hh+ll)/2+smaS/smaN)/2;
+                sx+=k;sy+=val;sxy+=k*val;sx2+=k*k;
+            }
+            const D=lookback*sx2-sx*sx,sl=D?(lookback*sxy-sx*sy)/D:0,ic=(sy-sl*sx)/lookback;
+            const mom=sl*(lookback-1)+ic;
+            const prev=hist.length?hist[hist.length-1].value:0;
+            hist.push({time:times[i],value:mom,color:mom>=0?(mom>=prev?'#0ecb81':'#26a69a'):(mom<=prev?'#f6465d':'#ef9a9a')});
+        }
+        return hist;
+    };
+
+    // ── HISTORICAL VOLATILITY (annualised) ───────────────────────────────────
+    const calcHV = (period) => {
+        const lr=[];for(let i=1;i<closes.length;i++)if(closes[i]>0&&closes[i-1]>0)lr.push(Math.log(closes[i]/closes[i-1]));
+        const ann=Math.sqrt(252)*100,res=[];
+        for(let i=period-1;i<lr.length;i++){
+            let s=0,s2=0;for(let j=i-period+1;j<=i;j++){s+=lr[j];s2+=lr[j]*lr[j];}
+            const mean=s/period;res.push({time:times[i+1],value:Math.sqrt(Math.max(0,s2/period-mean*mean))*ann});
+        }
+        return res;
+    };
+
+    // ── DRAWDOWN ──────────────────────────────────────────────────────────────
+    const calcDrawdown = () => {
+        let peak=closes[0];
+        return closes.map((c,i)=>{if(c>peak)peak=c;return{time:times[i],value:peak===0?0:((c-peak)/peak)*100};});
+    };
+
+    // ── HURST EXPONENT (R/S analysis) ────────────────────────────────────────
+    const calcHurst = () => {
+        const lr=[];for(let i=1;i<closes.length;i++)if(closes[i]>0&&closes[i-1]>0)lr.push(Math.log(closes[i]/closes[i-1]));
+        if(lr.length<20)return 0.5;
+        const lags=[4,8,16,32,64].filter(l=>l*2<=lr.length);
+        const logRS=[],logLag=[];
+        for(const lag of lags){
+            const rsl=[];
+            for(let start=0;start+lag<=lr.length;start+=lag){
+                const sub=lr.slice(start,start+lag);
+                const mean=sub.reduce((a,b)=>a+b,0)/lag;
+                let cd=0,hi=-Infinity,lo=Infinity;
+                for(const r of sub){cd+=r-mean;hi=Math.max(hi,cd);lo=Math.min(lo,cd);}
+                const sd=Math.sqrt(sub.reduce((a,b)=>a+(b-mean)**2,0)/lag)||1e-10;
+                rsl.push((hi-lo)/sd);
+            }
+            if(rsl.length){logRS.push(Math.log(rsl.reduce((a,b)=>a+b,0)/rsl.length));logLag.push(Math.log(lag));}
+        }
+        if(logLag.length<2)return 0.5;
+        let sx=0,sy=0,sxy=0,sx2=0;const m=logLag.length;
+        for(let i=0;i<m;i++){sx+=logLag[i];sy+=logRS[i];sxy+=logLag[i]*logRS[i];sx2+=logLag[i]*logLag[i];}
+        return Math.max(0.01,Math.min(0.99,(m*sxy-sx*sy)/(m*sx2-sx*sx||1)));
+    };
+
+    // ── RETURNS HISTOGRAM (canvas) ────────────────────────────────────────────
+    const renderReturnsHist = () => {
+        const canvas=document.getElementById('returns-canvas');if(!canvas)return;
+        const ctx=canvas.getContext('2d'),w=canvas.offsetWidth||260,h=100;
+        canvas.width=w;canvas.height=h;
+        const lr=[];for(let i=1;i<closes.length;i++)if(closes[i]>0&&closes[i-1]>0)lr.push(Math.log(closes[i]/closes[i-1])*100);
+        if(lr.length<5)return;
+        const bins=32,minR=Math.min(...lr),maxR=Math.max(...lr),rng=(maxR-minR)||1,bs=rng/bins;
+        const cts=new Array(bins).fill(0);
+        for(const r of lr){const b=Math.min(bins-1,Math.floor((r-minR)/bs));cts[b]++;}
+        const maxCt=Math.max(...cts);
+        ctx.fillStyle='#0b0e11';ctx.fillRect(0,0,w,h);
+        const bw=w/bins,zero=Math.min(bins-1,Math.max(0,Math.floor((0-minR)/bs)));
+        for(let b=0;b<bins;b++){
+            const bh=(cts[b]/maxCt)*(h-16);
+            ctx.fillStyle=b<zero?'rgba(246,70,93,0.75)':'rgba(14,203,129,0.75)';
+            ctx.fillRect(b*bw,h-16-bh,bw-1,bh);
+        }
+        ctx.strokeStyle='#fcd535';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.beginPath();const zx=zero*bw;ctx.moveTo(zx,0);ctx.lineTo(zx,h-16);ctx.stroke();ctx.setLineDash([]);
+        ctx.fillStyle='#848e9c';ctx.font='8px monospace';ctx.textAlign='left';ctx.fillText(minR.toFixed(1)+'%',2,h-2);
+        ctx.textAlign='center';ctx.fillText('0',zx,h-2);
+        ctx.textAlign='right';ctx.fillText(maxR.toFixed(1)+'%',w-2,h-2);
+    };
+
+    // ── STATS PANEL UPDATE ────────────────────────────────────────────────────
+    const updateStatsPanel = () => {
+        renderReturnsHist();
+        // Hurst
+        const H=calcHurst();
+        const hEl=document.getElementById('stat-hurst'),hdEl=document.getElementById('stat-hurst-desc');
+        if(hEl){hEl.textContent=H.toFixed(3);hEl.style.color=H>0.55?'#0ecb81':H<0.45?'#f6465d':'#fcd535';}
+        if(hdEl)hdEl.textContent=H>0.55?'Trending':H<0.45?'Mean-Rev':'Rand. Walk';
+        // HV
+        const hvD=calcHV(20);if(hvD.length){const el=document.getElementById('stat-hv');if(el)el.textContent=hvD[hvD.length-1].value.toFixed(1)+'%';}
+        // Drawdown
+        const dd=calcDrawdown(),maxDD=Math.min(...dd.map(d=>d.value));
+        const ddEl=document.getElementById('stat-maxdd');if(ddEl)ddEl.textContent=maxDD.toFixed(2)+'%';
+        // Sharpe (annualised)
+        const lr=[];for(let i=1;i<closes.length;i++)if(closes[i]>0&&closes[i-1]>0)lr.push(Math.log(closes[i]/closes[i-1]));
+        if(lr.length>1){
+            const mean=lr.reduce((a,b)=>a+b,0)/lr.length;
+            const sd=Math.sqrt(lr.reduce((a,b)=>a+(b-mean)**2,0)/lr.length)||1e-10;
+            const sharpe=(mean*Math.sqrt(252))/sd;
+            const shEl=document.getElementById('stat-sharpe');
+            if(shEl){shEl.textContent=sharpe.toFixed(2);shEl.style.color=sharpe>=1?'#0ecb81':sharpe>=0?'#fcd535':'#f6465d';}
+            // Skewness
+            const skewEl=document.getElementById('stat-skew');
+            if(skewEl){const skew=lr.reduce((a,b)=>a+((b-mean)/sd)**3,0)/lr.length;skewEl.textContent=skew.toFixed(3);skewEl.style.color=skew>0.5?'#0ecb81':skew<-0.5?'#f6465d':'#848e9c';}
+            // Excess Kurtosis
+            const kurtEl=document.getElementById('stat-kurt');
+            if(kurtEl){const kurt=lr.reduce((a,b)=>a+((b-mean)/sd)**4,0)/lr.length-3;kurtEl.textContent=kurt.toFixed(2);kurtEl.style.color=kurt>1?'#f6465d':'#848e9c';}
+        }
+    };
+
+    // ── APPLY EXISTING INDICATORS ─────────────────────────────────────────────
+    if (CONFIG.indicators.sma) {
+        const d=calcSMA(20,closes);seriesSMA.setData(d);seriesSMA.applyOptions({visible:true});
+        const lv=d[d.length-1]?.value;document.getElementById('val-sma').innerText=lv?lv.toFixed(2):'-';
+    } else { seriesSMA.applyOptions({visible:false});document.getElementById('val-sma').innerText='-'; }
+
+    if (CONFIG.indicators.ema) { seriesEMA.setData(calcEMA(20,closes));seriesEMA.applyOptions({visible:true}); }
     else seriesEMA.applyOptions({visible:false});
 
     if (CONFIG.indicators.bb) {
-        const bb = calcBB(20, 2, closes);
-        seriesBBU.setData(bb.upper);
-        seriesBBL.setData(bb.lower);
-        seriesSMA.setData(bb.middle); // Use SMA series for middle band
-        seriesBBU.applyOptions({visible:true});
-        seriesBBL.applyOptions({visible:true});
-        seriesSMA.applyOptions({visible:true});
-    } else if (!CONFIG.indicators.sma) {
-        seriesBBU.applyOptions({visible:false});
-        seriesBBL.applyOptions({visible:false});
-        seriesSMA.applyOptions({visible:false});
-    }
+        const bb=calcBB(20,2,closes);
+        seriesBBU.setData(bb.upper);seriesBBL.setData(bb.lower);seriesSMA.setData(bb.middle);
+        seriesBBU.applyOptions({visible:true});seriesBBL.applyOptions({visible:true});seriesSMA.applyOptions({visible:true});
+    } else if (!CONFIG.indicators.sma) { seriesBBU.applyOptions({visible:false});seriesBBL.applyOptions({visible:false});seriesSMA.applyOptions({visible:false}); }
 
     if (CONFIG.indicators.rsi) {
-        const rsiData = calcRSI(14, closes);
-        seriesRSI.setData(rsiData);
-        seriesRSI.applyOptions({visible:true});
-        const last = rsiData[rsiData.length-1]?.value;
-        document.getElementById('val-rsi').innerText = last ? last.toFixed(2) : '-';
+        const d=calcRSI(14,closes);seriesRSI.setData(d);seriesRSI.applyOptions({visible:true});
+        const lv=d[d.length-1]?.value;document.getElementById('val-rsi').innerText=lv?lv.toFixed(2):'-';
     } else seriesRSI.applyOptions({visible:false});
 
     if (CONFIG.indicators.macd) {
-        const m = calcMACD(closes);
-        seriesMACD.setData(m.macd);
-        seriesSignal.setData(m.signal);
-        seriesHist.setData(m.hist);
-        seriesMACD.applyOptions({visible:true});
-        seriesSignal.applyOptions({visible:true});
-        seriesHist.applyOptions({visible:true});
-        const last = m.macd[m.macd.length-1]?.value;
-        document.getElementById('val-macd').innerText = last ? last.toFixed(2) : '-';
-    } else {
-        seriesMACD.applyOptions({visible:false}); seriesSignal.applyOptions({visible:false}); seriesHist.applyOptions({visible:false});
-    }
-    
-    if (CONFIG.indicators.atr) {
-        const atr = calcATR(14);
-        seriesStochK.setData(atr); 
-        seriesStochK.applyOptions({visible:true, title:'ATR', color: '#fff'});
-        const last = atr[atr.length-1]?.value;
-        document.getElementById('val-atr').innerText = last ? last.toFixed(2) : '-';
-        if (UI.chips.atr) UI.chips.atr.innerText = `ATR ${last ? last.toFixed(2) : '-'}`;
-    } else if (!CONFIG.indicators.stoch) {
-        seriesStochK.applyOptions({visible:false});
-    }
+        const m=calcMACD(closes);
+        seriesMACD.setData(m.macd);seriesSignal.setData(m.signal);seriesHist.setData(m.hist);
+        seriesMACD.applyOptions({visible:true});seriesSignal.applyOptions({visible:true});seriesHist.applyOptions({visible:true});
+        const lv=m.macd[m.macd.length-1]?.value;document.getElementById('val-macd').innerText=lv?lv.toFixed(2):'-';
+    } else { seriesMACD.applyOptions({visible:false});seriesSignal.applyOptions({visible:false});seriesHist.applyOptions({visible:false}); }
 
-    if (!CONFIG.indicators.atr && UI.chips.atr) UI.chips.atr.innerText = 'ATR --';
+    if (CONFIG.indicators.atr) {
+        const d=calcATR(14);seriesStochK.setData(d);seriesStochK.applyOptions({visible:true,title:'ATR',color:'#fff'});
+        const lv=d[d.length-1]?.value;document.getElementById('val-atr').innerText=lv?lv.toFixed(2):'-';
+        if(UI.chips.atr)UI.chips.atr.innerText=`ATR ${lv?lv.toFixed(2):'-'}`;
+    } else if (!CONFIG.indicators.stoch) seriesStochK.applyOptions({visible:false});
+
+    if (!CONFIG.indicators.atr && UI.chips.atr) UI.chips.atr.innerText='ATR --';
 
     if (CONFIG.indicators.stoch) {
-        const stoch = calcStoch(14, 3, 3);
-        seriesStochK.setData(stoch.k);
-        seriesStochD.setData(stoch.d);
-        seriesStochK.applyOptions({visible:true, title:'Stoch K', color: CHART_COLORS.stochK});
-        seriesStochD.applyOptions({visible:true, title:'Stoch D', color: CHART_COLORS.stochD});
-    } else if (!CONFIG.indicators.atr) {
-        seriesStochK.applyOptions({visible:false});
-        seriesStochD.applyOptions({visible:false});
+        const s=calcStoch(14,3);
+        seriesStochK.setData(s.k);seriesStochD.setData(s.d);
+        seriesStochK.applyOptions({visible:true,title:'Stoch K',color:CHART_COLORS.stochK});
+        seriesStochD.applyOptions({visible:true,title:'Stoch D',color:CHART_COLORS.stochD});
+    } else if (!CONFIG.indicators.atr) { seriesStochK.applyOptions({visible:false});seriesStochD.applyOptions({visible:false}); }
+
+    // ── APPLY NEW INDICATORS ──────────────────────────────────────────────────
+    // VWAP
+    if (CONFIG.indicators.vwap) {
+        const v=calcVWAP();
+        seriesVWAP.setData(v.vwap);seriesVWAP.applyOptions({visible:true});
+        seriesVWAPU1.setData(v.upper);seriesVWAPU1.applyOptions({visible:true});
+        seriesVWAPL1.setData(v.lower);seriesVWAPL1.applyOptions({visible:true});
+    } else { [seriesVWAP,seriesVWAPU1,seriesVWAPL1].forEach(s=>s.applyOptions({visible:false})); }
+
+    // Ichimoku
+    if (CONFIG.indicators.ichimoku) {
+        const ic=calcIchimoku();
+        seriesIchiTenkan.setData(ic.tenkan);seriesIchiTenkan.applyOptions({visible:true});
+        seriesIchiKijun.setData(ic.kijun);seriesIchiKijun.applyOptions({visible:true});
+        seriesIchiSenkouA.setData(ic.senkouA);seriesIchiSenkouA.applyOptions({visible:true});
+        seriesIchiSenkouB.setData(ic.senkouB);seriesIchiSenkouB.applyOptions({visible:true});
+    } else { [seriesIchiTenkan,seriesIchiKijun,seriesIchiSenkouA,seriesIchiSenkouB].forEach(s=>s.applyOptions({visible:false})); }
+
+    // Parabolic SAR
+    if (CONFIG.indicators.sar) seriesCandle.setMarkers(calcSAR());
+    else seriesCandle.setMarkers([]);
+
+    // Keltner Channels
+    if (CONFIG.indicators.keltner) {
+        const kc=calcKeltner(20,10,2);
+        seriesKeltnerU.setData(kc.upper);seriesKeltnerU.applyOptions({visible:true});
+        seriesKeltnerL.setData(kc.lower);seriesKeltnerL.applyOptions({visible:true});
+    } else { seriesKeltnerU.applyOptions({visible:false});seriesKeltnerL.applyOptions({visible:false}); }
+
+    // Pivot Points (classic)
+    pivotLines.forEach(pl=>seriesCandle.removePriceLine(pl)); pivotLines=[];
+    if (CONFIG.indicators.pivots) {
+        const pv=calcPivots();
+        if(pv){
+            [{price:pv.P,color:'#fcd535',title:'P'},{price:pv.R1,color:'#0ecb81',title:'R1'},
+             {price:pv.R2,color:'#0ecb81',title:'R2'},{price:pv.S1,color:'#f6465d',title:'S1'},
+             {price:pv.S2,color:'#f6465d',title:'S2'}].forEach(d=>{
+                pivotLines.push(seriesCandle.createPriceLine({price:d.price,color:d.color,lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,title:d.title}));
+            });
+        }
     }
+
+    // LR Channel
+    if (CONFIG.indicators.lrchannel) {
+        const lr=calcLRChannel(100);
+        seriesLRMid.setData(lr.mid);seriesLRMid.applyOptions({visible:true});
+        seriesLRU.setData(lr.upper);seriesLRU.applyOptions({visible:true});
+        seriesLRL.setData(lr.lower);seriesLRL.applyOptions({visible:true});
+    } else { [seriesLRMid,seriesLRU,seriesLRL].forEach(s=>s.applyOptions({visible:false})); }
+
+    // OBV
+    if (CONFIG.indicators.obv) { seriesOBV.setData(calcOBV());seriesOBV.applyOptions({visible:true}); }
+    else seriesOBV.applyOptions({visible:false});
+
+    // CMF
+    if (CONFIG.indicators.cmf) { seriesCMF.setData(calcCMF(21));seriesCMF.applyOptions({visible:true}); }
+    else seriesCMF.applyOptions({visible:false});
+
+    // MFI
+    if (CONFIG.indicators.mfi) { seriesMFI.setData(calcMFI(14));seriesMFI.applyOptions({visible:true}); }
+    else seriesMFI.applyOptions({visible:false});
+
+    // ADX
+    if (CONFIG.indicators.adx) {
+        const a=calcADX(14);
+        seriesADX.setData(a.adx);seriesADX.applyOptions({visible:true});
+        seriesDIPlus.setData(a.diPlus);seriesDIPlus.applyOptions({visible:true});
+        seriesDIMinus.setData(a.diMinus);seriesDIMinus.applyOptions({visible:true});
+    } else { [seriesADX,seriesDIPlus,seriesDIMinus].forEach(s=>s.applyOptions({visible:false})); }
+
+    // CCI
+    if (CONFIG.indicators.cci) { seriesCCI.setData(calcCCI(20));seriesCCI.applyOptions({visible:true}); }
+    else seriesCCI.applyOptions({visible:false});
+
+    // Williams %R
+    if (CONFIG.indicators.willr) { seriesWilliamsR.setData(calcWilliamsR(14));seriesWilliamsR.applyOptions({visible:true}); }
+    else seriesWilliamsR.applyOptions({visible:false});
+
+    // BB %B + Bandwidth
+    if (CONFIG.indicators.bbpct) {
+        const bd=calcBBPctBW(20,2);
+        seriesBBPct.setData(bd.pct);seriesBBPct.applyOptions({visible:true});
+        seriesBBBW.setData(bd.bw);seriesBBBW.applyOptions({visible:true});
+    } else { seriesBBPct.applyOptions({visible:false});seriesBBBW.applyOptions({visible:false}); }
+
+    // Z-Score
+    if (CONFIG.indicators.zscore) { seriesZScore.setData(calcZScore(20));seriesZScore.applyOptions({visible:true}); }
+    else seriesZScore.applyOptions({visible:false});
+
+    // Squeeze Momentum
+    if (CONFIG.indicators.squeeze) {
+        seriesSqueezeHist.setData(calcSqueeze());seriesSqueezeHist.applyOptions({visible:true});
+    } else seriesSqueezeHist.applyOptions({visible:false});
+
+    // Historical Volatility
+    if (CONFIG.indicators.hv) { seriesHV.setData(calcHV(20));seriesHV.applyOptions({visible:true}); }
+    else seriesHV.applyOptions({visible:false});
+
+    // Drawdown
+    if (CONFIG.indicators.drawdown) { seriesDrawdown.setData(calcDrawdown());seriesDrawdown.applyOptions({visible:true}); }
+    else seriesDrawdown.applyOptions({visible:false});
+
+    // Always refresh stats panel
+    updateStatsPanel();
 }
 
 /**
@@ -1322,20 +1792,52 @@ function toggleIndicator(key, btn) {
 }
 
 function renderIndicatorsToolbox() {
-    const items = [
-        { key: 'sma', name: 'SMA (20)', icon: '📊' },
-        { key: 'ema', name: 'EMA (20)', icon: '📈' },
-        { key: 'bb', name: 'Bollinger Bands', icon: '☁️' },
-        { key: 'rsi', name: 'RSI (14)', icon: '📉' },
-        { key: 'macd', name: 'MACD (12,26,9)', icon: '🌊' },
-        { key: 'stoch', name: 'Stochastic', icon: '🔄' },
-        { key: 'atr', name: 'ATR (14)', icon: '⚡' }
+    const groups = [
+        { label: 'Trend', items: [
+            { key:'sma',      name:'SMA (20)',           icon:'📊' },
+            { key:'ema',      name:'EMA (20)',           icon:'📈' },
+            { key:'ichimoku', name:'Ichimoku Cloud',     icon:'🌐' },
+            { key:'sar',      name:'Parabolic SAR',      icon:'🔴' },
+            { key:'adx',      name:'ADX + DI± (14)',     icon:'💪' },
+        ]},
+        { label: 'Momentum', items: [
+            { key:'rsi',    name:'RSI (14)',              icon:'📉' },
+            { key:'macd',   name:'MACD (12,26,9)',        icon:'🌊' },
+            { key:'stoch',  name:'Stochastic',            icon:'🔄' },
+            { key:'cci',    name:'CCI (20)',              icon:'🔁' },
+            { key:'willr',  name:'Williams %R (14)',      icon:'⚖️' },
+            { key:'squeeze',name:'Squeeze Momentum',      icon:'💥' },
+        ]},
+        { label: 'Volatility', items: [
+            { key:'bb',      name:'Bollinger Bands',      icon:'☁️' },
+            { key:'atr',     name:'ATR (14)',             icon:'⚡' },
+            { key:'keltner', name:'Keltner Channels',     icon:'📐' },
+            { key:'bbpct',   name:'BB %B + Bandwidth',    icon:'📊' },
+            { key:'hv',      name:'Hist. Volatility (20)',icon:'📈' },
+        ]},
+        { label: 'Volume', items: [
+            { key:'vwap', name:'VWAP + 1σ Bands', icon:'💧' },
+            { key:'obv',  name:'OBV',              icon:'📦' },
+            { key:'cmf',  name:'CMF (21)',         icon:'🌊' },
+            { key:'mfi',  name:'MFI (14)',         icon:'💰' },
+        ]},
+        { label: 'Statistical', items: [
+            { key:'lrchannel', name:'LR Channel (100)', icon:'📏' },
+            { key:'zscore',    name:'Z-Score (20)',      icon:'📐' },
+            { key:'drawdown',  name:'Drawdown %',        icon:'📉' },
+        ]},
+        { label: 'S/R', items: [
+            { key:'pivots', name:'Pivot Points', icon:'🎯' },
+        ]},
     ];
-    
-    UI.indicatorsList.innerHTML = items.map(i => `
-        <button id="btn-${i.key}" class="btn-tool" onclick="toggleIndicator('${i.key}', this)">
-            <span style="display:inline-block; width:20px">${i.icon}</span> ${i.name}
-        </button>
+
+    UI.indicatorsList.innerHTML = groups.map(g => `
+        <div class="text-[9px] uppercase tracking-widest text-gray-600 mt-3 mb-1 px-1">${g.label}</div>
+        ${g.items.map(i => `
+            <button id="btn-${i.key}" class="btn-tool" onclick="toggleIndicator('${i.key}', this)">
+                <span style="display:inline-block;width:18px">${i.icon}</span> ${i.name}
+            </button>
+        `).join('')}
     `).join('');
 }
 
