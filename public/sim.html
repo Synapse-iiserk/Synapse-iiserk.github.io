@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFINN | Algorithm Simulation Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b0e11;
+            --bg-panel: #1e2329;
+            --bg-elev: #11151c;
+            --border: #2b3139;
+            --text-main: #eaecef;
+            --text-muted: #848e9c;
+            --primary: #fcd535;
+            --up: #0ecb81;
+            --down: #f6465d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        header {
+            height: 52px; min-height: 52px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+            z-index: 20;
+        }
+        .sim-layout {
+            flex: 1; display: grid;
+            grid-template-columns: 300px 1fr;
+            overflow: hidden;
+            gap: 1px;
+            background: var(--border);
+        }
+        .config-panel {
+            background: var(--bg-panel);
+            overflow-y: auto;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sim-main {
+            background: var(--bg-elev);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 5px; }
+        .ctrl {
+            width: 100%;
+            background: #11151c;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 5px;
+            padding: 7px 10px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color .18s;
+        }
+        .ctrl:focus { border-color: var(--primary); }
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            border: none;
+            border-radius: 6px;
+            padding: 11px;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: opacity .15s, transform .1s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-sec {
+            background: var(--border);
+            color: var(--text-muted);
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background .15s;
+        }
+        .btn-sec:hover { background: #3a424e; color: #fff; }
+
+        /* Search Dropdown */
+        .search-wrap { position: relative; }
+        .search-drop {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: #1e2329;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        .search-drop.show { display: block; }
+        .sdrop-item {
+            padding: 8px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex; justify-content: space-between;
+            border-bottom: 1px solid #2b3139;
+        }
+        .sdrop-item:hover { background: #2b3139; }
+        .sdrop-item:last-child { border-bottom: none; }
+
+        /* Algorithm toggle chips */
+        .algo-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+        .algo-chip {
+            font-size: 10px;
+            padding: 3px 7px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            background: #11151c;
+            color: var(--text-muted);
+            user-select: none;
+            transition: all .15s;
+        }
+        .algo-chip.active { background: rgba(252,213,53,0.15); border-color: var(--primary); color: var(--primary); }
+
+        /* Progress bar */
+        .progress-track {
+            background: var(--border);
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width .1s linear;
+            width: 0%;
+        }
+
+        /* Results table */
+        .results-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .results-table th {
+            text-align: left;
+            padding: 8px 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .results-table th.sort-asc::after { content: ' ▲'; }
+        .results-table th.sort-desc::after { content: ' ▼'; }
+        .results-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #1e2329;
+            vertical-align: middle;
+        }
+        .results-table tr:last-child td { border-bottom: none; }
+        .results-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .rank-badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+        .acc-bar-wrap {
+            background: #11151c;
+            border-radius: 3px;
+            height: 6px;
+            width: 80px;
+            display: inline-block;
+            vertical-align: middle;
+            overflow: hidden;
+        }
+        .acc-bar { height: 100%; border-radius: 3px; }
+
+        /* Grade badge */
+        .grade {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .grade-S { background: rgba(252,213,53,0.2); color: #fcd535; }
+        .grade-A { background: rgba(14,203,129,0.2); color: #0ecb81; }
+        .grade-B { background: rgba(41,182,246,0.2); color: #29b6f6; }
+        .grade-C { background: rgba(255,112,67,0.2); color: #ff7043; }
+        .grade-D { background: rgba(246,70,93,0.15); color: #f6465d; }
+
+        /* Stat grid */
+        .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        @media(max-width:900px) { .stat-grid { grid-template-columns: repeat(2,1fr); } }
+        .stat-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-val { font-size: 20px; font-weight: 700; }
+        .stat-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 3px; }
+
+        /* Equity curve canvas */
+        canvas.equity { width: 100%; height: 160px; border-radius: 6px; display: block; }
+
+        /* Ensemble signal */
+        .ensemble-box {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .esig {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* Idle illustration */
+        .idle-art {
+            font-size: 80px;
+            text-align: center;
+            margin-bottom: 16px;
+            opacity: 0.35;
+        }
+
+        /* Log console */
+        .log-console {
+            background: #080a0d;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            height: 120px;
+            overflow-y: auto;
+            color: #848e9c;
+        }
+        .log-console .log-ok { color: #0ecb81; }
+        .log-console .log-warn { color: #fcd535; }
+        .log-console .log-err { color: #f6465d; }
+
+        /* Tooltip */
+        [data-tip] { position: relative; cursor: help; }
+        [data-tip]:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2b3139;
+            color: #eaecef;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────── -->
+<header>
+    <div class="flex items-center gap-4">
+        <a href="/chart.html" class="text-gray-500 hover:text-white text-lg transition">←</a>
+        <div>
+            <h1 class="text-lg font-bold tracking-tight">
+                <span class="text-[#fcd535]">iFINN</span>
+                <span class="text-gray-600 mx-1">|</span>
+                <span class="text-sm font-semibold">Algorithm Simulation Lab</span>
+            </h1>
+        </div>
+        <span class="text-[10px] bg-[#2b3139] text-gray-400 px-2 py-0.5 rounded">WALK-FORWARD BACKTEST</span>
+    </div>
+    <div class="flex items-center gap-3 text-xs text-gray-500 font-mono">
+        <span id="hdr-symbol" class="text-white font-bold">--</span>
+        <span id="hdr-tf">--</span>
+        <span id="hdr-candles">0 candles</span>
+        <div class="w-px h-5 bg-gray-800"></div>
+        <span id="hdr-status">IDLE</span>
+    </div>
+</header>
+
+<!-- ─── BODY ───────────────────────────────────────────────────── -->
+<div class="sim-layout">
+
+    <!-- ── CONFIG PANEL ─────────────────────────────────────────── -->
+    <aside class="config-panel">
+
+        <div class="card">
+            <div class="label">Symbol Search</div>
+            <div class="search-wrap">
+                <input id="sym-input" class="ctrl" type="text" placeholder="BTC, ETH, SOLBTC…" autocomplete="off" spellcheck="false">
+                <div id="sym-drop" class="search-drop"></div>
+            </div>
+            <div id="sym-selected" class="mt-2 text-xs text-gray-500">No symbol selected</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Timeframe</div>
+            <select id="cfg-tf" class="ctrl">
+                <option value="1m">1 Minute</option>
+                <option value="3m">3 Minutes</option>
+                <option value="5m">5 Minutes</option>
+                <option value="15m">15 Minutes</option>
+                <option value="30m">30 Minutes</option>
+                <option value="1h" selected>1 Hour</option>
+                <option value="4h">4 Hours</option>
+                <option value="1d">1 Day</option>
+            </select>
+        </div>
+
+        <div class="card">
+            <div class="label">Historical Candles to Fetch</div>
+            <select id="cfg-limit" class="ctrl">
+                <option value="200">200 candles</option>
+                <option value="500" selected>500 candles</option>
+                <option value="1000">1000 candles</option>
+            </select>
+        </div>
+
+        <div class="card">
+            <div class="label">Prediction Horizon</div>
+            <div class="flex gap-2 items-center">
+                <input id="cfg-horizon" class="ctrl" type="number" value="5" min="1" max="100" style="width:70px">
+                <span class="text-xs text-gray-500">candles ahead</span>
+            </div>
+            <div class="mt-1 text-[10px] text-gray-600" id="horizon-label">= 5h on 1H timeframe</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Warm-up Period</div>
+            <div class="flex gap-2 items-center">
+                <input id="cfg-warmup" class="ctrl" type="number" value="100" min="50" max="300" style="width:70px">
+                <span class="text-xs text-gray-500">candles (min indicators ready)</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="label mb-2">Algorithms to Test</div>
+            <div class="algo-grid" id="algo-chips"></div>
+            <div class="flex gap-2 mt-3">
+                <button class="btn-sec" onclick="toggleAll(true)">All</button>
+                <button class="btn-sec" onclick="toggleAll(false)">None</button>
+            </div>
+        </div>
+
+        <button id="run-btn" class="btn-primary" onclick="runSimulation()" disabled>
+            ▶ RUN SIMULATION
+        </button>
+
+        <button id="export-btn" class="btn-sec w-full hidden" onclick="exportCSV()">
+            ↓ Export CSV
+        </button>
+
+        <div class="text-[10px] text-gray-700 leading-relaxed">
+            Walk-forward simulation: for each candle in the test window, each algorithm generates a BUY / SELL / NEUTRAL signal using only past data, then that signal is compared to the actual price movement N candles ahead.
+        </div>
+
+    </aside>
+
+    <!-- ── MAIN AREA ──────────────────────────────────────────────── -->
+    <main class="sim-main">
+
+        <!-- IDLE STATE -->
+        <div id="state-idle">
+            <div class="idle-art">🔬</div>
+            <h2 class="text-center text-xl font-bold mb-2">Algorithm Simulation Lab</h2>
+            <p class="text-center text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">
+                Select a Binance symbol, configure parameters, choose which algorithms to test, then hit <strong class="text-[#fcd535]">Run Simulation</strong>.
+                Each indicator will be walk-forward tested: it generates a directional signal using only past data, and its accuracy is measured against actual price movement.
+            </p>
+            <div class="grid grid-cols-3 gap-4 mt-8 max-w-2xl mx-auto">
+                <div class="card text-center">
+                    <div class="text-2xl mb-2">📡</div>
+                    <div class="text-xs font-bold mb-1">Live Binance Data</div>
+                    <div class="text-[10px] text-gray-500">Real OHLCV klines from Binance REST API</div>
+                </div>
+                <div class="card text-center">
+                    <div class="text-2xl mb-2">🧮</div>
+                    <div class="text-xs font-bold mb-1">18 Algorithms</div>
+                    <div class="text-[10px] text-gray-500">Trend, momentum, volume, stat models</div>
+                </div>
+                <div class="card text-center">
+                    <div class="text-2xl mb-2">📊</div>
+                    <div class="text-xs font-bold mb-1">Walk-Forward</div>
+                    <div class="text-[10px] text-gray-500">No lookahead bias — pure out-of-sample testing</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RUNNING STATE -->
+        <div id="state-running" class="hidden">
+            <h3 class="text-sm font-bold mb-3 text-gray-400">Simulation Progress</h3>
+            <div class="progress-track mb-2"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="flex justify-between text-[10px] text-gray-600 mb-4 font-mono">
+                <span id="prog-label">Loading data…</span>
+                <span id="prog-pct">0%</span>
+            </div>
+            <div class="log-console" id="log-console"></div>
+        </div>
+
+        <!-- RESULTS STATE -->
+        <div id="state-results" class="hidden">
+
+            <!-- Summary stats row -->
+            <div class="stat-grid mb-5" id="stat-summary"></div>
+
+            <!-- Ensemble signal -->
+            <div class="ensemble-box mb-5" id="ensemble-box"></div>
+
+            <!-- Equity curves (top 3 performers) -->
+            <div class="card mb-5">
+                <div class="label mb-3">Equity Curve — Top 3 Algorithms <span class="text-gray-700">(cumulative % return on signal)</span></div>
+                <canvas class="equity" id="equity-canvas"></canvas>
+                <div id="equity-legend" class="flex gap-4 mt-2" style="font-size:10px;"></div>
+            </div>
+
+            <!-- Results table -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="label">Algorithm Performance</div>
+                    <div class="flex gap-2">
+                        <input id="filter-input" class="ctrl" type="text" placeholder="Filter…" style="width:130px;font-size:11px;padding:4px 8px;">
+                        <button class="btn-sec text-[11px]" onclick="runSimulation()">↻ Re-run</button>
+                    </div>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="results-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('rank')">Rank</th>
+                                <th onclick="sortTable('name')">Algorithm</th>
+                                <th onclick="sortTable('signals')" data-tip="Candles where a clear signal (≠ neutral) was generated">Signals</th>
+                                <th onclick="sortTable('correct')">Correct</th>
+                                <th onclick="sortTable('accuracy')" data-tip="Correct / Signals × 100">Accuracy</th>
+                                <th class="acc-col"> </th>
+                                <th onclick="sortTable('avgReturn')" data-tip="Mean % move in signal direction when signal fired">Avg Return</th>
+                                <th onclick="sortTable('sharpe')" data-tip="(meanRet × √252) / stdRet on signal trades">Sharpe</th>
+                                <th onclick="sortTable('maxStreak')" data-tip="Longest consecutive correct predictions">Best Streak</th>
+                                <th onclick="sortTable('grade')">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ─── SCRIPT ─────────────────────────────────────────────────── -->
+<script>
+const API = 'https://api.binance.com/api/v3';
+let symbols = [];
+let selectedSym = null;
+let simResults = null;
+let sortKey = 'accuracy';
+let sortDir = -1; // -1 = desc
+
+// ── ALGORITHM DEFINITIONS ─────────────────────────────────────────
+const ALGOS = [
+    { key:'sma',      name:'SMA (20)',          group:'Trend',      desc:'Close vs 20-bar SMA' },
+    { key:'ema',      name:'EMA (20)',          group:'Trend',      desc:'Close vs 20-bar EMA' },
+    { key:'ichimoku', name:'Ichimoku',          group:'Trend',      desc:'Price position relative to Kumo cloud' },
+    { key:'adx',      name:'ADX/DI (14)',       group:'Trend',      desc:'DI+/DI- crossover with ADX>25 filter' },
+    { key:'rsi',      name:'RSI (14)',          group:'Momentum',   desc:'<30 oversold / >70 overbought' },
+    { key:'macd',     name:'MACD (12,26,9)',    group:'Momentum',   desc:'MACD line vs signal line' },
+    { key:'stoch',    name:'Stochastic (14,3)', group:'Momentum',   desc:'<20 oversold / >80 overbought' },
+    { key:'cci',      name:'CCI (20)',          group:'Momentum',   desc:'<-100 buy / >+100 sell' },
+    { key:'willr',    name:'Williams %R (14)',  group:'Momentum',   desc:'<-80 buy / >-20 sell' },
+    { key:'squeeze',  name:'Squeeze Momentum', group:'Momentum',   desc:'LazyBear momentum histogram direction' },
+    { key:'vwap',     name:'VWAP',             group:'Volume',     desc:'Close vs VWAP mid-line' },
+    { key:'obv',      name:'OBV',              group:'Volume',     desc:'OBV slope (5-bar EMA sign)' },
+    { key:'cmf',      name:'CMF (21)',          group:'Volume',     desc:'>0.05 buy / <-0.05 sell' },
+    { key:'mfi',      name:'MFI (14)',          group:'Volume',     desc:'<20 buy / >80 sell' },
+    { key:'bb',       name:'Bollinger Bands',   group:'Volatility', desc:'Price vs upper/lower band' },
+    { key:'keltner',  name:'Keltner (20,2)',    group:'Volatility', desc:'Price vs Keltner channels' },
+    { key:'zscore',   name:'Z-Score (20)',      group:'Statistical',desc:'<-2 buy / >+2 sell (mean-rev)' },
+    { key:'lrchannel',name:'LR Channel (100)',  group:'Statistical',desc:'Price vs 100-bar linear regression mid' },
+];
+
+const activeAlgos = new Set(ALGOS.map(a => a.key));
+
+// ── BUILD ALGO CHIPS ──────────────────────────────────────────────
+function buildChips() {
+    const container = document.getElementById('algo-chips');
+    container.innerHTML = ALGOS.map(a => `
+        <div class="algo-chip active" id="chip-${a.key}" data-tip="${a.desc}"
+             onclick="toggleAlgo('${a.key}', this)">${a.name}</div>
+    `).join('');
+}
+
+function toggleAlgo(key, el) {
+    if (activeAlgos.has(key)) { activeAlgos.delete(key); el.classList.remove('active'); }
+    else { activeAlgos.add(key); el.classList.add('active'); }
+}
+
+function toggleAll(on) {
+    ALGOS.forEach(a => {
+        const el = document.getElementById(`chip-${a.key}`);
+        if (on) { activeAlgos.add(a.key); el.classList.add('active'); }
+        else { activeAlgos.delete(a.key); el.classList.remove('active'); }
+    });
+}
+
+// ── SYMBOL SEARCH ─────────────────────────────────────────────────
+async function loadSymbols() {
+    try {
+        const r = await fetch(`${API}/exchangeInfo`);
+        const d = await r.json();
+        symbols = d.symbols.filter(s => s.status === 'TRADING').map(s => ({
+            symbol: s.symbol,
+            base: s.baseAsset,
+            quote: s.quoteAsset
+        }));
+    } catch(e) { console.error('Symbol load failed', e); }
+}
+
+const symInput = document.getElementById('sym-input');
+const symDrop  = document.getElementById('sym-drop');
+
+symInput.addEventListener('input', () => {
+    const q = symInput.value.toUpperCase().trim();
+    if (!q) { symDrop.classList.remove('show'); return; }
+    const matches = symbols.filter(s => s.symbol.includes(q) || s.base.includes(q)).slice(0, 30);
+    symDrop.innerHTML = matches.map(s => `
+        <div class="sdrop-item" onclick="selectSym('${s.symbol}')">
+            <span class="font-bold">${s.symbol}</span>
+            <span class="text-gray-500 text-[10px]">${s.base} / ${s.quote}</span>
+        </div>
+    `).join('') || '<div class="sdrop-item text-gray-600">No results</div>';
+    symDrop.classList.add('show');
+});
+
+document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) symDrop.classList.remove('show'); });
+
+function selectSym(sym) {
+    selectedSym = sym;
+    symInput.value = sym;
+    symDrop.classList.remove('show');
+    document.getElementById('sym-selected').textContent = `✓ ${sym} selected`;
+    document.getElementById('sym-selected').style.color = '#0ecb81';
+    document.getElementById('run-btn').disabled = false;
+    document.getElementById('hdr-symbol').textContent = sym;
+}
+
+// ── HORIZON LABEL ─────────────────────────────────────────────────
+document.getElementById('cfg-tf').addEventListener('change', updateHorizonLabel);
+document.getElementById('cfg-horizon').addEventListener('input', updateHorizonLabel);
+
+function updateHorizonLabel() {
+    const tf = document.getElementById('cfg-tf').value;
+    const h  = parseInt(document.getElementById('cfg-horizon').value) || 1;
+    const mins = { '1m':1,'3m':3,'5m':5,'15m':15,'30m':30,'1h':60,'4h':240,'1d':1440 };
+    const total = (mins[tf]||60) * h;
+    let label;
+    if (total < 60) label = `${total}m`;
+    else if (total < 1440) label = `${(total/60).toFixed(1)}h`;
+    else label = `${(total/1440).toFixed(1)}d`;
+    document.getElementById('horizon-label').textContent = `≈ ${label} real-time lookahead`;
+}
+
+// ── MATH HELPERS ──────────────────────────────────────────────────
+function sma(arr, n) { let s=0; for(let i=arr.length-n;i<arr.length;i++) s+=arr[i]; return s/n; }
+function ema(arr, n) { const k=2/(n+1); let e=arr[0]; for(let i=1;i<arr.length;i++) e=arr[i]*k+e*(1-k); return e; }
+function emaFull(arr, n) {
+    const k=2/(n+1); let e=arr[0]; const out=[e];
+    for(let i=1;i<arr.length;i++){e=arr[i]*k+e*(1-k);out.push(e);}
+    return out;
+}
+function stdDev(arr) {
+    const m=arr.reduce((a,b)=>a+b,0)/arr.length;
+    return Math.sqrt(arr.reduce((a,b)=>a+(b-m)**2,0)/arr.length);
+}
+function rsi(closes, n=14) {
+    let g=0,l=0;
+    for(let i=1;i<=n;i++){const d=closes[i]-closes[i-1];if(d>=0)g+=d;else l-=d;}
+    let ag=g/n,al=l/n;
+    for(let i=n+1;i<closes.length;i++){
+        const d=closes[i]-closes[i-1];
+        ag=(ag*(n-1)+(d>0?d:0))/n;al=(al*(n-1)+(d<0?-d:0))/n;
+    }
+    return al===0?100:100-100/(1+ag/al);
+}
+function trueRange(h,l,pc) { return Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)); }
+
+// ── SIGNAL FUNCTIONS ──────────────────────────────────────────────
+// Each returns +1 (buy), -1 (sell), 0 (neutral)
+const signals = {
+    sma({ closes }) {
+        if (closes.length < 22) return 0;
+        const s = sma(closes.slice(-20), 20);
+        const c = closes[closes.length-1];
+        return c > s*1.001 ? 1 : c < s*0.999 ? -1 : 0;
+    },
+    ema({ closes }) {
+        if (closes.length < 22) return 0;
+        const e = ema(closes.slice(-30), 20);
+        const c = closes[closes.length-1];
+        return c > e*1.001 ? 1 : c < e*0.999 ? -1 : 0;
+    },
+    rsi({ closes }) {
+        if (closes.length < 20) return 0;
+        const r = rsi(closes.slice(-20));
+        return r < 30 ? 1 : r > 70 ? -1 : 0;
+    },
+    macd({ closes }) {
+        if (closes.length < 40) return 0;
+        const sl = closes.slice(-40);
+        const e12 = emaFull(sl, 12), e26 = emaFull(sl, 26);
+        const ml = e12.map((v,i) => v - e26[i]);
+        const sig = emaFull(ml.slice(-15), 9);
+        const last = ml[ml.length-1], sigLast = sig[sig.length-1];
+        return last > sigLast ? 1 : last < sigLast ? -1 : 0;
+    },
+    stoch({ data }) {
+        if (data.length < 17) return 0;
+        const sl = data.slice(-14);
+        const hi = Math.max(...sl.map(d=>d.high)), lo = Math.min(...sl.map(d=>d.low));
+        if (hi===lo) return 0;
+        const k = ((data[data.length-1].close - lo) / (hi-lo)) * 100;
+        return k < 20 ? 1 : k > 80 ? -1 : 0;
+    },
+    bb({ closes }) {
+        if (closes.length < 22) return 0;
+        const sl = closes.slice(-20);
+        const m = sl.reduce((a,b)=>a+b,0)/20;
+        const sd = Math.sqrt(sl.reduce((a,b)=>a+(b-m)**2,0)/20);
+        const c = closes[closes.length-1];
+        const upper = m+2*sd, lower = m-2*sd;
+        return c < lower ? 1 : c > upper ? -1 : 0;
+    },
+    vwap({ data }) {
+        if (data.length < 5) return 0;
+        let cpv=0,cv=0;
+        for(const d of data){const tp=(d.high+d.low+d.close)/3;cpv+=tp*d.volume;cv+=d.volume;}
+        const vwap = cpv/cv;
+        const c = data[data.length-1].close;
+        return c < vwap*0.999 ? 1 : c > vwap*1.001 ? -1 : 0;
+    },
+    obv({ data }) {
+        if (data.length < 10) return 0;
+        let obv = 0; const obvArr=[0];
+        for(let i=1;i<data.length;i++){
+            obv+=data[i].close>data[i-1].close?data[i].volume:data[i].close<data[i-1].close?-data[i].volume:0;
+            obvArr.push(obv);
+        }
+        const recent = obvArr.slice(-5);
+        const slope = recent[recent.length-1] - recent[0];
+        return slope > 0 ? 1 : slope < 0 ? -1 : 0;
+    },
+    cmf({ data }) {
+        if (data.length < 23) return 0;
+        const sl = data.slice(-21);
+        let num=0,den=0;
+        for(const d of sl){const hl=d.high-d.low;if(hl===0)continue;num+=((d.close-d.low)-(d.high-d.close))/hl*d.volume;den+=d.volume;}
+        const v = den===0?0:num/den;
+        return v > 0.05 ? 1 : v < -0.05 ? -1 : 0;
+    },
+    mfi({ data }) {
+        if (data.length < 16) return 0;
+        const sl = data.slice(-15);
+        let pos=0,neg=0;
+        for(let i=1;i<sl.length;i++){
+            const tp=(sl[i].high+sl[i].low+sl[i].close)/3;
+            const ptp=(sl[i-1].high+sl[i-1].low+sl[i-1].close)/3;
+            const mf=tp*sl[i].volume;
+            if(tp>ptp)pos+=mf;else if(tp<ptp)neg+=mf;
+        }
+        const mfi = neg===0?100:100-100/(1+pos/neg);
+        return mfi < 20 ? 1 : mfi > 80 ? -1 : 0;
+    },
+    adx({ data }) {
+        if (data.length < 30) return 0;
+        const sl = data.slice(-28);
+        let smTR=0,smP=0,smM=0;
+        for(let i=1;i<sl.length;i++){
+            const tr=trueRange(sl[i].high,sl[i].low,sl[i-1].close);
+            const dmp=Math.max(0,sl[i].high-sl[i-1].high)>Math.max(0,sl[i-1].low-sl[i].low)?Math.max(0,sl[i].high-sl[i-1].high):0;
+            const dmm=Math.max(0,sl[i-1].low-sl[i].low)>Math.max(0,sl[i].high-sl[i-1].high)?Math.max(0,sl[i-1].low-sl[i].low):0;
+            const per=14;
+            smTR=smTR-smTR/per+tr;smP=smP-smP/per+dmp;smM=smM-smM/per+dmm;
+        }
+        const pdi=smTR?100*smP/smTR:0,mdi=smTR?100*smM/smTR:0;
+        const dx=(pdi+mdi)?100*Math.abs(pdi-mdi)/(pdi+mdi):0;
+        if(dx<25)return 0;
+        return pdi>mdi?1:-1;
+    },
+    cci({ data }) {
+        if (data.length < 22) return 0;
+        const sl = data.slice(-20);
+        const tps = sl.map(d=>(d.high+d.low+d.close)/3);
+        const m = tps.reduce((a,b)=>a+b,0)/20;
+        const mad = tps.reduce((a,b)=>a+Math.abs(b-m),0)/20;
+        const cci = mad===0?0:(tps[tps.length-1]-m)/(0.015*mad);
+        return cci < -100 ? 1 : cci > 100 ? -1 : 0;
+    },
+    willr({ data }) {
+        if (data.length < 16) return 0;
+        const sl = data.slice(-14);
+        const hi=Math.max(...sl.map(d=>d.high)),lo=Math.min(...sl.map(d=>d.low));
+        if(hi===lo)return 0;
+        const r=((hi-data[data.length-1].close)/(hi-lo))*-100;
+        return r < -80 ? 1 : r > -20 ? -1 : 0;
+    },
+    ichimoku({ data }) {
+        if (data.length < 55) return 0;
+        const mid=(n,offset=0)=>{
+            const sl=data.slice(data.length-n-offset,data.length-offset);
+            return(Math.max(...sl.map(d=>d.high))+Math.min(...sl.map(d=>d.low)))/2;
+        };
+        const tenkan=mid(9),kijun=mid(26);
+        const sA=(tenkan+kijun)/2,sB=mid(52);
+        const c=data[data.length-1].close;
+        const cloudTop=Math.max(sA,sB),cloudBot=Math.min(sA,sB);
+        return c>cloudTop?1:c<cloudBot?-1:0;
+    },
+    keltner({ data }) {
+        if (data.length < 22) return 0;
+        const closes=data.map(d=>d.close);
+        const emav=ema(closes.slice(-20),20);
+        let atr=0; const sl=data.slice(-11);
+        for(let i=1;i<sl.length;i++){const tr=trueRange(sl[i].high,sl[i].low,sl[i-1].close);atr=(atr*(10-1)+tr)/10;}
+        const c=closes[closes.length-1];
+        return c<emav-2*atr?1:c>emav+2*atr?-1:0;
+    },
+    zscore({ closes }) {
+        if (closes.length < 22) return 0;
+        const sl=closes.slice(-20);
+        const m=sl.reduce((a,b)=>a+b,0)/20;
+        const sd=Math.sqrt(sl.reduce((a,b)=>a+(b-m)**2,0)/20);
+        const z=sd===0?0:(closes[closes.length-1]-m)/sd;
+        return z < -2 ? 1 : z > 2 ? -1 : 0;
+    },
+    squeeze({ data }) {
+        if (data.length < 32) return 0;
+        const closes=data.map(d=>d.close),highs=data.map(d=>d.high),lows=data.map(d=>d.low);
+        const sl=closes.slice(-20);
+        const m=sl.reduce((a,b)=>a+b,0)/20;
+        const hh=Math.max(...highs.slice(-20)),ll=Math.min(...lows.slice(-20));
+        const val=closes[closes.length-1]-((hh+ll)/2+m)/2;
+        const prevSl=closes.slice(-22,-2);
+        const pm=prevSl.reduce((a,b)=>a+b,0)/20;
+        const phh=Math.max(...highs.slice(-22,-2)),pll=Math.min(...lows.slice(-22,-2));
+        const prevVal=closes[closes.length-3]-((phh+pll)/2+pm)/2;
+        return val>0?1:val<0?-1:0;
+    },
+    lrchannel({ closes }) {
+        if (closes.length < 50) return 0;
+        const n=Math.min(100,closes.length),sl=closes.slice(-n);
+        let sx=0,sy=0,sxy=0,sx2=0;
+        for(let i=0;i<n;i++){sx+=i;sy+=sl[i];sxy+=i*sl[i];sx2+=i*i;}
+        const D=n*sx2-sx*sx,slope=D?((n*sxy-sx*sy)/D):0,ic=(sy-slope*sx)/n;
+        const fit=slope*(n-1)+ic;
+        const rsd=Math.sqrt(sl.reduce((a,b,i)=>a+(b-(ic+slope*i))**2,0)/n);
+        const c=closes[closes.length-1];
+        return c<fit-rsd?1:c>fit+rsd?-1:0;
+    },
+};
+
+// ── LOG ────────────────────────────────────────────────────────────
+const logEl = document.getElementById('log-console');
+function log(msg, cls='') {
+    const line=document.createElement('div');
+    if(cls) line.className='log-'+cls;
+    line.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;
+    logEl.appendChild(line);
+    logEl.scrollTop=logEl.scrollHeight;
+}
+
+// ── SIMULATION ENGINE ──────────────────────────────────────────────
+async function runSimulation() {
+    if (!selectedSym) return;
+
+    const tf     = document.getElementById('cfg-tf').value;
+    const limit  = parseInt(document.getElementById('cfg-limit').value);
+    const horizon= Math.max(1, parseInt(document.getElementById('cfg-horizon').value)||5);
+    const warmup = Math.max(50, parseInt(document.getElementById('cfg-warmup').value)||100);
+    const chosen = ALGOS.filter(a => activeAlgos.has(a.key));
+    if (chosen.length === 0) { alert('Select at least one algorithm.'); return; }
+
+    // UI transition
+    document.getElementById('state-idle').classList.add('hidden');
+    document.getElementById('state-results').classList.add('hidden');
+    document.getElementById('state-running').classList.remove('hidden');
+    document.getElementById('run-btn').disabled = true;
+    document.getElementById('hdr-status').textContent = 'RUNNING';
+    logEl.innerHTML = '';
+    setProgress(0, 'Fetching klines from Binance…');
+
+    log(`Fetching ${limit} × ${tf} klines for ${selectedSym}…`);
+
+    let raw;
+    try {
+        const r = await fetch(`${API}/klines?symbol=${selectedSym}&interval=${tf}&limit=${limit}`);
+        raw = await r.json();
+    } catch(e) {
+        log('Network error: ' + e.message, 'err');
+        document.getElementById('run-btn').disabled = false;
+        return;
+    }
+
+    if (!Array.isArray(raw) || raw.length < warmup + horizon + 10) {
+        log(`Insufficient data: got ${raw?.length||0} candles, need >${warmup+horizon+10}`, 'err');
+        document.getElementById('run-btn').disabled = false;
+        return;
+    }
+
+    const data = raw.map(k => ({
+        time:   Math.floor(k[0]/1000),
+        open:   parseFloat(k[1]),
+        high:   parseFloat(k[2]),
+        low:    parseFloat(k[3]),
+        close:  parseFloat(k[4]),
+        volume: parseFloat(k[5]),
+    }));
+
+    document.getElementById('hdr-tf').textContent = tf;
+    document.getElementById('hdr-candles').textContent = `${data.length} candles`;
+    log(`Loaded ${data.length} candles. Walk-forward from [${warmup}] to [${data.length-horizon-1}]`, 'ok');
+    log(`Prediction horizon: ${horizon} candles ahead | Algorithms: ${chosen.length}`);
+
+    const testStart = warmup;
+    const testEnd   = data.length - horizon - 1;
+    const steps     = testEnd - testStart;
+
+    // Result accumulators per algo
+    const acc = {};
+    chosen.forEach(a => {
+        acc[a.key] = { name:a.name, group:a.group, signals:0, correct:0, returns:[], streak:0, maxStreak:0, curStreak:0 };
+    });
+
+    // Walk-forward loop
+    for (let i = testStart; i <= testEnd; i++) {
+        const subData   = data.slice(0, i+1);
+        const subCloses = subData.map(d=>d.close);
+        const actual    = data[i+horizon].close > data[i].close ? 1 : -1;
+        const retPct    = (data[i+horizon].close - data[i].close) / data[i].close * 100;
+
+        for (const algo of chosen) {
+            let sig;
+            try { sig = signals[algo.key]({ data:subData, closes:subCloses }); }
+            catch(e) { sig = 0; }
+            if (sig === 0) continue;
+
+            const r = acc[algo.key];
+            r.signals++;
+            const isCorrect = sig === actual;
+            if (isCorrect) {
+                r.correct++;
+                r.curStreak++;
+                r.maxStreak = Math.max(r.maxStreak, r.curStreak);
+                r.returns.push(Math.abs(retPct));   // made money
+            } else {
+                r.curStreak = 0;
+                r.returns.push(-Math.abs(retPct));  // lost money
+            }
+        }
+
+        if (i % 50 === 0 || i === testEnd) {
+            const pct = Math.round(((i-testStart)/steps)*100);
+            setProgress(pct, `Tested ${i-testStart}/${steps} candles…`);
+            await sleep(0);
+        }
+    }
+
+    log(`Simulation complete. Processing results…`, 'ok');
+    setProgress(100, 'Done.');
+
+    // Build results array
+    simResults = chosen.map(a => {
+        const r = acc[a.key];
+        const accuracy = r.signals > 0 ? r.correct/r.signals*100 : 0;
+        const rets = r.returns;
+        const avgReturn = rets.length ? rets.reduce((a,b)=>a+b,0)/rets.length : 0;
+        const sd = rets.length > 1 ? stdDev(rets) : 1;
+        const sharpe = sd > 0 ? (avgReturn / sd) * Math.sqrt(252) : 0;
+        const grade = accuracy>=70?'S':accuracy>=60?'A':accuracy>=55?'B':accuracy>=50?'C':'D';
+        return { ...r, accuracy, avgReturn, sharpe, grade, maxStreak:r.maxStreak, key:a.key };
+    }).sort((a,b) => b.accuracy - a.accuracy).map((r,i)=>({...r, rank:i+1}));
+
+    log(`Best: ${simResults[0].name} @ ${simResults[0].accuracy.toFixed(1)}% accuracy`, 'ok');
+    log(`Worst: ${simResults[simResults.length-1].name} @ ${simResults[simResults.length-1].accuracy.toFixed(1)}%`);
+
+    renderResults(data, horizon);
+
+    document.getElementById('state-running').classList.add('hidden');
+    document.getElementById('state-results').classList.remove('hidden');
+    document.getElementById('run-btn').disabled = false;
+    document.getElementById('export-btn').classList.remove('hidden');
+    document.getElementById('hdr-status').textContent = 'DONE';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function setProgress(pct, label) {
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = label;
+    document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+// ── RENDER RESULTS ─────────────────────────────────────────────────
+function renderResults(data, horizon) {
+    renderSummary();
+    renderEnsemble(data, horizon);
+    renderEquityCurves(data, horizon);
+    renderTable(simResults);
+    document.getElementById('filter-input').oninput = () => {
+        const q = document.getElementById('filter-input').value.toLowerCase();
+        renderTable(simResults.filter(r => r.name.toLowerCase().includes(q) || r.group.toLowerCase().includes(q)));
+    };
+}
+
+function renderSummary() {
+    const total = simResults.reduce((a,r)=>a+r.signals,0);
+    const correct = simResults.reduce((a,r)=>a+r.correct,0);
+    const overall = total ? (correct/total*100) : 0;
+    const best = simResults[0];
+    const el = document.getElementById('stat-summary');
+    el.innerHTML = [
+        { val: simResults.length, lbl: 'Algorithms Tested', color: '#fcd535' },
+        { val: total.toLocaleString(), lbl: 'Total Signals', color: '#29b6f6' },
+        { val: overall.toFixed(1)+'%', lbl: 'Ensemble Accuracy', color: overall>=55?'#0ecb81':overall>=50?'#fcd535':'#f6465d' },
+        { val: best.name.split(' ')[0], lbl: `Best Algo (${best.accuracy.toFixed(1)}%)`, color: '#0ecb81' },
+    ].map(s=>`<div class="stat-box"><div class="stat-val" style="color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+}
+
+function renderEnsemble(data, horizon) {
+    // Majority vote on last candle signal
+    const lastData = data.slice(-102);
+    const lastCloses = lastData.map(d=>d.close);
+    let votes={1:0,0:0,'-1':0};
+    simResults.forEach(r => {
+        const sig = signals[r.key] ? (()=>{
+            try{ return signals[r.key]({data:lastData,closes:lastCloses}); }catch(e){return 0;}
+        })() : 0;
+        votes[sig]++;
+    });
+    const buyV=votes[1]||0, sellV=votes[-1]||0, neutV=votes[0]||0;
+    const total=buyV+sellV+neutV;
+    const dominant = buyV>sellV?'BUY':sellV>buyV?'SELL':'NEUTRAL';
+    const domColor = dominant==='BUY'?'#0ecb81':dominant==='SELL'?'#f6465d':'#fcd535';
+    const conf = total ? Math.round(Math.max(buyV,sellV,neutV)/total*100) : 0;
+
+    document.getElementById('ensemble-box').innerHTML = `
+        <div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Ensemble Signal (current bar)</div>
+            <div class="esig" style="color:${domColor}">${dominant}</div>
+            <div class="text-xs text-gray-500 mt-1">Majority vote across all tested algorithms</div>
+        </div>
+        <div class="ml-auto text-right">
+            <div class="text-[10px] text-gray-500 mb-1">Confidence</div>
+            <div class="text-2xl font-bold">${conf}%</div>
+            <div class="text-[10px] text-gray-600 mt-1">
+                🟢 BUY ×${buyV} &nbsp; 🔴 SELL ×${sellV} &nbsp; ⚪ HOLD ×${neutV}
+            </div>
+        </div>
+    `;
+}
+
+function renderEquityCurves(data, horizon) {
+    const top3 = simResults.slice(0, 3);
+    const canvas = document.getElementById('equity-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth || 700, H = 160;
+    canvas.width = W; canvas.height = H;
+
+    const colors = ['#fcd535','#0ecb81','#29b6f6'];
+    const warmup = parseInt(document.getElementById('cfg-warmup').value)||100;
+    const testStart = warmup, testEnd = data.length - horizon - 2;
+
+    // Build equity arrays
+    const curves = top3.map(algo => {
+        let eq = [1];
+        for(let i=testStart;i<=testEnd;i++){
+            const subData=data.slice(0,i+1),subCloses=subData.map(d=>d.close);
+            let sig;
+            try{sig=signals[algo.key]({data:subData,closes:subCloses});}catch(e){sig=0;}
+            const prev=eq[eq.length-1];
+            if(sig!==0){
+                const ret=(data[i+horizon].close-data[i].close)/data[i].close;
+                eq.push(prev*(1+sig*ret));
+            } else { eq.push(prev); }
+        }
+        return eq;
+    });
+
+    // Scale
+    const allVals = curves.flat();
+    const minV=Math.min(...allVals),maxV=Math.max(...allVals);
+    const range=(maxV-minV)||0.01;
+
+    ctx.fillStyle='#11151c';ctx.fillRect(0,0,W,H);
+    // Zero line
+    const zeroY=H-8-((1-minV)/range)*(H-20);
+    ctx.strokeStyle='#2b3139';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(0,zeroY);ctx.lineTo(W,zeroY);ctx.stroke();ctx.setLineDash([]);
+
+    curves.forEach((curve,ci)=>{
+        ctx.strokeStyle=colors[ci];ctx.lineWidth=ci===0?2:1.5;
+        ctx.beginPath();
+        curve.forEach((v,i)=>{
+            const x=(i/curve.length)*W;
+            const y=H-8-((v-minV)/range)*(H-20);
+            i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+    });
+
+    document.getElementById('equity-legend').innerHTML = top3.map((a,i)=>`
+        <span style="color:${colors[i]}">● ${a.name}</span>
+    `).join('');
+}
+
+function renderTable(rows) {
+    const body = document.getElementById('results-body');
+    body.innerHTML = rows.map((r,ri) => {
+        const acc = r.accuracy;
+        const barW = Math.min(100, acc);
+        const barColor = acc>=65?'#0ecb81':acc>=55?'#fcd535':acc>=50?'#ff7043':'#f6465d';
+        const rankColor = r.rank===1?'#fcd535':r.rank===2?'#c0c0c0':r.rank===3?'#cd7f32':'#2b3139';
+        return `<tr>
+            <td><span class="rank-badge" style="background:${rankColor}22;color:${rankColor}">#${r.rank}</span></td>
+            <td>
+                <div class="font-bold text-xs">${r.name}</div>
+                <div class="text-[10px] text-gray-600">${r.group}</div>
+            </td>
+            <td class="font-mono text-gray-400">${r.signals.toLocaleString()}</td>
+            <td class="font-mono text-green-400">${r.correct.toLocaleString()}</td>
+            <td class="font-mono font-bold" style="color:${barColor}">${acc.toFixed(1)}%</td>
+            <td>
+                <div class="acc-bar-wrap"><div class="acc-bar" style="width:${barW}%;background:${barColor}"></div></div>
+            </td>
+            <td class="font-mono" style="color:${r.avgReturn>=0?'#0ecb81':'#f6465d'}">${r.avgReturn>=0?'+':''}${r.avgReturn.toFixed(3)}%</td>
+            <td class="font-mono" style="color:${r.sharpe>=1?'#0ecb81':r.sharpe>=0?'#fcd535':'#f6465d'}">${r.sharpe.toFixed(2)}</td>
+            <td class="font-mono text-gray-400">${r.maxStreak}</td>
+            <td><span class="grade grade-${r.grade}">${r.grade}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+// ── SORT ───────────────────────────────────────────────────────────
+let _sortKey='accuracy', _sortDir=-1;
+function sortTable(key) {
+    if (_sortKey===key) _sortDir*=-1; else { _sortKey=key; _sortDir=-1; }
+    document.querySelectorAll('.results-table th').forEach(th=>{th.classList.remove('sort-asc','sort-desc');});
+    const sorted = [...simResults].sort((a,b)=>{
+        const va=a[key],vb=b[key];
+        return typeof va==='string'?va.localeCompare(vb)*_sortDir:(va-vb)*_sortDir;
+    });
+    renderTable(sorted);
+}
+
+// ── CSV EXPORT ─────────────────────────────────────────────────────
+function exportCSV() {
+    if(!simResults)return;
+    const rows=['Rank,Algorithm,Group,Signals,Correct,Accuracy%,AvgReturn%,Sharpe,BestStreak,Grade'];
+    simResults.forEach(r=>rows.push(`${r.rank},"${r.name}","${r.group}",${r.signals},${r.correct},${r.accuracy.toFixed(2)},${r.avgReturn.toFixed(4)},${r.sharpe.toFixed(3)},${r.maxStreak},${r.grade}`));
+    const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=`sim_${selectedSym}_${Date.now()}.csv`;a.click();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────
+buildChips();
+loadSymbols();
+updateHorizonLabel();
+</script>
+
+</body>
+</html>
