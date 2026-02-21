@@ -4,121 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iFINN | Algorithm Simulation Lab</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark:#0b0e11;--bg-panel:#1e2329;--bg-elev:#11151c;
-            --border:#2b3139;--text-main:#eaecef;--text-muted:#848e9c;
-            --primary:#fcd535;--up:#0ecb81;--down:#f6465d;
-        }
-        *{box-sizing:border-box;margin:0;padding:0;}
-        body{background:var(--bg-dark);color:var(--text-main);font-family:'Space Grotesk','Inter',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-        ::-webkit-scrollbar{width:5px;height:5px;}
-        ::-webkit-scrollbar-track{background:var(--bg-dark);}
-        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-
-        header{height:52px;min-height:52px;background:var(--bg-panel);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:20;}
-
-        .tab-bar{display:flex;background:var(--bg-panel);border-bottom:1px solid var(--border);padding:0 20px;gap:2px;}
-        .main-tab{padding:10px 20px;font-size:12px;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;letter-spacing:.03em;user-select:none;}
-        .main-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
-        .main-tab:hover:not(.active){color:var(--text-main);}
-
-        .tab-content{flex:1;overflow:hidden;display:none;}
-        .tab-content.active{display:flex;}
-        .sim-layout{flex:1;display:grid;grid-template-columns:300px 1fr;overflow:hidden;gap:1px;background:var(--border);}
-        .config-panel{background:var(--bg-panel);overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:10px;}
-        .sim-main{background:var(--bg-elev);overflow-y:auto;padding:20px;}
-
-        .card{background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:14px;}
-        .label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:5px;}
-        .ctrl{width:100%;background:#11151c;border:1px solid var(--border);color:var(--text-main);border-radius:5px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none;transition:border-color .18s;}
-        .ctrl:focus{border-color:var(--primary);}
-        .btn-primary{width:100%;background:var(--primary);color:#000;font-weight:700;font-size:13px;border:none;border-radius:6px;padding:11px;cursor:pointer;letter-spacing:.03em;transition:opacity .15s,transform .1s;}
-        .btn-primary:hover{opacity:.9;}.btn-primary:active{transform:scale(.98);}.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
-        .btn-danger{width:100%;background:#f6465d22;color:#f6465d;font-weight:700;font-size:13px;border:1px solid #f6465d44;border-radius:6px;padding:11px;cursor:pointer;transition:all .15s;}
-        .btn-danger:hover{background:#f6465d;color:#fff;}
-        .btn-sec{background:var(--border);color:var(--text-muted);font-size:12px;border:none;border-radius:5px;padding:7px 12px;cursor:pointer;font-family:inherit;transition:background .15s;}
-        .btn-sec:hover{background:#3a424e;color:#fff;}
-
-        .search-wrap{position:relative;}
-        .search-drop{position:absolute;top:100%;left:0;right:0;background:#1e2329;border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;max-height:200px;overflow-y:auto;z-index:100;display:none;}
-        .search-drop.show{display:block;}
-        .sdrop-item{padding:8px 10px;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:1px solid #2b3139;}
-        .sdrop-item:hover{background:#2b3139;}
-
-        .algo-grid{display:flex;flex-wrap:wrap;gap:5px;}
-        .algo-chip{font-size:10px;padding:3px 7px;border-radius:4px;border:1px solid var(--border);cursor:pointer;background:#11151c;color:var(--text-muted);user-select:none;transition:all .15s;}
-        .algo-chip.active{background:rgba(252,213,53,.15);border-color:var(--primary);color:var(--primary);}
-
-        .progress-track{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
-        .progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .1s linear;width:0%;}
-
-        .results-table{width:100%;border-collapse:collapse;font-size:12px;}
-        .results-table th{text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;}
-        .results-table th:hover{color:var(--text-main);}
-        .results-table th.sort-asc::after{content:' ▲';}.results-table th.sort-desc::after{content:' ▼';}
-        .results-table td{padding:8px 10px;border-bottom:1px solid #1e2329;vertical-align:middle;}
-        .results-table tr:hover td{background:rgba(255,255,255,.02);}
-        .acc-bar-wrap{background:#11151c;border-radius:3px;height:6px;width:80px;display:inline-block;vertical-align:middle;overflow:hidden;}
-        .acc-bar{height:100%;border-radius:3px;}
-        .grade{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;}
-        .grade-S{background:rgba(252,213,53,.2);color:#fcd535;}.grade-A{background:rgba(14,203,129,.2);color:#0ecb81;}
-        .grade-B{background:rgba(41,182,246,.2);color:#29b6f6;}.grade-C{background:rgba(255,112,67,.2);color:#ff7043;}.grade-D{background:rgba(246,70,93,.15);color:#f6465d;}
-
-        .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-        .stat-box{background:var(--bg-panel);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;}
-        .stat-val{font-size:20px;font-weight:700;}
-        .stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-top:3px;}
-
-        canvas.equity{width:100%;height:160px;border-radius:6px;display:block;}
-        .ensemble-box{border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;align-items:center;gap:16px;}
-        .esig{font-size:28px;font-weight:800;letter-spacing:-.02em;}
-
-        .log-console{background:#080a0d;border:1px solid var(--border);border-radius:6px;padding:10px;font-family:'Courier New',monospace;font-size:11px;height:120px;overflow-y:auto;color:#848e9c;}
-        .log-ok{color:#0ecb81;}.log-warn{color:#fcd535;}.log-err{color:#f6465d;}.log-info{color:#29b6f6;}
-
-        [data-tip]{position:relative;cursor:help;}
-        [data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#2b3139;color:#eaecef;font-size:10px;padding:4px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:200;}
-
-        /* LIVE TRADING */
-        .portfolio-header{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
-        .pstat{background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
-        .pstat-val{font-size:22px;font-weight:800;line-height:1;}
-        .pstat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-top:4px;}
-
-        .countdown-ring{position:relative;display:inline-flex;align-items:center;justify-content:center;}
-        .countdown-ring svg{transform:rotate(-90deg);}
-        .countdown-val{position:absolute;font-size:18px;font-weight:800;font-family:'Courier New',monospace;}
-
-        .algo-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px;}
-        .algo-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:12px;transition:border-color .2s;}
-        .algo-card.signal-buy{border-color:#0ecb8155;}
-        .algo-card.signal-sell{border-color:#f6465d55;}
-        .algo-card.signal-hold{border-color:#fcd53533;}
-        .algo-card.verified-win{border-color:#0ecb81;background:rgba(14,203,129,.05);}
-        .algo-card.verified-loss{border-color:#f6465d;background:rgba(246,70,93,.05);}
-        .acard-name{font-size:11px;font-weight:700;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-        .acard-signal{font-size:16px;font-weight:800;line-height:1;}
-        .acard-alloc{font-size:10px;color:var(--text-muted);margin-top:3px;}
-        .acard-pnl{font-size:13px;font-weight:700;margin-top:6px;}
-        .acard-result{font-size:18px;margin-top:2px;}
-        .signal-badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:800;letter-spacing:.06em;}
-        .badge-buy{background:rgba(14,203,129,.2);color:#0ecb81;}
-        .badge-sell{background:rgba(246,70,93,.2);color:#f6465d;}
-        .badge-hold{background:rgba(252,213,53,.15);color:#fcd535;}
-
-        .session-log{background:#080a0d;border:1px solid var(--border);border-radius:6px;padding:10px;font-family:'Courier New',monospace;font-size:11px;height:160px;overflow-y:auto;color:#848e9c;}
-        .round-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid #1e2329;font-size:12px;}
-        .round-row:last-child{border-bottom:none;}
-        .amount-group{display:flex;gap:6px;}
-        .amount-group .ctrl{flex:1;}
-        .idle-art{font-size:70px;text-align:center;margin-bottom:14px;opacity:.35;}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-        .pulse{animation:pulse 1.5s ease-in-out infinite;}
-        .rank-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;margin-right:6px;}
-    </style>
+    <link rel="stylesheet" href="/sim.css">
+    <link rel="icon" href="/favicon.svg">
 </head>
 <body>
 
@@ -438,7 +326,7 @@ function btSel(sym){btSym=sym;document.getElementById('bt-sym').value=sym;docume
 (()=>{const chips=document.getElementById('bt-chips');chips.innerHTML=ALGOS.map(a=>`<div class="algo-chip active" id="bc-${a.key}" onclick="btChip('${a.key}',this)">${a.name}</div>`).join('');})();
 function btChip(k,el){btActive.has(k)?btActive.delete(k):btActive.add(k);el.classList.toggle('active');}
 function btAll(on){ALGOS.forEach(a=>{on?btActive.add(a.key):btActive.delete(a.key);const el=document.getElementById(`bc-${a.key}`);on?el.classList.add('active'):el.classList.remove('active');});}
-function updateBtLbl(){const tf=document.getElementById('bt-tf').value,h=parseInt(document.getElementById('bt-horizon').value)||1;const mins={1m:1,5m:5,15m:15,30m:30,'1h':60,'4h':240,'1d':1440};const t=(mins[tf]||60)*h;document.getElementById('bt-horizon-lbl').textContent=`≈ ${t<60?t+'m':t<1440?(t/60).toFixed(1)+'h':(t/1440).toFixed(1)+'d'} lookahead`;}
+function updateBtLbl(){const tf=document.getElementById('bt-tf').value,h=parseInt(document.getElementById('bt-horizon').value)||1;const mins={'1m':1,'5m':5,'15m':15,'30m':30,'1h':60,'4h':240,'1d':1440};const t=(mins[tf]||60)*h;document.getElementById('bt-horizon-lbl').textContent=`≈ ${t<60?t+'m':t<1440?(t/60).toFixed(1)+'h':(t/1440).toFixed(1)+'d'} lookahead`;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function btLog(msg,cls=''){const el=document.getElementById('bt-log');const d=document.createElement('div');if(cls)d.className='log-'+cls;d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;el.appendChild(d);el.scrollTop=el.scrollHeight;}
 function btProg(pct,lbl){document.getElementById('bt-fill').style.width=pct+'%';document.getElementById('bt-prog-lbl').textContent=lbl;document.getElementById('bt-prog-pct').textContent=pct+'%';}
@@ -523,7 +411,7 @@ function lvSel(sym){lvSym=sym;document.getElementById('lv-sym').value=sym;docume
 (()=>{const chips=document.getElementById('lv-chips');chips.innerHTML=ALGOS.map(a=>`<div class="algo-chip active" id="lc-${a.key}" onclick="lvChip('${a.key}',this)">${a.name}</div>`).join('');})();
 function lvChip(k,el){lvActive.has(k)?lvActive.delete(k):lvActive.add(k);el.classList.toggle('active');updateLvPerAlgo();}
 function lvAll(on){ALGOS.forEach(a=>{on?lvActive.add(a.key):lvActive.delete(a.key);const el=document.getElementById(`lc-${a.key}`);on?el.classList.add('active'):el.classList.remove('active');});updateLvPerAlgo();}
-function updateLvDuration(){const tf=document.getElementById('lv-tf').value,r=+document.getElementById('lv-rounds').value||10;const mins={1m:1,3m:3,5m:5,15m:15,30m:30};const t=(mins[tf]||1)*r;document.getElementById('lv-dur-lbl').textContent=`≈ ${t<60?t+' min':(t/60).toFixed(1)+' h'} total`;}
+function updateLvDuration(){const tf=document.getElementById('lv-tf').value,r=+document.getElementById('lv-rounds').value||10;const mins={'1m':1,'3m':3,'5m':5,'15m':15,'30m':30};const t=(mins[tf]||1)*r;document.getElementById('lv-dur-lbl').textContent=`≈ ${t<60?t+' min':(t/60).toFixed(1)+' h'} total`;}
 function updateLvPerAlgo(){const n=lvActive.size||1,amt=+document.getElementById('lv-amount').value||100,cur=document.getElementById('lv-cur').value,per=(amt/n).toFixed(2);document.getElementById('lv-per-algo').textContent=`${per} ${cur} / algo`;document.getElementById('lv-usdt-eq').textContent=`≈ ${toUSDT(amt,cur).toFixed(4)} USDT total`;}
 function lvLog(msg,cls=''){const el=document.getElementById('lv-log');const d=document.createElement('div');if(cls)d.className='log-'+cls;d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;el.appendChild(d);el.scrollTop=el.scrollHeight;}
 function setPhase(icon,txt,col='#fcd535'){document.getElementById('lv-phase-icon').textContent=icon;document.getElementById('lv-phase-txt').textContent=txt;document.getElementById('lv-phase').style.borderColor=col+'55';document.getElementById('lv-phase').style.background=col+'12';}
@@ -576,7 +464,7 @@ async function runRound(){
         if(sig!==0)lvLog(`  ${algo.name}: ${sig===1?'▲ BUY':'▼ SELL'} @ ${entryPrice.toFixed(4)}`);
     });
     renderCards('predicting');
-    const tfSecs={1m:60,3m:180,5m:300,15m:900,30m:1800};
+    const tfSecs={'1m':60,'3m':180,'5m':300,'15m':900,'30m':1800};
     const waitSecs=tfSecs[s.tf]||60;
     setPhase('⏱',`Round ${s.round} — Waiting ${waitSecs}s for candle close…`,'#fcd535');
     lvLog(`Waiting ${waitSecs}s…`);startCD(waitSecs);
