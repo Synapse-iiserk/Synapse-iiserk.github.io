@@ -837,7 +837,41 @@ function setPhase(icon,txt,col='#fcd535'){document.getElementById('lv-phase-icon
 function startCD(secs){clearInterval(cdInt);const ring=document.getElementById('lv-cd-ring'),num=document.getElementById('lv-cd-num'),circ=163.4;let rem=secs;function tick(){ring.style.strokeDashoffset=(circ*(1-rem/secs)).toFixed(2);const m=Math.floor(rem/60).toString().padStart(2,'0'),s=(rem%60).toString().padStart(2,'0');num.textContent=rem>=60?`${m}:${s}`:`${rem}s`;if(rem>0)rem--;}tick();cdInt=setInterval(tick,1000);}
 function stopCD(){clearInterval(cdInt);document.getElementById('lv-cd-ring').style.strokeDashoffset='0';document.getElementById('lv-cd-num').textContent='--';}
 
-async function fetchKlines(sym,tf,limit=200){const r=await fetch(`${API}/klines?symbol=${sym}&interval=${tf}&limit=${limit}`);const d=await r.json();return d.map(k=>({time:+k[0]/1000|0,open:+k[1],high:+k[2],low:+k[3],close:+k[4],volume:+k[5]}));}
+async function fetchKlines(sym,tf,limit=200){
+    const r=await fetch(`${API}/klines?symbol=${sym}&interval=${tf}&limit=${limit}`);
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const d=await r.json();
+    if(!Array.isArray(d)||!d.length)throw new Error('Empty klines response');
+    return d.map(k=>({time:+k[0]/1000|0,open:+k[1],high:+k[2],low:+k[3],close:+k[4],volume:+k[5]}));
+}
+
+// Retry wrapper: up to `maxTries` attempts with `delayMs` between each
+async function fetchWithRetry(sym,tf,limit,maxTries=3,delayMs=2000){
+    let lastErr;
+    for(let i=0;i<maxTries;i++){
+        try{return await fetchKlines(sym,tf,limit);}
+        catch(e){lastErr=e;if(i<maxTries-1)await sleep(delayMs);}
+    }
+    throw lastErr;
+}
+
+// Poll until a candle NEWER than `afterTime` appears in position [-2] (last completed candle).
+// Retries up to `maxTries` times with `delayMs` between each poll.
+async function fetchExitCandle(sym,tf,afterTime,maxTries=5,delayMs=3000){
+    for(let i=0;i<maxTries;i++){
+        let d;
+        try{d=await fetchKlines(sym,tf,5);}
+        catch(e){
+            if(i<maxTries-1){await sleep(delayMs);continue;}
+            return null;
+        }
+        // d[-2] is the last FULLY CLOSED candle; d[-1] is the currently open one
+        const closed=d[d.length-2];
+        if(closed&&closed.time>afterTime)return d;
+        if(i<maxTries-1)await sleep(delayMs);
+    }
+    return null; // timed out — caller will deal with it
+}
 
 async function startSession(){
     if(!lvSym)return;
@@ -882,9 +916,21 @@ async function runRound(){
     document.getElementById('hdr-status').textContent=`ROUND ${s.round}`;
     setPhase('📡',`Round ${s.round}/${s.totalRounds} — Fetching market data…`,'#fcd535');
     lvLog(`─── Round ${s.round} ───`,'info');
-    let data;try{data=await fetchKlines(s.sym,s.tf,200);}catch(e){lvLog('Fetch error: '+e.message,'err');s.running=false;endSession();return;}
-    const closes=data.map(d=>d.close),entryPrice=closes[closes.length-1];
-    lvLog(`Entry price: ${entryPrice.toFixed(6)}`);
+    let data;
+    try{
+        data=await fetchWithRetry(s.sym,s.tf,200,3,2000);
+    }catch(e){
+        lvLog('Entry fetch failed after 3 retries: '+e.message,'err');
+        s.running=false;endSession();return;
+    }
+
+    // Use data[-2] (last COMPLETED candle) as the entry reference price.
+    // data[-1] is the currently open candle whose price keeps changing.
+    const entryCandle=data[data.length-2];
+    const entryTime=entryCandle.time;
+    const closes=data.map(d=>d.close);
+    const entryPrice=entryCandle.close;
+    lvLog(`Entry price: ${entryPrice.toFixed(6)} (candle closed ${new Date(entryTime*1000).toLocaleTimeString()})`);
     document.getElementById('hdr-price').textContent=entryPrice.toFixed(4);
     setPhase('🧮',`Round ${s.round} — Generating signals…`,'#29b6f6');
 
@@ -910,15 +956,32 @@ async function runRound(){
         stopCD();
     }
 
+    setPhase('🔄',`Round ${s.round} — Fetching exit price (with retry)…`,'#29b6f6');
+    // Poll for a new COMPLETED candle after entryTime (up to 5×3s = 15s of retries)
+    const exitData=await fetchExitCandle(s.sym,s.tf,entryTime,5,3000);
+    let exitPrice;
+    if(exitData){
+        // Use the last completed candle ([-2]); [-1] is the new open candle
+        exitPrice=exitData[exitData.length-2].close;
+        lvLog(`Exit candle close: ${exitPrice.toFixed(6)}`);
+    } else {
+        // All retries failed — fall back to current ticker and warn
+        lvLog('⚠ Exit fetch timed out — using latest available price as fallback','warn');
+        try{
+            const tick=await fetch(`${API}/ticker/price?symbol=${s.sym}`);
+            const td=await tick.json();
+            exitPrice=td.price?+td.price:entryPrice;
+        }catch(_){exitPrice=entryPrice;}
+        lvLog(`Fallback exit price: ${exitPrice.toFixed(6)}`);
+    }
     setPhase('✅',`Round ${s.round} — Verifying results…`,'#0ecb81');
-    let exitData;try{exitData=await fetchKlines(s.sym,s.tf,5);}catch(_){exitData=null;}
-    const exitPrice=exitData?exitData[exitData.length-1].close:entryPrice;
     const actualRet=(exitPrice-entryPrice)/entryPrice;
     const actualRetPct=(actualRet*100);
 
     // ── FLAT CANDLE DETECTION ──────────────────────────────
-    // A candle is "flat" if the price moved less than 0.001% (essentially zero)
-    // Flat rounds: P&L = 0, do NOT count as win or loss (no penalty for random tie)
+    // A candle is "flat" if the price moved less than 0.001% (essentially zero).
+    // For minimum-tick / low-liquidity pairs (e.g. KNCBTC at 2 sats), one tick
+    // already represents ~0.5%, so the threshold below is intentionally tight.
     const FLAT_THRESHOLD=0.00001;
     const isFlat=Math.abs(actualRet)<=FLAT_THRESHOLD;
     const actualDir=exitPrice>entryPrice?1:exitPrice<entryPrice?-1:0;
