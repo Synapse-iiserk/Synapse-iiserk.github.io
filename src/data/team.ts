@@ -63,21 +63,21 @@ export const teamMembers: TeamMember[] = [
         name: 'Gautam Singh',
         role: 'Co-founder',
         focus: 'Product vision, execution, growth',
-        bio: 'Gautam co-leads Synapse with a focus on translating ideas into practical products and scalable execution. He works across teams to align product direction, operations, and growth initiatives.',
+        bio: 'Gautam co-leads iFINN with a focus on translating ideas into practical products and scalable execution. He works across teams to align product direction, operations, and growth initiatives.',
         expertiseHighlights: [
             'Product Strategy',
             'Cross-functional Execution',
             'Startup Operations',
             'Growth Planning',
         ],
-        visionContribution: 'Gautam is focused on building Synapse into a high-impact platform by combining ambitious product goals with disciplined execution and user-first thinking.',
+        visionContribution: 'Gautam is focused on building iFINN into a high-impact platform by combining ambitious product goals with disciplined execution and user-first thinking.',
     },
     {
         slug: 'aman',
         name: 'Aman',
         role: 'Lead Algorithm Development',
         focus: 'Algorithm design, optimization, model robustness',
-        bio: 'Aman leads algorithm development at Synapse, designing and refining core models that power data-driven decision-making. His work emphasizes robustness, performance, and practical applicability.',
+        bio: 'Aman leads algorithm development at iFINN, designing and refining core models that power data-driven decision-making. His work emphasizes robustness, performance, and practical applicability.',
         expertiseHighlights: [
             'Algorithm Design',
             'Model Optimization',
@@ -91,14 +91,14 @@ export const teamMembers: TeamMember[] = [
         name: 'Ankan Basak',
         role: 'Marketing Partner',
         focus: 'Brand strategy, partnerships, market outreach',
-        bio: 'Ankan leads marketing partnerships and brand outreach for Synapse, driving communication and growth initiatives that connect the product with the right audiences.',
+        bio: 'Ankan leads marketing partnerships and brand outreach for iFINN, driving communication and growth initiatives that connect the product with the right audiences.',
         expertiseHighlights: [
             'Brand Positioning',
             'Marketing Partnerships',
             'Go-to-market Strategy',
             'Audience Development',
         ],
-        visionContribution: 'Ankan aims to establish Synapse as a trusted and visible brand through clear storytelling, strategic partnerships, and market-focused execution.',
+        visionContribution: 'Ankan aims to establish iFINN as a trusted and visible brand through clear storytelling, strategic partnerships, and market-focused execution.',
     },
 ];
 
