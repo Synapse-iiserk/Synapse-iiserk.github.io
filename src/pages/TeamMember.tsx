@@ -72,6 +72,20 @@ export const TeamMember: React.FC = () => {
                                 <p className="text-[var(--color-text-muted)]">
                                     {member.focus}
                                 </p>
+                                {member.linkedInUrl && (
+                                    <a
+                                        href={member.linkedInUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center mt-3 text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors"
+                                    >
+                                        LinkedIn Profile
+                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 3h7m0 0v7m0-7L10 14" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12v7a2 2 0 002 2h7" />
+                                        </svg>
+                                    </a>
+                                )}
                             </div>
                         </div>
 
