@@ -44,21 +44,6 @@ export const teamMembers: TeamMember[] = [
         visionContribution: 'Youktik is committed to building iFINN as a trusted name in financial technology, ensuring our solutions meet the stringent requirements of professional investors while remaining intuitive for newcomers to algorithmic trading.',
     },
     {
-        slug: 'himanshu-prakash-singh',
-        name: 'Himanshu Prakash Singh',
-        role: 'Algorithm Development',
-        focus: 'Quantitative models, algorithmic strategies',
-        bio: 'Himanshu architects the quantitative models and algorithmic strategies powering iFINN. His research-driven approach combines rigorous mathematical foundations with practical market insights to develop predictive models that withstand real-world market conditions.',
-        expertiseHighlights: [
-            'Quantitative Trading Strategies',
-            'Statistical Modeling & Analysis',
-            'Algorithmic Strategy Development',
-            'Risk Quantification Methods',
-            'Backtesting Framework Design',
-        ],
-        visionContribution: 'Himanshu believes in democratizing quantitative finance, bringing institutional-quality algorithmic tools to individual investors while maintaining the scientific rigor that separates reliable strategies from speculation.',
-    },
-    {
         slug: 'gautam-singh',
         name: 'Gautam Singh',
         role: 'Co-founder',
