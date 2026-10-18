@@ -8,6 +8,8 @@ interface SEOProps {
     ogType?: string;
     canonicalUrl?: string;
     structuredData?: object;
+    /** keep this page out of search results (the 404 view) */
+    noindex?: boolean;
 }
 
 const SITE = {
@@ -55,6 +57,7 @@ export const SEO: React.FC<SEOProps> = ({
     ogType = 'website',
     canonicalUrl,
     structuredData,
+    noindex = false,
 }) => {
     const fullTitle = title ? `${title} | ${SITE.name}` : SITE.defaultTitle;
     const canonical = canonicalUrl ? `${SITE.url}${canonicalUrl}` : SITE.url;
@@ -83,7 +86,7 @@ export const SEO: React.FC<SEOProps> = ({
         setMeta('name', 'title', fullTitle);
         setMeta('name', 'description', description);
         setMeta('name', 'keywords', keywordsValue);
-        setMeta('name', 'robots', 'index, follow');
+        setMeta('name', 'robots', noindex ? 'noindex, follow' : 'index, follow');
         setMeta('name', 'theme-color', '#0a0e0c');
 
         setMeta('property', 'og:type', ogType);
@@ -115,7 +118,7 @@ export const SEO: React.FC<SEOProps> = ({
             document.head.appendChild(script);
         }
         script.textContent = jsonLd;
-    }, [fullTitle, description, keywordsValue, canonical, image, ogType, jsonLd]);
+    }, [fullTitle, description, keywordsValue, canonical, image, ogType, jsonLd, noindex]);
 
     return null;
 };

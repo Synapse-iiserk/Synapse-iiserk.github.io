@@ -1,5 +1,6 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import SEO from '../seo/SEO';
+import NotFound from './NotFound';
 import { getTeamMemberBySlug, teamMembers } from '../data/team';
 
 const initials = (name: string) =>
@@ -14,8 +15,10 @@ export const TeamMember: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
     const member = slug ? getTeamMemberBySlug(slug) : undefined;
 
+    // an unknown slug is a 404, not a redirect: bouncing the visitor to the
+    // roster hides the fact the page does not exist
     if (!member) {
-        return <Navigate to="/team" replace />;
+        return <NotFound />;
     }
 
     return (

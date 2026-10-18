@@ -9,6 +9,7 @@ import TeamMember from './pages/TeamMember';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import LegalPage from './pages/Legal';
+import NotFound from './pages/NotFound';
 
 // The playground carries the analytics engine; load it when someone asks for it.
 const Analytics = lazy(() => import('./pages/Analytics'));
@@ -43,6 +44,8 @@ function App() {
         <Route path="privacy" element={<LegalPage kind="privacy" />} />
         <Route path="terms" element={<LegalPage kind="terms" />} />
         <Route path="disclaimer" element={<LegalPage kind="disclaimer" />} />
+        {/* an unknown URL must land somewhere readable, not on a blank document */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
