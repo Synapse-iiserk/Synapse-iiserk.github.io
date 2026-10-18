@@ -1,7 +1,14 @@
-import { motion } from 'framer-motion';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import SEO from '../seo/SEO';
 import { getTeamMemberBySlug, teamMembers } from '../data/team';
+
+const initials = (name: string) =>
+    name
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
 
 export const TeamMember: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -14,7 +21,7 @@ export const TeamMember: React.FC = () => {
     return (
         <>
             <SEO
-                title={`${member.name} - ${member.role}`}
+                title={`${member.name}, ${member.role}`}
                 description={member.bio}
                 canonicalUrl={`/team/${member.slug}`}
                 structuredData={{
@@ -30,126 +37,89 @@ export const TeamMember: React.FC = () => {
                 }}
             />
 
-            <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Back Link */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="mb-8"
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <Link
+                        to="/team"
+                        className="mono text-[12px] uppercase tracking-[0.12em] text-[var(--color-muted)] transition-colors hover:text-[var(--color-accent)]"
                     >
-                        <Link
-                            to="/team"
-                            className="inline-flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
-                        >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Back to Team
-                        </Link>
-                    </motion.div>
+                        ← Team
+                    </Link>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        {/* Header */}
-                        <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 mb-12">
-                            {/* Avatar */}
-                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-gold)] flex items-center justify-center shadow-xl shadow-[var(--color-accent)]/30">
-                                <span className="text-4xl font-bold text-white">
-                                    {member.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                            </div>
-
-                            <div className="text-center md:text-left">
-                                <h1 className="text-3xl lg:text-4xl font-bold text-[var(--color-text)] mb-2">
-                                    {member.name}
-                                </h1>
-                                <p className="text-xl text-[var(--color-accent)] font-medium mb-2">
-                                    {member.role}
-                                </p>
-                                <p className="text-[var(--color-text-muted)]">
-                                    {member.focus}
-                                </p>
-                                {member.linkedInUrl && (
-                                    <a
-                                        href={member.linkedInUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center mt-3 text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors"
-                                    >
-                                        LinkedIn Profile
-                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 3h7m0 0v7m0-7L10 14" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12v7a2 2 0 002 2h7" />
-                                        </svg>
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Bio */}
-                        <div className="mb-12">
-                            <h2 className="text-xl font-semibold text-[var(--color-text)] mb-4">About</h2>
-                            <p className="text-[var(--color-text-muted)] leading-relaxed text-lg">
-                                {member.bio}
+                    <div className="mt-8 grid gap-10 border-t border-[var(--color-ink)] pt-8 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <span
+                                aria-hidden
+                                className="mono flex h-24 w-24 items-center justify-center border border-[var(--color-line-strong)] text-2xl text-[var(--color-accent)]"
+                            >
+                                {initials(member.name)}
+                            </span>
+                            <h1 className="h1 mt-6">{member.name}</h1>
+                            <p className="mono mt-3 text-[12px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                {member.role}
                             </p>
+                            <p className="mt-4 text-[16px] leading-relaxed text-[var(--color-muted)]">
+                                {member.focus}
+                            </p>
+                            {member.linkedInUrl && (
+                                <a
+                                    href={member.linkedInUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="link mono mt-4 inline-block text-[13px]"
+                                >
+                                    LinkedIn profile
+                                </a>
+                            )}
                         </div>
 
-                        {/* Expertise */}
-                        <div className="mb-12">
-                            <h2 className="text-xl font-semibold text-[var(--color-text)] mb-4">Expertise</h2>
-                            <div className="flex flex-wrap gap-3">
+                        <div className="lg:col-span-8">
+                            <h2 className="h3">Background</h2>
+                            <p className="prose mt-3 text-[16px]">{member.bio}</p>
+
+                            <h2 className="mono mt-12 border-t border-[var(--color-line)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                Expertise
+                            </h2>
+                            <ul className="mt-4 grid gap-x-8 sm:grid-cols-2">
                                 {member.expertiseHighlights.map((expertise) => (
-                                    <span
+                                    <li
                                         key={expertise}
-                                        className="px-4 py-2 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text-muted)] text-sm"
+                                        className="border-b border-[var(--color-line)] py-2.5 text-[14.5px] text-[var(--color-muted)]"
                                     >
                                         {expertise}
-                                    </span>
+                                    </li>
                                 ))}
-                            </div>
-                        </div>
+                            </ul>
 
-                        {/* Vision */}
-                        <div className="p-6 rounded-2xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                            <h2 className="text-xl font-semibold text-[var(--color-text)] mb-4">
-                                Vision for Synapse
-                            </h2>
-                            <p className="text-[var(--color-text-muted)] leading-relaxed">
-                                {member.visionContribution}
-                            </p>
+                            <h2 className="h3 mt-12">What {member.name.split(' ')[0]} is building toward</h2>
+                            <p className="prose mt-3 text-[15px]">{member.visionContribution}</p>
                         </div>
+                    </div>
 
-                        {/* Other Team Members */}
-                        <div className="mt-16 pt-12 border-t border-[var(--color-border)]">
-                            <h2 className="text-xl font-semibold text-[var(--color-text)] mb-6">
-                                Other Team Members
-                            </h2>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                {teamMembers
-                                    .filter((m) => m.slug !== member.slug)
-                                    .map((otherMember) => (
+                    <div className="mt-20">
+                        <h2 className="mono border-t border-[var(--color-line)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                            Others on the team
+                        </h2>
+                        <ul>
+                            {teamMembers
+                                .filter((other) => other.slug !== member.slug)
+                                .map((other) => (
+                                    <li key={other.slug} className="border-b border-[var(--color-line)]">
                                         <Link
-                                            key={otherMember.slug}
-                                            to={`/team/${otherMember.slug}`}
-                                            className="flex items-center p-4 rounded-xl bg-[var(--color-primary)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 transition-all"
+                                            to={`/team/${other.slug}`}
+                                            className="flex items-baseline justify-between gap-6 py-3 transition-colors hover:text-[var(--color-accent)]"
                                         >
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-gold)] flex items-center justify-center mr-4">
-                                                <span className="text-sm font-bold text-white">
-                                                    {otherMember.name.split(' ').map(n => n[0]).join('')}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <h3 className="font-medium text-[var(--color-text)]">{otherMember.name}</h3>
-                                                <p className="text-sm text-[var(--color-text-muted)]">{otherMember.role}</p>
-                                            </div>
+                                            <span className="font-display text-[17px] tracking-tight">
+                                                {other.name}
+                                            </span>
+                                            <span className="mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                                {other.role}
+                                            </span>
                                         </Link>
-                                    ))}
-                            </div>
-                        </div>
-                    </motion.div>
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
                 </div>
             </section>
         </>

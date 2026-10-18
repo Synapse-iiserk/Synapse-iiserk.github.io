@@ -1,92 +1,112 @@
-import { motion } from 'framer-motion';
 import SEO from '../seo/SEO';
 
-export const About: React.FC = () => {
-    const roadmapItems = [
-        { phase: 'Phase 1', title: 'Foundation', status: 'In Progress', items: ['Core platform', 'Market data', 'Basic analytics'] },
-        { phase: 'Phase 2', title: 'Intelligence', status: 'Planned', items: ['AI strategy builder', 'Predictive models', 'Risk profiling'] },
-        { phase: 'Phase 3', title: 'Expansion', status: 'Planned', items: ['Options analytics', 'Crypto suite', 'Mobile apps'] },
-        { phase: 'Phase 4', title: 'Enterprise', status: 'Future', items: ['Institutional features', 'API platform', 'White-label'] },
-    ];
+const roadmap = [
+    { phase: 'Foundation', status: 'Shipped', items: 'Platform and auth, 528 algorithms, persistent data store, hosted deployment' },
+    { phase: 'Intelligence', status: 'Live', items: 'AI research agent over 145 tools, Master Eye influence graph, alternative-data signals' },
+    { phase: 'Expansion', status: 'In progress', items: 'Derivatives and world markets, prediction markets, Algo Hub community' },
+    { phase: 'Enterprise', status: 'Planned', items: 'Regulatory registrations, institutional accounts, white label and API' },
+];
 
+const promises = [
+    'Every output traces to an algorithm or a tool call you can inspect.',
+    'Backtests carry real costs and train and test splits, so the number survives contact with the live market.',
+    'Algorithms that crash, stall or have too few trades stay on the leaderboard with their status shown.',
+    'A human decides what to trade. The platform refuses to hide the arithmetic.',
+];
+
+export const About: React.FC = () => {
     return (
         <>
-            <SEO title="About Us" description="Learn about iFINN's mission to democratize AI-driven financial intelligence." canonicalUrl="/about" />
+            <SEO
+                title="About"
+                description="iFINN is Team Synapse at IISER Kolkata: a quantitative research terminal built so that every number on the screen can be traced back to an algorithm or a tool call."
+                canonicalUrl="/about"
+            />
 
-            <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">About iFINN</span>
-                        <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-text)] mb-6">
-                            Democratizing Financial <span className="gradient-text">Intelligence</span>
-                        </h1>
-                        <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-                            We believe sophisticated financial analytics should be accessible to everyone.
-                        </p>
-                    </motion.div>
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <span className="eyebrow reveal">About</span>
+                    <h1 className="h-display reveal mt-5 max-w-[18ch]">Built to be audited.</h1>
+                    <p className="lead mt-6">
+                        iFINN is a student team at IISER Kolkata building the research tooling we wanted
+                        and could not rent: documented algorithms, honest backtests, and an assistant
+                        that shows which tool produced each number.
+                    </p>
                 </div>
             </section>
 
-            <section className="py-16 lg:py-24 bg-[var(--color-primary)]">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-                    {/* Mission */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">Our Mission</h2>
-                        <p className="text-lg text-[var(--color-text-muted)] leading-relaxed">
-                            iFINN bridges the gap between institutional-grade analytics and individual investors, combining cutting-edge ML with rigorous financial principles.
-                        </p>
-                    </motion.div>
+            <section className="section">
+                <div className="shell">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-7">
+                            <h2 className="h2 reveal">Mission and method</h2>
+                            <div className="mt-6 flex flex-col gap-5 text-[16px] leading-relaxed text-[var(--color-muted)]">
+                                <p>
+                                    Most retail tools hand you a prediction and take the reasoning
+                                    away. We built the opposite: a terminal where the maths is the
+                                    product and the interface is a thin layer over it.
+                                </p>
+                                <p>
+                                    The work is unglamorous by design. Conformance harnesses, walk
+                                    forward validation, provider fallbacks, an audit trail on every
+                                    agent answer. The result is a platform a sceptic can check.
+                                </p>
+                            </div>
 
-                    {/* Vision */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">Our Vision</h2>
-                        <p className="text-lg text-[var(--color-text-muted)] leading-relaxed">
-                            A future where every investor has access to the same analytical tools as the largest hedge funds, with AI augmenting human decision-making.
-                        </p>
-                    </motion.div>
-
-                    {/* Ethical AI */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">Ethical AI Commitment</h2>
-                        <ul className="space-y-2 text-[var(--color-text-muted)]">
-                            {['Explainable outputs with clear reasoning', 'Regular algorithmic bias auditing', 'Human-in-the-loop design', 'No black-box predictions'].map(item => (
-                                <li key={item} className="flex items-center">
-                                    <svg className="w-5 h-5 text-[var(--color-accent)] mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
-                    </motion.div>
-
-                    {/* Disclaimer */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="p-6 rounded-2xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                        <h2 className="text-xl font-bold text-[var(--color-gold)] mb-4">Financial Responsibility Disclaimer</h2>
-                        <p className="text-[var(--color-text-muted)]">
-                            iFINN provides analytical tools for informational purposes only. All investment decisions carry risk, including potential loss of principal.
-                        </p>
-                    </motion.div>
-
-                    {/* Roadmap */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-6">Roadmap</h2>
-                        <div className="space-y-6">
-                            {roadmapItems.map(phase => (
-                                <div key={phase.phase} className="flex items-start space-x-4">
-                                    <div className={`w-3 h-3 rounded-full mt-2 ${phase.status === 'In Progress' ? 'bg-[var(--color-success)]' : 'bg-[var(--color-border)]'}`} />
-                                    <div>
-                                        <div className="flex items-center space-x-3 mb-1">
-                                            <span className="text-xs font-medium text-[var(--color-accent)]">{phase.phase}</span>
-                                            <h3 className="font-semibold text-[var(--color-text)]">{phase.title}</h3>
-                                            <span className={`px-2 py-0.5 text-xs rounded ${phase.status === 'In Progress' ? 'bg-[var(--color-success)]/20 text-[var(--color-success)]' : 'bg-[var(--color-border)] text-[var(--color-text-muted)]'}`}>{phase.status}</span>
-                                        </div>
-                                        <p className="text-sm text-[var(--color-text-muted)]">{phase.items.join(' • ')}</p>
-                                    </div>
-                                </div>
-                            ))}
+                            <h3 className="mono mt-12 border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                What we promise
+                            </h3>
+                            <ul>
+                                {promises.map((promise) => (
+                                    <li
+                                        key={promise}
+                                        className="border-b border-[var(--color-line)] py-3 text-[15px] leading-relaxed text-[var(--color-muted)]"
+                                    >
+                                        {promise}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                    </motion.div>
+
+                        <div className="lg:col-span-5">
+                            <h2 className="h3">Where we are</h2>
+                            <table className="data-table mt-4">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Phase</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {roadmap.map((row) => (
+                                        <tr key={row.phase}>
+                                            <td>
+                                                {row.phase}
+                                                <span className="mt-1 block text-[13px] leading-relaxed text-[var(--color-muted)]">
+                                                    {row.items}
+                                                </span>
+                                            </td>
+                                            <td
+                                                className={`num whitespace-nowrap text-right ${
+                                                    row.status === 'Planned'
+                                                        ? 'text-[var(--color-muted)]'
+                                                        : 'text-[var(--color-accent)]'
+                                                }`}
+                                            >
+                                                {row.status}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                            <p className="mono mt-8 border-t border-[var(--color-line)] pt-4 text-[12px] leading-relaxed text-[var(--color-muted)]">
+                                <span className="text-[var(--color-warn)]">Disclosure.</span> iFINN
+                                provides analytical tools for research and education. Nothing on this
+                                site is financial advice, and trading carries a real risk of loss.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </>

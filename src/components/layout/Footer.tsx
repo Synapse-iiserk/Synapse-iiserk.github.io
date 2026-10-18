@@ -1,136 +1,100 @@
 import { Link } from 'react-router-dom';
 
-const footerLinks = {
-    product: [
-        { name: 'Market Tracking', path: '/products#market-tracking' },
-        { name: 'AI Strategy Builder', path: '/products#strategy-builder' },
-        { name: 'Options Analyzer', path: '/products#options-analyzer' },
-        { name: 'Crypto Intelligence', path: '/products#crypto-intelligence' },
-    ],
-    company: [
-        { name: 'About Us', path: '/about' },
-        { name: 'Our Team', path: '/team' },
-        { name: 'Contact', path: '/contact' },
-    ],
-    legal: [
-        { name: 'Privacy Policy', path: '/privacy' },
-        { name: 'Terms of Service', path: '/terms' },
-        { name: 'Disclaimer', path: '/disclaimer' },
-    ],
-};
+const columns = [
+    {
+        label: 'Platform',
+        links: [
+            { name: 'Workspace', path: '/products#workspace' },
+            { name: 'Algorithm library', path: '/products#algorithms' },
+            { name: 'Backtesting', path: '/products#backtest' },
+            { name: 'AI research agent', path: '/products#ai-agent' },
+            { name: 'Open leaderboard', path: '/products#leaderboard' },
+        ],
+    },
+    {
+        label: 'Company',
+        links: [
+            { name: 'About', path: '/about' },
+            { name: 'Team', path: '/team' },
+            { name: 'Contact', path: '/contact' },
+            { name: 'Analytics playground', path: '/analytics' },
+        ],
+    },
+    {
+        label: 'Legal',
+        links: [
+            { name: 'Privacy', path: '/privacy' },
+            { name: 'Terms', path: '/terms' },
+            { name: 'Disclaimer', path: '/disclaimer' },
+        ],
+    },
+];
 
 export const Footer: React.FC = () => {
-    const currentYear = new Date().getFullYear();
+    const year = new Date().getFullYear();
 
     return (
-        <footer className="bg-[var(--color-primary)] border-t border-[var(--color-border)]">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-                    {/* Brand Column */}
-                    <div className="lg:col-span-1">
-                        <Link to="/" className="flex items-center space-x-2 mb-4">
-                            <div className="w-10 h-10 flex items-center justify-center rounded-lg">
-                                <img src="/ifinn_logo.svg" alt="iFINN Logo" className="w-8 h-8" />
-                            </div>
-                            <span className="text-xl font-bold text-[var(--color-text)]">iFINN</span>
+        <footer className="border-t border-[var(--color-line)]">
+            <div className="shell py-14 lg:py-20">
+                <div className="grid gap-12 lg:grid-cols-12">
+                    <div className="lg:col-span-5">
+                        <Link to="/" className="flex items-center gap-2.5">
+                            <img src="/ifinn_logo.svg" alt="" className="h-7 w-7" />
+                            <span className="font-display text-lg font-semibold tracking-tight">iFINN</span>
                         </Link>
-                        <p className="text-[var(--color-text-muted)] text-sm leading-relaxed mb-6">
-                            AI-driven financial intelligence platform providing unified analytics for stocks, derivatives, and crypto assets.
+                        <p className="prose mt-4 text-[15px]">
+                            A quantitative research terminal built by Team Synapse at IISER Kolkata:
+                            528 vetted algorithms, backtesting and paper trading on one engine, and a
+                            research agent that answers with live tool calls.
                         </p>
-                        <div className="flex space-x-4">
-                            <a
-                                href="mailto:contact@ifinn.finance"
-                                className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
-                                aria-label="Email"
-                            >
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                                </svg>
+                        <div className="mono mt-6 flex flex-col gap-1 text-[13px]">
+                            <a href="mailto:investors@ifinn.finance" className="link w-fit">
+                                investors@ifinn.finance
+                            </a>
+                            <a href="mailto:support@ifinn.finance" className="link w-fit">
+                                support@ifinn.finance
                             </a>
                         </div>
                     </div>
 
-                    {/* Product Links */}
-                    <div>
-                        <h3 className="text-[var(--color-text)] font-semibold mb-4">Products</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.product.map((link) => (
-                                <li key={link.path}>
-                                    <Link
-                                        to={link.path}
-                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-sm transition-colors"
-                                    >
-                                        {link.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Company Links */}
-                    <div>
-                        <h3 className="text-[var(--color-text)] font-semibold mb-4">Company</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.company.map((link) => (
-                                <li key={link.path}>
-                                    <Link
-                                        to={link.path}
-                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-sm transition-colors"
-                                    >
-                                        {link.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Contact Info */}
-                    <div>
-                        <h3 className="text-[var(--color-text)] font-semibold mb-4">Contact</h3>
-                        <ul className="space-y-3 text-sm text-[var(--color-text-muted)]">
-                            <li>
-                                <span className="block text-[var(--color-text-muted)]">Investor Inquiries</span>
-                                <a href="mailto:investors@ifinn.finance" className="hover:text-[var(--color-accent)] transition-colors">
-                                    investors@ifinn.finance
-                                </a>
-                            </li>
-                            <li>
-                                <span className="block text-[var(--color-text-muted)]">General Support</span>
-                                <a href="mailto:support@ifinn.finance" className="hover:text-[var(--color-accent)] transition-colors">
-                                    support@ifinn.finance
-                                </a>
-                            </li>
-                        </ul>
+                    <div className="grid gap-10 sm:grid-cols-3 lg:col-span-7">
+                        {columns.map((column) => (
+                            <nav key={column.label} aria-label={column.label}>
+                                <h2 className="mono border-t border-[var(--color-line)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                    {column.label}
+                                </h2>
+                                <ul className="mt-4 flex flex-col gap-2.5">
+                                    {column.links.map((link) => (
+                                        <li key={link.path}>
+                                            <Link
+                                                to={link.path}
+                                                className="text-[15px] text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]"
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
+                        ))}
                     </div>
                 </div>
 
-                {/* Disclaimer */}
-                <div className="mt-12 pt-8 border-t border-[var(--color-border)]">
-                    <div className="bg-[var(--color-primary-light)] rounded-lg p-4 mb-6">
-                        <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
-                            <strong className="text-[var(--color-gold)]">Financial Disclaimer:</strong> iFINN provides analytical tools and insights for informational purposes only.
-                            Nothing on this platform constitutes financial, investment, legal, or tax advice. Past performance does not guarantee future results.
-                            Trading in financial markets involves substantial risk of loss. Users should conduct their own research and consult with qualified
-                            financial advisors before making investment decisions. iFINN does not guarantee the accuracy, completeness, or timeliness of any
-                            information provided. All products and features marked as "Coming Soon" are under development and subject to change.
+                <div className="mt-14 border-t border-[var(--color-line)] pt-6">
+                    <p className="mono max-w-[80ch] text-[12px] leading-relaxed text-[var(--color-muted)]">
+                        <span className="text-[var(--color-warn)]">Disclosure.</span> iFINN provides
+                        analytical tools for research and education. Nothing here is financial,
+                        investment, legal or tax advice. Past performance does not predict future
+                        results, and trading carries a real risk of loss. Figures shown are measured
+                        on public market data at the time of publication.
+                    </p>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="mono text-[12px] text-[var(--color-muted)]">
+                            © {year} iFINN · Team Synapse, IISER Kolkata
                         </p>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                        <p className="text-sm text-[var(--color-text-muted)]">
-                            © {currentYear} iFINN. All rights reserved.
+                        <p className="mono text-[12px] text-[var(--color-muted)]">
+                            MIT-licensed core · self-hostable with Docker
                         </p>
-                        <div className="flex space-x-6">
-                            {footerLinks.legal.map((link) => (
-                                <Link
-                                    key={link.path}
-                                    to={link.path}
-                                    className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
                     </div>
                 </div>
             </div>

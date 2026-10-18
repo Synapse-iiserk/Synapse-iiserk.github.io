@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 interface CoinData {
   id: string;
@@ -41,11 +40,11 @@ export const CoinGeckoWidget: React.FC = () => {
   if (error) return <div className="p-6 text-center text-[var(--color-danger)]">Error: {error}</div>;
 
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl border border-[var(--color-border)] p-6 shadow-lg">
+    <div className="bg-[var(--color-primary-light)]  border border-[var(--color-border)] p-6 ">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-[var(--color-text)]">Live Crypto Markets</h3>
         <span className="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse"></span>
+          <span className="w-2 h-2  bg-[var(--color-success)] "></span>
           Live Data via CoinGecko
         </span>
       </div>
@@ -61,17 +60,13 @@ export const CoinGeckoWidget: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {coins.map((coin, index) => (
-              <motion.tr 
-                key={coin.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="border-b border-[var(--color-border)]/50 hover:bg-[var(--color-primary)]/50 transition-colors"
+            {coins.map((coin) => (
+              <tr 
+                key={coin.id} className="border-b border-[var(--color-border)]/50 hover:bg-[var(--color-primary)]/50 transition-colors"
               >
                 <td className="py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-gold)]/20 flex items-center justify-center text-xs font-bold uppercase">
+                    <div className="w-8 h-8   flex items-center justify-center text-xs font-bold uppercase">
                       {coin.symbol.substring(0, 2)}
                     </div>
                     <div>
@@ -96,7 +91,7 @@ export const CoinGeckoWidget: React.FC = () => {
                 <td className="py-4 text-right text-[var(--color-text-muted)] text-sm hidden sm:table-cell">
                   ${(coin.market_cap / 1000000000).toFixed(2)}B
                 </td>
-              </motion.tr>
+              </tr>
             ))}
           </tbody>
         </table>

@@ -5,7 +5,6 @@
  */
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import {
   calculateRSI,
   calculateBollingerBands,
@@ -47,13 +46,13 @@ export const RSICalculator: React.FC = () => {
   }, [period, volatility]);
   
   const getSignalColor = () => {
-    if (signal === 'Overbought') return 'text-red-400';
-    if (signal === 'Oversold') return 'text-green-400';
+    if (signal === 'Overbought') return 'text-[#c4544a]';
+    if (signal === 'Oversold') return 'text-[var(--color-accent)]';
     return 'text-yellow-400';
   };
   
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl p-6 border border-[var(--color-border)]">
+    <div className="bg-[var(--color-primary-light)]  p-6 border border-[var(--color-border)]">
       <h3 className="text-xl font-bold text-[var(--color-text)] mb-4">
         RSI Calculator
       </h3>
@@ -68,8 +67,7 @@ export const RSICalculator: React.FC = () => {
             min="5"
             max="30"
             value={period}
-            onChange={(e) => setPeriod(Number(e.target.value))}
-            className="w-full"
+            onChange={(e) => setPeriod(Number(e.target.value))} className="w-full"
           />
           <span className="text-[var(--color-text)]">{period}</span>
         </div>
@@ -83,14 +81,13 @@ export const RSICalculator: React.FC = () => {
             min="1"
             max="5"
             value={volatility * 100}
-            onChange={(e) => setVolatility(Number(e.target.value) / 100)}
-            className="w-full"
+            onChange={(e) => setVolatility(Number(e.target.value) / 100)} className="w-full"
           />
           <span className="text-[var(--color-text)]">{(volatility * 100).toFixed(1)}%</span>
         </div>
       </div>
       
-      <div className="flex items-center justify-between p-4 bg-[var(--color-primary)] rounded-lg">
+      <div className="flex items-center justify-between p-4 bg-[var(--color-primary)] ">
         <div>
           <div className="text-sm text-[var(--color-text-muted)]">Current RSI</div>
           <div className="text-3xl font-bold text-[var(--color-text)]">
@@ -107,8 +104,7 @@ export const RSICalculator: React.FC = () => {
       <div className="mt-4 h-20 flex items-end gap-0.5">
         {rsi.slice(-50).map((value, idx) => (
           <div
-            key={idx}
-            className="flex-1 rounded-t transition-all"
+            key={idx} className="flex-1  transition-all"
             style={{
               height: `${Math.max(5, value)}%`,
               backgroundColor: value > 70 ? '#ef4444' : value < 30 ? '#22c55e' : '#f59e0b',
@@ -156,7 +152,7 @@ export const MovingAverageDemo: React.FC = () => {
   const lastEMA = ema[ema.length - 1];
   
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl p-6 border border-[var(--color-border)]">
+    <div className="bg-[var(--color-primary-light)]  p-6 border border-[var(--color-border)]">
       <h3 className="text-xl font-bold text-[var(--color-text)] mb-4">
         Moving Averages
       </h3>
@@ -171,8 +167,7 @@ export const MovingAverageDemo: React.FC = () => {
             min="5"
             max="50"
             value={smaPeriod}
-            onChange={(e) => setSMAPeriod(Number(e.target.value))}
-            className="w-full"
+            onChange={(e) => setSMAPeriod(Number(e.target.value))} className="w-full"
           />
         </div>
         
@@ -185,45 +180,42 @@ export const MovingAverageDemo: React.FC = () => {
             min="5"
             max="50"
             value={emaPeriod}
-            onChange={(e) => setEMAPeriod(Number(e.target.value))}
-            className="w-full"
+            onChange={(e) => setEMAPeriod(Number(e.target.value))} className="w-full"
           />
         </div>
       </div>
       
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Price</div>
           <div className="text-lg font-semibold text-[var(--color-text)]">
             ${lastPrice.toFixed(2)}
           </div>
         </div>
         
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">SMA({smaPeriod})</div>
-          <div className="text-lg font-semibold text-blue-400">
+          <div className="text-lg font-semibold text-[var(--color-ink)]">
             ${lastSMA.toFixed(2)}
           </div>
         </div>
         
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">EMA({emaPeriod})</div>
-          <div className="text-lg font-semibold text-purple-400">
+          <div className="text-lg font-semibold text-[var(--color-accent)]">
             ${lastEMA.toFixed(2)}
           </div>
         </div>
       </div>
       
       {crossover !== 'None' && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`p-3 rounded-lg text-center ${
-            crossover === 'Bullish' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+        <div
+          className={`p-3  text-center ${
+            crossover === 'Bullish' ? 'bg-green-500/20 text-[var(--color-accent)]' : 'bg-red-500/20 text-[#c4544a]'
           }`}
         >
           {crossover} Crossover Detected!
-        </motion.div>
+        </div>
       )}
     </div>
   );
@@ -263,7 +255,7 @@ export const BollingerBandsDemo: React.FC = () => {
   const lastPercentB = bb.percentB[bb.percentB.length - 1];
   
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl p-6 border border-[var(--color-border)]">
+    <div className="bg-[var(--color-primary-light)]  p-6 border border-[var(--color-border)]">
       <h3 className="text-xl font-bold text-[var(--color-text)] mb-4">
         Bollinger Bands
       </h3>
@@ -278,8 +270,7 @@ export const BollingerBandsDemo: React.FC = () => {
             min="10"
             max="50"
             value={period}
-            onChange={(e) => setPeriod(Number(e.target.value))}
-            className="w-full"
+            onChange={(e) => setPeriod(Number(e.target.value))} className="w-full"
           />
         </div>
         
@@ -293,21 +284,20 @@ export const BollingerBandsDemo: React.FC = () => {
             max="3"
             step="0.5"
             value={stdDev}
-            onChange={(e) => setStdDev(Number(e.target.value))}
-            className="w-full"
+            onChange={(e) => setStdDev(Number(e.target.value))} className="w-full"
           />
         </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Bandwidth</div>
           <div className="text-lg font-semibold text-[var(--color-text)]">
             {(lastBandwidth * 100).toFixed(2)}%
           </div>
         </div>
         
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">%B</div>
           <div className="text-lg font-semibold text-[var(--color-text)]">
             {(lastPercentB * 100).toFixed(1)}%
@@ -315,19 +305,16 @@ export const BollingerBandsDemo: React.FC = () => {
         </div>
       </div>
       
-      <div className="p-3 bg-[var(--color-primary)] rounded-lg mb-4">
+      <div className="p-3 bg-[var(--color-primary)]  mb-4">
         <div className="text-sm text-[var(--color-text-muted)]">Position</div>
         <div className="text-[var(--color-text)] font-medium">{position}</div>
       </div>
       
       {squeeze && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-3 rounded-lg bg-yellow-500/20 text-yellow-400 text-center"
+        <div className="p-3  bg-yellow-500/20 text-yellow-400 text-center"
         >
-          ⚠️ Bollinger Squeeze Detected - Potential Breakout
-        </motion.div>
+          Bollinger squeeze detected, potential breakout
+        </div>
       )}
     </div>
   );
@@ -351,7 +338,7 @@ export const TrendAnalysisDemo: React.FC = () => {
   const bestFit = linear.rSquared > quadratic.rSquared - 0.01 ? 'Linear' : 'Quadratic';
   
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl p-6 border border-[var(--color-border)]">
+    <div className="bg-[var(--color-primary-light)]  p-6 border border-[var(--color-border)]">
       <h3 className="text-xl font-bold text-[var(--color-text)] mb-4">
         Trend Analysis
       </h3>
@@ -365,28 +352,27 @@ export const TrendAnalysisDemo: React.FC = () => {
           min="20"
           max="100"
           value={dataPoints}
-          onChange={(e) => setDataPoints(Number(e.target.value))}
-          className="w-full"
+          onChange={(e) => setDataPoints(Number(e.target.value))} className="w-full"
         />
       </div>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Linear R²</div>
-          <div className="text-lg font-semibold text-blue-400">
+          <div className="text-lg font-semibold text-[var(--color-ink)]">
             {(linear.rSquared * 100).toFixed(1)}%
           </div>
         </div>
         
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Quadratic R²</div>
-          <div className="text-lg font-semibold text-purple-400">
+          <div className="text-lg font-semibold text-[var(--color-accent)]">
             {(quadratic.rSquared * 100).toFixed(1)}%
           </div>
         </div>
       </div>
       
-      <div className="p-4 bg-[var(--color-primary)] rounded-lg mb-4">
+      <div className="p-4 bg-[var(--color-primary)]  mb-4">
         <div className="text-sm text-[var(--color-text-muted)] mb-2">Best Fit: {bestFit}</div>
         <code className="text-xs text-[var(--color-accent)] block">
           {bestFit === 'Linear' ? linear.equation : quadratic.equation}
@@ -437,13 +423,13 @@ export const PortfolioRiskDemo: React.FC = () => {
   const totalReturn = (equityCurve[equityCurve.length - 1] - equityCurve[0]) / equityCurve[0];
   
   const getRiskColor = () => {
-    if (riskLevel === 'High') return 'text-red-400';
+    if (riskLevel === 'High') return 'text-[#c4544a]';
     if (riskLevel === 'Medium') return 'text-yellow-400';
-    return 'text-green-400';
+    return 'text-[var(--color-accent)]';
   };
   
   return (
-    <div className="bg-[var(--color-primary-light)] rounded-xl p-6 border border-[var(--color-border)]">
+    <div className="bg-[var(--color-primary-light)]  p-6 border border-[var(--color-border)]">
       <h3 className="text-xl font-bold text-[var(--color-text)] mb-4">
         Portfolio Risk Analysis
       </h3>
@@ -458,28 +444,27 @@ export const PortfolioRiskDemo: React.FC = () => {
           max="5"
           step="0.5"
           value={volatility * 100}
-          onChange={(e) => setVolatility(Number(e.target.value) / 100)}
-          className="w-full"
+          onChange={(e) => setVolatility(Number(e.target.value) / 100)} className="w-full"
         />
       </div>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Total Return</div>
-          <div className={`text-lg font-semibold ${totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`text-lg font-semibold ${totalReturn >= 0 ? 'text-[var(--color-accent)]' : 'text-[#c4544a]'}`}>
             {(totalReturn * 100).toFixed(2)}%
           </div>
         </div>
         
-        <div className="p-3 bg-[var(--color-primary)] rounded-lg">
+        <div className="p-3 bg-[var(--color-primary)] ">
           <div className="text-xs text-[var(--color-text-muted)]">Max Drawdown</div>
-          <div className="text-lg font-semibold text-red-400">
+          <div className="text-lg font-semibold text-[#c4544a]">
             -{(maxDD * 100).toFixed(2)}%
           </div>
         </div>
       </div>
       
-      <div className="p-4 bg-[var(--color-primary)] rounded-lg flex items-center justify-between">
+      <div className="p-4 bg-[var(--color-primary)]  flex items-center justify-between">
         <span className="text-[var(--color-text-muted)]">Risk Level</span>
         <span className={`text-xl font-bold ${getRiskColor()}`}>{riskLevel}</span>
       </div>
@@ -492,8 +477,7 @@ export const PortfolioRiskDemo: React.FC = () => {
           const height = ((value - min) / (max - min)) * 100;
           return (
             <div
-              key={idx}
-              className="flex-1 bg-[var(--color-accent)] rounded-t"
+              key={idx} className="flex-1 bg-[var(--color-accent)] "
               style={{ height: `${Math.max(5, height)}%`, opacity: 0.5 + (idx / 120) }}
             />
           );

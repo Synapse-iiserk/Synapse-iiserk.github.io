@@ -1,112 +1,83 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SEO from '../seo/SEO';
 import { teamMembers } from '../data/team';
+
+const initials = (name: string) =>
+    name
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
 
 export const Team: React.FC = () => {
     return (
         <>
             <SEO
-                title="Our Team"
-                description="Meet the team behind iFINN. Technical leaders, financial experts, and algorithm developers building the future of AI-driven financial intelligence."
+                title="Team"
+                description="The people building iFINN at IISER Kolkata: engineering, quantitative research, market operations and product."
                 canonicalUrl="/team"
             />
 
-            {/* Hero */}
-            <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center"
-                    >
-                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">
-                            Our Team
-                        </span>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--color-text)] mb-6">
-                            The People Behind{' '}
-                            <span className="gradient-text">iFINN</span>
-                        </h1>
-                        <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-                            A dedicated team of engineers, analysts, and domain experts committed to
-                            democratizing institutional-grade financial intelligence.
-                        </p>
-                    </motion.div>
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <span className="eyebrow reveal">Team</span>
+                    <h1 className="h-display reveal mt-5">Who builds it.</h1>
+                    <p className="lead mt-6">
+                        Engineers and quant researchers at IISER Kolkata, working on the platform in
+                        the open. Every member owns a layer of the stack and writes the tests that
+                        guard it.
+                    </p>
                 </div>
             </section>
 
-            {/* Team Grid */}
-            <section className="py-16 lg:py-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {teamMembers.map((member, index) => (
-                            <motion.div
-                                key={member.slug}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                            >
+            <section className="section">
+                <div className="shell">
+                    <ul>
+                        {teamMembers.map((member) => (
+                            <li key={member.slug} className="border-t border-[var(--color-line)] last:border-b">
                                 <Link
                                     to={`/team/${member.slug}`}
-                                    className="group block p-6 rounded-2xl bg-[var(--color-primary-light)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[var(--color-accent)]/5"
+                                    className="grid items-baseline gap-x-8 gap-y-1 py-5 transition-colors sm:grid-cols-[3.5rem_15rem_minmax(0,1fr)_auto]"
                                 >
-                                    {/* Avatar Placeholder */}
-                                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-gold)] flex items-center justify-center mx-auto mb-6 group-hover:shadow-lg group-hover:shadow-[var(--color-accent)]/30 transition-shadow">
-                                        <span className="text-3xl font-bold text-white">
-                                            {member.name.split(' ').map(n => n[0]).join('')}
-                                        </span>
-                                    </div>
-
-                                    <div className="text-center">
-                                        <h3 className="text-xl font-semibold text-[var(--color-text)] mb-1 group-hover:text-[var(--color-accent)] transition-colors">
+                                    <span
+                                        aria-hidden
+                                        className="mono flex h-12 w-12 items-center justify-center border border-[var(--color-line-strong)] text-[13px] text-[var(--color-accent)]"
+                                    >
+                                        {initials(member.name)}
+                                    </span>
+                                    <span>
+                                        <span className="block font-display text-[19px] font-medium tracking-tight">
                                             {member.name}
-                                        </h3>
-                                        <p className="text-[var(--color-accent)] text-sm font-medium mb-4">
+                                        </span>
+                                        <span className="mono mt-1 block text-[11px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
                                             {member.role}
-                                        </p>
-                                        <p className="text-[var(--color-text-muted)] text-sm mb-4">
-                                            {member.focus}
-                                        </p>
-
-                                        <div className="flex items-center justify-center text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-colors">
-                                            View Profile
-                                            <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </span>
+                                    <span className="text-[15px] leading-relaxed text-[var(--color-muted)]">
+                                        {member.focus}
+                                    </span>
+                                    <span className="mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                        Profile
+                                    </span>
                                 </Link>
-                            </motion.div>
+                            </li>
                         ))}
-                    </div>
-                </div>
-            </section>
+                    </ul>
 
-            {/* Join Us CTA */}
-            <section className="py-16 lg:py-24 bg-[var(--color-primary-light)]">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">
-                            Join Our Team
-                        </h2>
-                        <p className="text-[var(--color-text-muted)] mb-8">
-                            We're always looking for talented individuals passionate about finance and technology.
-                        </p>
-                        <Link
-                            to="/contact"
-                            className="inline-flex items-center px-6 py-3 bg-[var(--color-accent)] text-white font-medium rounded-lg hover:bg-[var(--color-accent-hover)] transition-colors"
-                        >
-                            Get in Touch
-                            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </Link>
-                    </motion.div>
+                    <div className="mt-16 grid gap-6 border-t border-[var(--color-ink)] pt-6 lg:grid-cols-12">
+                        <h2 className="h3 lg:col-span-5">Work with us</h2>
+                        <div className="lg:col-span-7">
+                            <p className="prose text-[15px]">
+                                We take on research engineers, quant developers and growth work as the
+                                alpha grows. Send a note with something you have built and we will read
+                                it properly.
+                            </p>
+                            <Link to="/contact" className="btn btn-primary mt-6">
+                                Get in touch
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
         </>

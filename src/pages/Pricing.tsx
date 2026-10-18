@@ -1,85 +1,44 @@
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SEO from '../seo/SEO';
 
-const pricingTiers = [
-    {
-        name: 'Free',
-        price: '$0',
-        period: '/month',
-        description: 'Perfect for exploring the platform and basic market monitoring.',
-        badge: 'Coming Soon',
-        features: [
-            'Basic market data',
-            'Limited watchlists',
-            'Daily market summaries',
-            'Community access',
-            'Email support',
-        ],
-        notIncluded: [
-            'Real-time data',
-            'AI strategy tools',
-            'Derivatives analysis',
-            'API access',
-        ],
-        cta: 'Join Waitlist',
-        highlighted: false,
-    },
-    {
-        name: 'Pro',
-        price: '$49',
-        period: '/month',
-        description: 'For active traders who need real-time data and AI-powered insights.',
-        badge: 'Coming Soon',
-        features: [
-            'Real-time market data',
-            'Unlimited watchlists',
-            'AI strategy builder',
-            'Options analytics',
-            'Crypto intelligence',
-            'Custom alerts',
-            'Priority support',
-            'API access (limited)',
-        ],
-        notIncluded: [
-            'Institutional features',
-            'White-glove onboarding',
-        ],
-        cta: 'Join Waitlist',
-        highlighted: true,
-    },
-    {
-        name: 'Institutional',
-        price: 'Custom',
-        period: '',
-        description: 'Enterprise-grade solutions for funds, family offices, and institutions.',
-        badge: 'Coming Soon',
-        features: [
-            'Everything in Pro',
-            'Dedicated infrastructure',
-            'Custom integrations',
-            'Unlimited API access',
-            'Compliance reporting',
-            'White-glove onboarding',
-            'Dedicated account manager',
-            'SLA guarantees',
-        ],
-        notIncluded: [],
-        cta: 'Contact Sales',
-        highlighted: false,
-    },
+type Cell = 'Included' | 'Not included' | 'Limited' | 'Unlimited' | 'Email' | 'Priority' | 'Dedicated';
+
+const tiers = [
+    { name: 'Free', price: '$0', forWhom: 'Read the market and learn the interface.' },
+    { name: 'Pro', price: '$49', forWhom: 'Run strategies, backtests and the research agent.' },
+    { name: 'Institutional', price: 'Custom', forWhom: 'Funds, family offices and research desks.' },
 ];
+
+const rows: { capability: string; cells: [Cell, Cell, Cell] }[] = [
+    { capability: 'Analytics playground', cells: ['Included', 'Included', 'Included'] },
+    { capability: 'Market snapshots and daily summaries', cells: ['Included', 'Included', 'Included'] },
+    { capability: 'Paper trading sessions', cells: ['Included', 'Included', 'Included'] },
+    { capability: 'Algorithm library', cells: ['Limited', 'Included', 'Included'] },
+    { capability: 'Real-time streaming', cells: ['Not included', 'Included', 'Included'] },
+    { capability: 'Backtesting engine', cells: ['Not included', 'Included', 'Included'] },
+    { capability: 'AI research agent (145 tools)', cells: ['Not included', 'Included', 'Included'] },
+    { capability: 'Signals and alternative-data boards', cells: ['Not included', 'Included', 'Included'] },
+    { capability: 'API access', cells: ['Not included', 'Limited', 'Unlimited'] },
+    { capability: 'Dedicated infrastructure', cells: ['Not included', 'Not included', 'Included'] },
+    { capability: 'Compliance reporting', cells: ['Not included', 'Not included', 'Included'] },
+    { capability: 'Support', cells: ['Email', 'Priority', 'Dedicated'] },
+];
+
+const cellTone = (value: Cell) =>
+    value === 'Not included'
+        ? 'text-[var(--color-muted)]'
+        : value === 'Limited'
+          ? 'text-[var(--color-warn)]'
+          : 'text-[var(--color-accent)]';
 
 export const Pricing: React.FC = () => {
     const [email, setEmail] = useState('');
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
         if (!email) return;
-        // TODO: Integrate with backend
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setIsSubmitted(true);
+        setSubmitted(true);
         setEmail('');
     };
 
@@ -87,145 +46,126 @@ export const Pricing: React.FC = () => {
         <>
             <SEO
                 title="Pricing"
-                description="Explore iFINN pricing plans. From free market monitoring to institutional-grade analytics. All plans currently in development."
+                description="iFINN pricing: a free tier, Pro at $49 a month and an institutional tier priced to fit. Prices are the plan we intend to launch with."
                 canonicalUrl="/pricing"
             />
 
-            {/* Hero */}
-            <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center"
-                    >
-                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">
-                            Pricing
-                        </span>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--color-text)] mb-6">
-                            Simple, Transparent{' '}
-                            <span className="gradient-text">Pricing</span>
-                        </h1>
-                        <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-                            Choose the plan that fits your investment needs. All plans are currently
-                            in development and subject to regulatory review.
-                        </p>
-                    </motion.div>
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <span className="eyebrow reveal">Pricing</span>
+                    <h1 className="h-display reveal mt-5">Three tiers, no surprises.</h1>
+                    <p className="lead mt-6">
+                        These are the prices we intend to launch with. Nothing is charged today: the
+                        platform is in alpha, and seats open by invitation while we finish the
+                        compliance review.
+                    </p>
                 </div>
             </section>
 
-            {/* Pricing Cards */}
-            <section className="py-16 lg:py-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {pricingTiers.map((tier, index) => (
-                            <motion.div
-                                key={tier.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className={`relative rounded-2xl p-8 ${tier.highlighted
-                                        ? 'bg-gradient-to-b from-[var(--color-accent)]/20 to-[var(--color-primary-light)] border-2 border-[var(--color-accent)]'
-                                        : 'bg-[var(--color-primary-light)] border border-[var(--color-border)]'
-                                    }`}
-                            >
-                                {tier.highlighted && (
-                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                        <span className="px-4 py-1 text-xs font-medium bg-[var(--color-accent)] text-white rounded-full">
-                                            Most Popular
+            <section className="section">
+                <div className="shell">
+                    <div className="grid gap-8 sm:grid-cols-3">
+                        {tiers.map((tier) => (
+                            <div key={tier.name} className="border-t border-[var(--color-ink)] pt-3">
+                                <h2 className="font-display text-[19px] font-medium tracking-tight">
+                                    {tier.name}
+                                </h2>
+                                <p className="num mt-2 text-3xl">
+                                    {tier.price}
+                                    {tier.price !== 'Custom' && (
+                                        <span className="mono ml-1 text-[12px] text-[var(--color-muted)]">
+                                            /month
                                         </span>
-                                    </div>
-                                )}
-
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-[var(--color-text)]">{tier.name}</h3>
-                                    <span className="px-3 py-1 text-xs font-medium bg-[var(--color-gold)]/20 text-[var(--color-gold)] rounded-full">
-                                        {tier.badge}
-                                    </span>
-                                </div>
-
-                                <div className="mb-4">
-                                    <span className="text-4xl font-bold text-[var(--color-text)]">{tier.price}</span>
-                                    <span className="text-[var(--color-text-muted)]">{tier.period}</span>
-                                </div>
-
-                                <p className="text-sm text-[var(--color-text-muted)] mb-6">{tier.description}</p>
-
-                                <button
-                                    className={`w-full py-3 rounded-lg font-medium transition-all mb-8 ${tier.highlighted
-                                            ? 'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]'
-                                            : 'bg-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-accent)]/20'
-                                        }`}
-                                >
-                                    {tier.cta}
-                                </button>
-
-                                <div className="space-y-3">
-                                    {tier.features.map((feature) => (
-                                        <div key={feature} className="flex items-center text-sm">
-                                            <svg className="w-4 h-4 text-[var(--color-success)] mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                            </svg>
-                                            <span className="text-[var(--color-text-muted)]">{feature}</span>
-                                        </div>
-                                    ))}
-                                    {tier.notIncluded.map((feature) => (
-                                        <div key={feature} className="flex items-center text-sm opacity-50">
-                                            <svg className="w-4 h-4 text-[var(--color-text-muted)] mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                            </svg>
-                                            <span className="text-[var(--color-text-muted)]">{feature}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </motion.div>
+                                    )}
+                                </p>
+                                <p className="mt-2 text-[14px] leading-relaxed text-[var(--color-muted)]">
+                                    {tier.forWhom}
+                                </p>
+                            </div>
                         ))}
                     </div>
 
-                    {/* Email Notify */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="mt-16 text-center"
-                    >
-                        <h3 className="text-xl font-semibold text-[var(--color-text)] mb-4">
-                            Get notified when we launch
-                        </h3>
-                        {!isSubmitted ? (
-                            <form onSubmit={handleSubmit} className="max-w-md mx-auto flex gap-3">
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Enter your email"
-                                    required
-                                    className="flex-1 px-4 py-3 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)]"
-                                />
-                                <button
-                                    type="submit"
-                                    className="px-6 py-3 bg-[var(--color-accent)] text-white font-medium rounded-lg hover:bg-[var(--color-accent-hover)] transition-colors"
-                                >
-                                    Notify Me
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="p-4 rounded-lg bg-[var(--color-success)]/10 border border-[var(--color-success)]/30 max-w-md mx-auto">
-                                <p className="text-[var(--color-success)]">You're on the list! We'll notify you when pricing is available.</p>
-                            </div>
-                        )}
-                    </motion.div>
-
-                    {/* Disclaimer */}
-                    <div className="mt-16 p-6 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                        <p className="text-sm text-[var(--color-text-muted)] text-center">
-                            <strong className="text-[var(--color-gold)]">Disclaimer:</strong> All pricing displayed above is
-                            preliminary and subject to change. Final pricing will be determined after completion of regulatory
-                            compliance review and platform development. iFINN reserves the right to modify pricing structures
-                            prior to launch.
-                        </p>
+                    <div className="mt-12 overflow-x-auto">
+                        <table className="data-table min-w-[46rem]">
+                            <thead>
+                                <tr>
+                                    <th scope="col" className="w-[38%]">
+                                        Capability
+                                    </th>
+                                    {tiers.map((tier) => (
+                                        <th key={tier.name} scope="col" className="text-right">
+                                            {tier.name}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rows.map((row) => (
+                                    <tr key={row.capability}>
+                                        <td>{row.capability}</td>
+                                        {row.cells.map((cell, column) => (
+                                            <td key={`${row.capability}-${column}`} className={`num text-right ${cellTone(cell)}`}>
+                                                {cell}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
+
+                    <div className="mt-14 grid gap-10 lg:grid-cols-2">
+                        <div>
+                            <h3 className="mono border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                Pricing table
+                            </h3>
+                            <p className="prose mt-3 text-[14.5px]">
+                                Send us a note and we will tell you what a seat costs for your use
+                                case, including the institutional tier.
+                            </p>
+                            <div className="mono mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[13px]">
+                                <a href="mailto:investors@ifinn.finance" className="link">
+                                    investors@ifinn.finance
+                                </a>
+                                <a href="mailto:support@ifinn.finance" className="link">
+                                    support@ifinn.finance
+                                </a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="mono border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                Launch notice
+                            </h3>
+                            {submitted ? (
+                                <p className="mt-3 text-[15px]">You are on the list. One email when seats open.</p>
+                            ) : (
+                                <form onSubmit={onSubmit} className="mt-3 flex max-w-lg flex-col gap-3 sm:flex-row">
+                                    <label htmlFor="pricing-email" className="sr-only">
+                                        Email address
+                                    </label>
+                                    <input
+                                        id="pricing-email"
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(event) => setEmail(event.target.value)}
+                                        placeholder="you@fund.com"
+                                        className="field"
+                                    />
+                                    <button type="submit" className="btn justify-center">
+                                        Notify me
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+
+                    <p className="mono mt-12 border-t border-[var(--color-line)] pt-4 text-[12px] leading-relaxed text-[var(--color-muted)]">
+                        <span className="text-[var(--color-warn)]">Note.</span> Prices are preliminary
+                        and may change as the regulatory review completes and the platform ships.
+                        Currency is USD, billed monthly, cancel any time.
+                    </p>
                 </div>
             </section>
         </>

@@ -1,5 +1,6 @@
 import SEO from '../seo/SEO';
 import Hero from '../components/home/Hero';
+import ProductShowcase from '../components/home/ProductShowcase';
 import ProductCapabilities from '../components/home/ProductCapabilities';
 import WhyiFINN from '../components/home/WhyiFINN';
 import TechStack from '../components/home/TechStack';
@@ -14,11 +15,13 @@ export const Home: React.FC = () => {
                     '@context': 'https://schema.org',
                     '@type': 'WebSite',
                     name: 'iFINN',
-                    description: 'AI-driven financial intelligence platform for stocks, derivatives, and crypto.',
-                    url: 'https://synapse-iiserk.github.io/Synapse-iiserk.github.io',
+                    description:
+                        'Quantitative finance platform: 528 vetted algorithms, backtesting, paper trading, cross-asset market data and a grounded AI research agent.',
+                    url: 'https://ifinn.org',
                 }}
             />
             <Hero />
+            <ProductShowcase />
             <ProductCapabilities />
             <WhyiFINN />
             <TechStack />

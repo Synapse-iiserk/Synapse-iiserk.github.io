@@ -1,110 +1,160 @@
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SEO from '../seo/SEO';
 
+const directLines = [
+    { label: 'Investors', value: 'investors@ifinn.finance', href: 'mailto:investors@ifinn.finance' },
+    { label: 'Support', value: 'support@ifinn.finance', href: 'mailto:support@ifinn.finance' },
+    { label: 'Press', value: 'press@ifinn.finance', href: 'mailto:press@ifinn.finance' },
+];
+
+const subjects = [
+    { value: 'general', label: 'General question' },
+    { value: 'investment', label: 'Investor inquiry' },
+    { value: 'support', label: 'Technical support' },
+    { value: 'partnership', label: 'Partnership' },
+    { value: 'press', label: 'Press' },
+];
+
 export const Contact: React.FC = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '', honeypot: '' });
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [form, setForm] = useState({ name: '', email: '', subject: '', message: '', honeypot: '' });
+    const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (formData.honeypot) return; // Bot detected
-        setIsLoading(true);
-        // TODO: Integrate with backend
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsSubmitted(true);
-        setIsLoading(false);
+    const update = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+        setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+
+    const onSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        if (form.honeypot) return;
+        // Wire this to the contact endpoint when the backend route ships.
+        setSubmitted(true);
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
+    const field = 'field mt-2';
 
     return (
         <>
-            <SEO title="Contact" description="Get in touch with the iFINN team. For investor inquiries, general questions, or support." canonicalUrl="/contact" />
+            <SEO
+                title="Contact"
+                description="Contact the iFINN team: investor relations, technical support, press, or a general question about the platform."
+                canonicalUrl="/contact"
+            />
 
-            <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                        <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">Contact</span>
-                        <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-text)] mb-6">
-                            Get in <span className="gradient-text">Touch</span>
-                        </h1>
-                        <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-                            Have questions? We'd love to hear from you.
-                        </p>
-                    </motion.div>
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <span className="eyebrow reveal">Contact</span>
+                    <h1 className="h-display reveal mt-5">Write to a person.</h1>
+                    <p className="lead mt-6">
+                        Every message is read by the team that builds the platform. Tell us what you are
+                        trying to do and we will answer with specifics, not a brochure.
+                    </p>
                 </div>
             </section>
 
-            <section className="py-16 lg:py-24 bg-[var(--color-primary)]">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Contact Info */}
-                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-6">Contact Information</h2>
-                            <div className="space-y-6">
-                                <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                                    <h3 className="font-semibold text-[var(--color-text)] mb-1">Investor Relations</h3>
-                                    <a href="mailto:investors@ifinn.finance" className="text-[var(--color-accent)] hover:underline">investors@ifinn.finance</a>
-                                </div>
-                                <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                                    <h3 className="font-semibold text-[var(--color-text)] mb-1">General Support</h3>
-                                    <a href="mailto:support@ifinn.finance" className="text-[var(--color-accent)] hover:underline">support@ifinn.finance</a>
-                                </div>
-                                <div className="p-4 rounded-xl bg-[var(--color-primary-light)] border border-[var(--color-border)]">
-                                    <h3 className="font-semibold text-[var(--color-text)] mb-1">Press & Media</h3>
-                                    <a href="mailto:press@ifinn.finance" className="text-[var(--color-accent)] hover:underline">press@ifinn.finance</a>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Contact Form */}
-                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                            {!isSubmitted ? (
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    {/* Honeypot */}
-                                    <input type="text" name="honeypot" value={formData.honeypot} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Name</label>
-                                        <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]" />
+            <section className="section">
+                <div className="shell">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 className="mono border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                Direct lines
+                            </h2>
+                            <dl>
+                                {directLines.map((line) => (
+                                    <div
+                                        key={line.label}
+                                        className="flex items-baseline justify-between gap-6 border-b border-[var(--color-line)] py-3"
+                                    >
+                                        <dt className="mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                            {line.label}
+                                        </dt>
+                                        <dd>
+                                            <a href={line.href} className="link mono text-[13px]">
+                                                {line.value}
+                                            </a>
+                                        </dd>
                                     </div>
+                                ))}
+                            </dl>
+                            <p className="mono mt-6 text-[12px] leading-relaxed text-[var(--color-muted)]">
+                                Kolkata, India. We answer within two working days.
+                            </p>
+                        </div>
+
+                        <div className="lg:col-span-8">
+                            {submitted ? (
+                                <div className="panel px-5 py-6">
+                                    <h2 className="h3">Message received</h2>
+                                    <p className="prose mt-2 text-[15px]">
+                                        Thanks. We will reply from a real address, usually within two
+                                        working days.
+                                    </p>
+                                </div>
+                            ) : (
+                                <form onSubmit={onSubmit} className="grid gap-6 sm:grid-cols-2">
+                                    <input
+                                        type="text"
+                                        name="honeypot"
+                                        value={form.honeypot}
+                                        onChange={update}
+                                        className="hidden"
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        aria-hidden
+                                    />
+
                                     <div>
-                                        <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Email</label>
-                                        <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]" />
+                                        <label htmlFor="name" className="mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                            Name
+                                        </label>
+                                        <input id="name" name="name" type="text" required value={form.name} onChange={update} className={field} />
                                     </div>
+
                                     <div>
-                                        <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Subject</label>
-                                        <select name="subject" value={formData.subject} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]">
-                                            <option value="">Select a subject</option>
-                                            <option value="general">General Inquiry</option>
-                                            <option value="investment">Investment Inquiry</option>
-                                            <option value="support">Technical Support</option>
-                                            <option value="partnership">Partnership</option>
-                                            <option value="press">Press/Media</option>
+                                        <label htmlFor="email" className="mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                            Email
+                                        </label>
+                                        <input id="email" name="email" type="email" required value={form.email} onChange={update} className={field} />
+                                    </div>
+
+                                    <div className="sm:col-span-2">
+                                        <label htmlFor="subject" className="mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                            Subject
+                                        </label>
+                                        <select id="subject" name="subject" required value={form.subject} onChange={update} className={field}>
+                                            <option value="">Choose one</option>
+                                            {subjects.map((subject) => (
+                                                <option key={subject.value} value={subject.value}>
+                                                    {subject.label}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Message</label>
-                                        <textarea name="message" value={formData.message} onChange={handleChange} required rows={5} className="w-full px-4 py-3 rounded-lg bg-[var(--color-primary-light)] border border-[var(--color-border)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)] resize-none" />
+
+                                    <div className="sm:col-span-2">
+                                        <label htmlFor="message" className="mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                                            Message
+                                        </label>
+                                        <textarea
+                                            id="message"
+                                            name="message"
+                                            rows={6}
+                                            required
+                                            value={form.message}
+                                            onChange={update}
+                                            className={`${field} resize-y`}
+                                        />
                                     </div>
-                                    <button type="submit" disabled={isLoading} className="w-full py-4 bg-[var(--color-accent)] text-white font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-colors disabled:opacity-50">
-                                        {isLoading ? 'Sending...' : 'Send Message'}
-                                    </button>
+
+                                    <div className="sm:col-span-2">
+                                        <button type="submit" className="btn btn-primary">
+                                            Send message
+                                        </button>
+                                        <p className="mono mt-3 text-[12px] text-[var(--color-muted)]">
+                                            This form does not transmit anything in the current build.
+                                        </p>
+                                    </div>
                                 </form>
-                            ) : (
-                                <div className="p-8 rounded-2xl bg-[var(--color-success)]/10 border border-[var(--color-success)]/30 text-center">
-                                    <svg className="w-16 h-16 text-[var(--color-success)] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <h3 className="text-xl font-semibold text-[var(--color-text)] mb-2">Message Sent</h3>
-                                    <p className="text-[var(--color-text-muted)]">We'll get back to you as soon as possible.</p>
-                                </div>
                             )}
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </section>

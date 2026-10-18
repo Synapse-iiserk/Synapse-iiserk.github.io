@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 interface FearGreedData {
   value: string;
@@ -9,7 +8,7 @@ interface FearGreedData {
 
 interface SentimentSignal {
   source: string;
-  icon: string;
+
   symbol: string;
   sentiment: 'bullish' | 'bearish' | 'neutral';
   score: number; // 0-100
@@ -18,11 +17,11 @@ interface SentimentSignal {
 }
 
 const MOCK_SIGNALS: SentimentSignal[] = [
-  { source: 'Reddit', icon: '🤖', symbol: 'BTCUSDT', sentiment: 'bullish', score: 78, mentions: 4821, delta: +12 },
-  { source: 'Twitter/X', icon: '🐦', symbol: 'ETHUSDT', sentiment: 'bullish', score: 65, mentions: 12340, delta: +5 },
-  { source: 'Discord', icon: '💬', symbol: 'SOLUSDT', sentiment: 'neutral', score: 51, mentions: 2190, delta: -3 },
-  { source: 'Telegram', icon: '📡', symbol: 'BNBUSDT', sentiment: 'bearish', score: 29, mentions: 980, delta: -18 },
-  { source: 'Reddit', icon: '🤖', symbol: 'XRPUSDT', sentiment: 'bullish', score: 72, mentions: 3100, delta: +8 },
+  { source: 'Reddit', symbol: 'BTCUSDT', sentiment: 'bullish', score: 78, mentions: 4821, delta: +12 },
+  { source: 'Twitter/X', symbol: 'ETHUSDT', sentiment: 'bullish', score: 65, mentions: 12340, delta: +5 },
+  { source: 'Discord', symbol: 'SOLUSDT', sentiment: 'neutral', score: 51, mentions: 2190, delta: -3 },
+  { source: 'Telegram', symbol: 'BNBUSDT', sentiment: 'bearish', score: 29, mentions: 980, delta: -18 },
+  { source: 'Reddit', symbol: 'XRPUSDT', sentiment: 'bullish', score: 72, mentions: 3100, delta: +8 },
 ];
 
 const TREND_TOKENS = [
@@ -68,25 +67,20 @@ export const SentimentWidget: React.FC = () => {
   const color = fgColor(fgVal);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-primary-light)] overflow-hidden"
+    <div className=" border border-[var(--color-border)] bg-[var(--color-primary-light)] overflow-hidden"
     >
       {/* Header */}
       <div className="p-6 pb-4 border-b border-[var(--color-border)] flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
+            <span className="w-2.5 h-2.5  bg-[var(--color-accent)] " />
             <span className="text-xs font-semibold tracking-widest text-[var(--color-accent)] uppercase">
               Social Sentiment Engine
             </span>
           </div>
           <h3 className="text-xl font-bold text-[var(--color-text)]">Market Mood &amp; Crowd Intelligence</h3>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            Aggregated from Reddit · Twitter/X · Discord · Telegram — refreshed every 5 min
+            Aggregated from Reddit, Twitter/X, Discord and Telegram, refreshed every 5 min
           </p>
         </div>
 
@@ -124,7 +118,7 @@ export const SentimentWidget: React.FC = () => {
                 : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
             }`}
           >
-            {tab === 'signals' ? '📊 Social Signals' : '🔥 Trending Now'}
+            {tab === 'signals' ? 'Social signals' : 'Trending now'}
           </button>
         ))}
       </div>
@@ -133,41 +127,33 @@ export const SentimentWidget: React.FC = () => {
       {activeTab === 'signals' && (
         <div className="divide-y divide-[var(--color-border)]">
           {MOCK_SIGNALS.map((sig, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.06 }}
-              className="flex items-center gap-3 px-6 py-3"
+            <div
+              key={i} className="flex items-center gap-3 px-6 py-3"
             >
-              <span className="text-xl w-7 text-center">{sig.icon}</span>
+              <span className="mono w-7 text-center text-[11px] text-[var(--color-muted)]">{sig.source.slice(0, 2).toUpperCase()}</span>
               <div className="w-20 text-xs text-[var(--color-text-muted)]">
                 <div className="font-semibold text-[var(--color-text)]">{sig.source}</div>
                 <div className="text-[10px]">{sig.symbol}</div>
               </div>
               {/* Score bar */}
               <div className="flex-1">
-                <div className="h-1.5 rounded-full bg-[var(--color-border)] overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-700"
+                <div className="h-1.5  bg-[var(--color-border)] overflow-hidden">
+                  <div className="h-full  transition-all duration-700"
                     style={{ width: `${sig.score}%`, background: sentimentColor(sig.sentiment) }}
                   />
                 </div>
               </div>
-              <span
-                className="text-xs font-bold w-10 text-right font-mono"
+              <span className="text-xs font-bold w-10 text-right font-mono"
                 style={{ color: sentimentColor(sig.sentiment) }}
               >
                 {sig.score}
               </span>
-              <span
-                className="text-xs w-14 text-right font-mono"
+              <span className="text-xs w-14 text-right font-mono"
                 style={{ color: sig.delta >= 0 ? '#0ecb81' : '#f6465d' }}
               >
                 {sig.delta >= 0 ? '+' : ''}{sig.delta}%
               </span>
-              <span
-                className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+              <span className="text-[10px] px-2 py-0.5  font-semibold"
                 style={{
                   background: sentimentColor(sig.sentiment) + '22',
                   color: sentimentColor(sig.sentiment),
@@ -175,7 +161,7 @@ export const SentimentWidget: React.FC = () => {
               >
                 {sig.sentiment}
               </span>
-            </motion.div>
+            </div>
           ))}
           <div className="px-6 py-2 text-[10px] text-[var(--color-text-muted)] italic">
             * Live data via iFINN Social Sentiment API · Demo mode: signals are representative
@@ -188,22 +174,17 @@ export const SentimentWidget: React.FC = () => {
         <div className="p-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {TREND_TOKENS.map((t, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.07 }}
-                className="rounded-xl border border-[var(--color-border)] p-3 flex flex-col items-center gap-1 bg-[var(--color-primary)]"
+              <div
+                key={i} className=" border border-[var(--color-border)] p-3 flex flex-col items-center gap-1 bg-[var(--color-primary)]"
               >
                 <span className="text-sm font-bold text-[var(--color-text)]">{t.symbol}</span>
                 <span className="text-xs font-mono font-bold" style={{ color: t.color }}>{t.change}</span>
-                <span
-                  className="text-[10px] px-2 py-0.5 rounded-full"
+                <span className="text-[10px] px-2 py-0.5 "
                   style={{ background: t.color + '22', color: t.color }}
                 >
                   {t.tag}
                 </span>
-              </motion.div>
+              </div>
             ))}
           </div>
           <p className="text-[10px] text-[var(--color-text-muted)] mt-4 italic">
@@ -211,7 +192,7 @@ export const SentimentWidget: React.FC = () => {
           </p>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

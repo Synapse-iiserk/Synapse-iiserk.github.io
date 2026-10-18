@@ -1,231 +1,148 @@
-/**
- * Analytics Demo Page
- * ===================
- * Interactive demonstrations of iFINN analytics capabilities
- */
-
-import { motion } from 'framer-motion';
 import SEO from '../seo/SEO';
 import {
-  RSICalculator,
-  MovingAverageDemo,
-  BollingerBandsDemo,
-  TrendAnalysisDemo,
-  PortfolioRiskDemo,
-  CoinGeckoWidget,
-  SentimentWidget,
+    RSICalculator,
+    MovingAverageDemo,
+    BollingerBandsDemo,
+    TrendAnalysisDemo,
+    PortfolioRiskDemo,
+    CoinGeckoWidget,
+    SentimentWidget,
 } from '../components/analytics';
 
+const indicatorGroups = [
+    { category: 'Momentum', items: ['RSI', 'MACD', 'Stochastic', 'ROC', 'Momentum'] },
+    { category: 'Trend', items: ['SMA', 'EMA', 'WMA', 'Awesome Oscillator', 'Accelerator'] },
+    { category: 'Volume', items: ['OBV', 'ADL', 'MFI', 'CMF', 'PVT', 'VWAP'] },
+    { category: 'Volatility', items: ['Bollinger Bands', 'ATR', 'Keltner', 'Std Dev', 'Historical Vol'] },
+];
+
+const groups = [
+    {
+        id: 'momentum',
+        title: 'Momentum',
+        blurb: 'How fast price is moving, measured in the browser with the same code the platform runs.',
+        children: [<RSICalculator key="rsi" />, <MovingAverageDemo key="ma" />],
+    },
+    {
+        id: 'volatility',
+        title: 'Volatility',
+        blurb: 'Bands, drawdown and risk. No smoothing until the result is prettier than the data.',
+        children: [<BollingerBandsDemo key="bb" />, <PortfolioRiskDemo key="risk" />],
+    },
+    {
+        id: 'trend',
+        title: 'Trend and regression',
+        blurb: 'Least squares fits against real prices, reported with the residual left visible.',
+        children: [<TrendAnalysisDemo key="trend" />],
+    },
+];
+
 export const Analytics: React.FC = () => {
-  return (
-    <>
-      <SEO
-        title="Analytics Demo"
-        description="Interactive demonstrations of iFINN's financial analytics capabilities including RSI, Moving Averages, Bollinger Bands, and more."
-        canonicalUrl="/analytics"
-      />
+    return (
+        <>
+            <SEO
+                title="Analytics playground"
+                description="Run RSI, moving averages, Bollinger Bands and regression in your browser: the same TypeScript analytics the iFINN platform runs, with no account and no data leaving the page."
+                canonicalUrl="/analytics"
+            />
 
-      {/* Hero Section */}
-      <section className="pt-24 pb-16 lg:pt-32 lg:pb-24 bg-[var(--color-primary)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <span className="inline-block text-[var(--color-accent)] text-sm font-medium tracking-wider uppercase mb-4">
-              Live Demo
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--color-text)] mb-6">
-              Analytics{' '}
-              <span className="gradient-text">Playground</span>
-            </h1>
-            <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-              Explore our client-side analytics engine. All calculations run directly in your browser
-              using our TypeScript implementation of professional trading indicators.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Info Banner */}
-      <section className="py-8 bg-[var(--color-primary-light)] border-y border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-[var(--color-text-muted)]">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span>Real-time calculations</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>Client-side processing</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <span>No data leaves your browser</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Live Market Data Section */}
-      <section className="py-12 bg-[var(--color-primary)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <CoinGeckoWidget />
-        </div>
-      </section>
-
-      {/* Social Sentiment Section */}
-      <section className="py-12 bg-[var(--color-primary-light)] border-y border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SentimentWidget />
-        </div>
-      </section>
-
-      {/* Demos Grid */}
-      <section className="py-16 lg:py-24 bg-[var(--color-primary)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Momentum Indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">
-              Momentum Indicators
-            </h2>
-            <p className="text-[var(--color-text-muted)] mb-8">
-              Measure the speed and magnitude of price movements
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <RSICalculator />
-              <MovingAverageDemo />
-            </div>
-          </motion.div>
-
-          {/* Volatility Indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">
-              Volatility Analysis
-            </h2>
-            <p className="text-[var(--color-text-muted)] mb-8">
-              Understand market volatility and potential breakouts
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <BollingerBandsDemo />
-              <PortfolioRiskDemo />
-            </div>
-          </motion.div>
-
-          {/* Trend Analysis */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">
-              Trend & Regression Analysis
-            </h2>
-            <p className="text-[var(--color-text-muted)] mb-8">
-              Fit mathematical models to price data
-            </p>
-            
-            <div className="max-w-xl">
-              <TrendAnalysisDemo />
-            </div>
-          </motion.div>
-
-          {/* Available Indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">
-              Full Indicator Library
-            </h2>
-            <p className="text-[var(--color-text-muted)] mb-8">
-              Our analytics library includes all these indicators and more
-            </p>
-            
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { category: 'Momentum', items: ['RSI', 'MACD', 'Stochastic', 'ROC', 'Momentum'] },
-                { category: 'Trend', items: ['SMA', 'EMA', 'WMA', 'Awesome Oscillator', 'Accelerator'] },
-                { category: 'Volume', items: ['OBV', 'ADL', 'MFI', 'CMF', 'PVT', 'VWAP'] },
-                { category: 'Volatility', items: ['Bollinger Bands', 'ATR', 'Keltner', 'Std Dev', 'Historical Vol'] },
-              ].map((group) => (
-                <div
-                  key={group.category}
-                  className="p-4 bg-[var(--color-primary-light)] rounded-xl border border-[var(--color-border)]"
-                >
-                  <h3 className="text-[var(--color-accent)] font-semibold mb-3">
-                    {group.category}
-                  </h3>
-                  <ul className="space-y-1">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="text-sm text-[var(--color-text-muted)] flex items-center gap-2"
-                      >
-                        <svg className="w-3 h-3 text-[var(--color-success)]" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+            <section className="pb-14 pt-20 lg:pb-16 lg:pt-28">
+                <div className="shell">
+                    <span className="eyebrow reveal">Analytics playground</span>
+                    <h1 className="h-display reveal mt-5">Try the maths.</h1>
+                    <p className="lead mt-6">
+                        The indicator code that runs on the platform, running in your browser. Only the
+                        market price is fetched, from a public endpoint. Nothing is sent anywhere and no
+                        account is required.
+                    </p>
+                    <dl className="mt-10 grid gap-x-10 gap-y-4 sm:grid-cols-3">
+                        {[
+                            { k: 'Runs', v: 'in your browser' },
+                            { k: 'Data out', v: 'none' },
+                            { k: 'Account', v: 'not required' },
+                        ].map((fact) => (
+                            <div key={fact.k} className="border-t border-[var(--color-line)] pt-3">
+                                <dt className="mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                                    {fact.k}
+                                </dt>
+                                <dd className="mt-1 font-display text-[19px] tracking-tight">{fact.v}</dd>
+                            </div>
+                        ))}
+                    </dl>
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
+            </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-[var(--color-primary-light)] border-t border-[var(--color-border)]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">
-            Ready for More?
-          </h2>
-          <p className="text-[var(--color-text-muted)] mb-8">
-            These demos showcase just a fraction of our analytics capabilities.
-            The full platform includes real-time data feeds, advanced backtesting,
-            and AI-powered insights.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="/products"
-              className="px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-lg hover:bg-[var(--color-accent)]/90 transition-colors"
-            >
-              View All Products
-            </a>
-            <a
-              href="/contact"
-              className="px-6 py-3 bg-[var(--color-primary)] text-[var(--color-text)] font-semibold rounded-lg border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors"
-            >
-              Contact Us
-            </a>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+            <section className="section">
+                <div className="shell">
+                    <div className="grid gap-8 lg:grid-cols-2">
+                        <CoinGeckoWidget />
+                        <SentimentWidget />
+                    </div>
+                </div>
+            </section>
+
+            <section className="section">
+                <div className="shell">
+                    {groups.map((group) => (
+                        <div key={group.id} className="mb-20 last:mb-0">
+                            <div className="grid gap-6 border-t border-[var(--color-ink)] pt-4 lg:grid-cols-12">
+                                <div className="lg:col-span-4">
+                                    <h2 className="h2">{group.title}</h2>
+                                    <p className="prose mt-3 text-[15px]">{group.blurb}</p>
+                                </div>
+                                <div
+                                    className={`grid gap-6 lg:col-span-8 ${
+                                        group.children.length > 1 ? 'sm:grid-cols-2' : ''
+                                    }`}
+                                >
+                                    {group.children}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="section">
+                <div className="shell">
+                    <h2 className="mono border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                        Indicator library, a slice of it
+                    </h2>
+                    <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        {indicatorGroups.map((group) => (
+                            <div key={group.category}>
+                                <h3 className="mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-accent)]">
+                                    {group.category}
+                                </h3>
+                                <ul className="mt-3">
+                                    {group.items.map((item) => (
+                                        <li
+                                            key={item}
+                                            className="mono border-b border-[var(--color-line)] py-1.5 text-[13px] text-[var(--color-muted)]"
+                                        >
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-16 flex flex-wrap items-center gap-3 border-t border-[var(--color-line)] pt-8">
+                        <a href="/products" className="btn btn-primary">
+                            See the platform
+                        </a>
+                        <a href="/contact" className="btn">
+                            Ask a question
+                        </a>
+                        <p className="mono text-[12px] text-[var(--color-muted)]">
+                            528 algorithms run on this library. These four are the free sample.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </>
+    );
 };
 
 export default Analytics;
