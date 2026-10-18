@@ -4,17 +4,17 @@ const stack: { layer: string; runs: string; proof: string }[] = [
     {
         layer: 'Backend and engines',
         runs: 'Python 3.13, FastAPI, walk-forward backtester, paper-trading engine',
-        proof: '7,033 tests',
+        proof: 'pytest + vitest',
     },
     {
         layer: 'Data layer',
         runs: 'PostgreSQL write-through store, Redis and Valkey cache, 22+ provider adapters',
-        proof: '758k+ bars',
+        proof: 'write-through',
     },
     {
         layer: 'Frontend',
         runs: 'React 19, TypeScript, ECharts visualisations, Zustand, Vite',
-        proof: '1,289 tests',
+        proof: 'vitest + playwright',
     },
     {
         layer: 'AI and agents',

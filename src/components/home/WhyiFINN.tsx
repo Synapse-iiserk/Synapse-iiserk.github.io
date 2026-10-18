@@ -9,7 +9,7 @@ const principles = [
     },
     {
         title: 'Measured, not claimed',
-        metric: '281 ranked',
+        metric: 'ranked in public',
         text: 'Tradable algorithms are backtested on BTC, AAPL, SPY and gold, then ranked by median annualised Sharpe against buy and hold.',
     },
     {
@@ -19,7 +19,7 @@ const principles = [
     },
     {
         title: 'Data that compounds',
-        metric: '758k+ bars',
+        metric: 'bars persisted daily',
         text: 'A write-through store keeps every bar ever fetched and serves it back when providers fail, so history stays honest.',
     },
     {
@@ -71,9 +71,9 @@ export const WhyiFINN: React.FC = () => {
                     <div className="flex flex-col gap-6 lg:col-span-5">
                         <BrowserFrame
                             src="/screens/leaderboard.webp"
-                            alt="iFINN leaderboard: 281 algorithms ranked by median annualised Sharpe against buy and hold"
+                            alt="iFINN leaderboard: algorithms ranked by median annualised Sharpe against buy and hold"
                             url="ifinn.org/leaderboard"
-                            meta="281 strategies · 4 symbols"
+                            meta="strategies · 4 symbols"
                         />
                         <p className="mono text-[12px] leading-relaxed text-[var(--color-muted)]">
                             Ranked by median annualised Sharpe on 300 daily bars per symbol, rebuilt

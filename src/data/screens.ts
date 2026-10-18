@@ -55,7 +55,7 @@ export const showcaseTabs: ShowcaseTab[] = [
         description:
             'Browse 528 algorithms by family, trend, risk, fixed income, news sentiment and more, with tradable and analytics clearly separated.',
         bullets: [
-            '281 tradable strategies, 247 analytics, labelled honestly',
+            'the tradeable strategies and the analytics behind them, labelled honestly',
             'Every module passes a strict conformance gate',
             'One click computes it on the charted bars',
         ],
@@ -80,7 +80,7 @@ export const showcaseTabs: ShowcaseTab[] = [
     {
         id: 'leaderboard',
         label: 'Leaderboard',
-        kicker: '281 ranked',
+        kicker: 'ranked live',
         title: 'Measured against buy-and-hold',
         description:
             'Every tradable algorithm is backtested across BTC, AAPL, SPY and gold and ranked by median annualised Sharpe, no synthetic data, ever.',
@@ -182,7 +182,7 @@ export const productModules: ProductModule[] = [
         description:
             'Thirteen families of quantitative models, technical analysis, machine learning, portfolio optimisation, factors, time series, options, microstructure, statistical arbitrage, DeFi, quantum and more, every one gated by a conformance harness before it ships.',
         features: [
-            '528 algorithms; 281 tradable strategies',
+            '528 algorithms; the tradeable subset ranked live',
             'Conformance gate: 528/528 pass (crash, determinism, edge cases)',
             'Tunable parameters with bounds, choices and safe coercion',
             '1,659 documents with maths, parameters and signal semantics',
@@ -292,7 +292,7 @@ export const productModules: ProductModule[] = [
         description:
             'Every tradable algorithm ranked head-to-head against buy-and-hold on a cross-asset universe, and a community hub to author, publish, fork and benchmark your own strategies in a sandbox.',
         features: [
-            '281 algorithms ranked by median annualised Sharpe',
+            'algorithms ranked by median annualised Sharpe',
             'BTC, AAPL, SPY and gold · 300 daily bars each',
             'Compares against buy-and-hold on the same bars',
             'Author & publish strategies in the Algo Hub',
@@ -316,7 +316,7 @@ export const productModules: ProductModule[] = [
         features: [
             'Portfolio and per-symbol equity curves',
             'Historical VaR / CVaR with adjustable weights',
-            'Write-through store: 758k+ bars, 2,270+ series',
+            'Write-through store: bars and series persisted as they arrive',
             'Fresh versus stale contract: stale data is never served as fresh',
             'CSV export, backfill and dataset snapshots',
             '30s connectivity breaker protects the store',

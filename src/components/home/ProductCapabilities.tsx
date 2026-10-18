@@ -23,7 +23,7 @@ const capabilities = [
     },
     {
         title: 'Persistent data store',
-        metric: '758k+ bars',
+        metric: 'write-through store',
         text: 'Every bar, quote and headline is written through to PostgreSQL and re-served when a provider fails or rate-limits.',
     },
     {

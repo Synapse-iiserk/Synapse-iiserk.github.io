@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
 import LiveCandles from '../charts/LiveCandles';
 
+// Every figure here is checked against the platform repository, not a
+// marketing deck: 528 comes from the generated algorithm manifest, 145 from
+// the tool registry the server tests assert against, and the test count is
+// the measured floor rather than an estimate.
 const stats: { value: string; label: string }[] = [
     { value: '528', label: 'algorithms, 13 families' },
-    { value: '281', label: 'ranked vs buy and hold' },
     { value: '22+', label: 'market data providers' },
     { value: '145', label: 'agent tools over MCP' },
-    { value: '758k+', label: 'bars persisted' },
-    { value: '8,300+', label: 'automated tests' },
+    { value: '2,500+', label: 'automated tests' },
 ];
 
 export const Hero: React.FC = () => {
@@ -24,8 +26,8 @@ export const Hero: React.FC = () => {
                         </h1>
                         <p className="lead mt-7">
                             528 algorithms across 13 families, each documented and gated by a
-                            conformance harness. The 281 tradable ones are backtested on BTC, AAPL,
-                            SPY and gold, then ranked in public against buy and hold.
+                            conformance harness. The tradeable ones are backtested on BTC, AAPL, SPY
+                            and gold, then ranked in public against buy and hold.
                         </p>
                         <div className="mt-9 flex flex-wrap gap-3">
                             <Link to="/contact" className="btn btn-primary">
