@@ -23,6 +23,8 @@
     --color-accent: #10b981;       /* iFINN green: data, active state, links */
     --color-accent-dim: #0c7a4b;
     --color-warn: #d8a94a;         /* one warm value, used only on disclosures */
+    --color-danger: #d76b60;       /* the only negative red, text-safe on ground */
+    --color-on-accent: #04120c;   /* text drawn on top of a filled accent chip */
 
     /* legacy aliases: untouched pages stay on-system */
     --color-primary: #0a0e0c;

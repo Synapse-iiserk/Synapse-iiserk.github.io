@@ -53,7 +53,7 @@ export const ProductShowcase: React.FC = () => {
                                         role="tab"
                                         id={`tour-tab-${tab.id}`}
                                         aria-selected={selected}
-                                        aria-controls={`tour-panel-${tab.id}`}
+                                        aria-controls="tour-panel"
                                         tabIndex={selected ? 0 : -1}
                                         onClick={() => setActiveId(tab.id)}
                                         className="flex items-baseline justify-between gap-4 border-t border-[var(--color-line)] py-3 text-left transition-colors last:border-b hover:text-[var(--color-ink)]"
@@ -69,7 +69,7 @@ export const ProductShowcase: React.FC = () => {
                                         </span>
                                         <span
                                             className={`mono hidden text-[11px] uppercase tracking-[0.1em] sm:inline ${
-                                                selected ? 'text-[var(--color-ink)]' : 'text-[var(--color-line-strong)]'
+                                                selected ? 'text-[var(--color-ink)]' : 'text-[var(--color-muted)]'
                                             }`}
                                         >
                                             {tab.kicker}
@@ -81,11 +81,7 @@ export const ProductShowcase: React.FC = () => {
                     </div>
 
                     <div className="lg:col-span-8">
-                        <div
-                            role="tabpanel"
-                            id={`tour-panel-${active.id}`}
-                            aria-labelledby={`tour-tab-${active.id}`}
-                        >
+                        <div role="tabpanel" id="tour-panel" aria-labelledby={`tour-tab-${active.id}`}>
                             <div key={active.id} className="panel-fade">
                                     <BrowserFrame src={active.image} alt={active.title} url={active.url} />
 

@@ -24,25 +24,28 @@ const MOCK_SIGNALS: SentimentSignal[] = [
   { source: 'Reddit', symbol: 'XRPUSDT', sentiment: 'bullish', score: 72, mentions: 3100, delta: +8 },
 ];
 
-const TREND_TOKENS = [
-  { symbol: 'BTC', change: '+2.4%', color: '#0ecb81', tag: 'trending' },
-  { symbol: 'ETH', change: '+1.1%', color: '#0ecb81', tag: 'rising' },
-  { symbol: 'SOL', change: '-0.8%', color: '#f6465d', tag: 'cooling' },
-  { symbol: 'DOGE', change: '+5.2%', color: '#0ecb81', tag: 'viral' },
-  { symbol: 'ADA', change: '-1.3%', color: '#f6465d', tag: 'declining' },
-  { symbol: 'AVAX', change: '+3.1%', color: '#0ecb81', tag: 'breakout' },
+const TREND_TOKENS: { symbol: string; change: string; tone: Tone; tag: string }[] = [
+  { symbol: 'BTC', change: '+2.4%', tone: 'up', tag: 'trending' },
+  { symbol: 'ETH', change: '+1.1%', tone: 'up', tag: 'rising' },
+  { symbol: 'SOL', change: '-0.8%', tone: 'down', tag: 'cooling' },
+  { symbol: 'DOGE', change: '+5.2%', tone: 'up', tag: 'viral' },
+  { symbol: 'ADA', change: '-1.3%', tone: 'down', tag: 'declining' },
+  { symbol: 'AVAX', change: '+3.1%', tone: 'up', tag: 'breakout' },
 ];
 
-const sentimentColor = (s: string) =>
-  s === 'bullish' ? '#0ecb81' : s === 'bearish' ? '#f6465d' : '#fcd535';
+type Tone = 'up' | 'down' | 'neutral';
 
-const fgColor = (val: number) => {
-  if (val <= 25) return '#f6465d';
-  if (val <= 45) return '#ff9800';
-  if (val <= 55) return '#fcd535';
-  if (val <= 75) return '#0ecb81';
-  return '#00e676';
+/** The only place a meaning turns into a colour. Everything else asks for a token. */
+const TONE: Record<Tone, { fg: string; bg: string }> = {
+  up: { fg: 'var(--color-accent)', bg: 'color-mix(in srgb, var(--color-accent) 12%, transparent)' },
+  down: { fg: 'var(--color-danger)', bg: 'color-mix(in srgb, var(--color-danger) 12%, transparent)' },
+  neutral: { fg: 'var(--color-warn)', bg: 'color-mix(in srgb, var(--color-warn) 12%, transparent)' },
 };
+
+const sentimentTone = (s: string): Tone =>
+  s === 'bullish' ? 'up' : s === 'bearish' ? 'down' : 'neutral';
+
+const fgTone = (val: number): Tone => (val <= 45 ? 'down' : val <= 75 ? 'neutral' : 'up');
 
 export const SentimentWidget: React.FC = () => {
   const [fgData, setFgData] = useState<FearGreedData | null>(null);
@@ -64,7 +67,7 @@ export const SentimentWidget: React.FC = () => {
   const fgVal = fgData ? parseInt(fgData.value) : 50;
   const fgLabel = fgData?.value_classification ?? 'Loading...';
   const arcLen = (fgVal / 100) * 141.4;
-  const color = fgColor(fgVal);
+  const color = TONE[fgTone(fgVal)].fg;
 
   return (
     <div className=" border border-[var(--color-border)] bg-[var(--color-primary-light)] overflow-hidden"
@@ -78,7 +81,7 @@ export const SentimentWidget: React.FC = () => {
               Social Sentiment Engine
             </span>
           </div>
-          <h3 className="text-xl font-bold text-[var(--color-text)]">Market Mood &amp; Crowd Intelligence</h3>
+          <h2 className="font-display text-xl font-medium tracking-tight">Market Mood &amp; Crowd Intelligence</h2>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">
             Aggregated from Reddit, Twitter/X, Discord and Telegram, refreshed every 5 min
           </p>
@@ -87,11 +90,11 @@ export const SentimentWidget: React.FC = () => {
         {/* Fear & Greed Gauge */}
         <div className="flex flex-col items-center">
           <svg viewBox="0 0 110 62" width="90" height="52">
-            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#1e2329" strokeWidth="10" strokeLinecap="round"/>
+            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="var(--color-line-strong)" strokeWidth="10" strokeLinecap="round"/>
             <path
               d="M10,55 A45,45 0 0,1 100,55"
               fill="none"
-              stroke={loading ? '#2b3139' : color}
+              stroke={loading ? 'var(--color-line-strong)' : color}
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={`${arcLen} 141.4`}
@@ -139,24 +142,24 @@ export const SentimentWidget: React.FC = () => {
               <div className="flex-1">
                 <div className="h-1.5  bg-[var(--color-border)] overflow-hidden">
                   <div className="h-full  transition-all duration-700"
-                    style={{ width: `${sig.score}%`, background: sentimentColor(sig.sentiment) }}
+                    style={{ width: `${sig.score}%`, background: TONE[sentimentTone(sig.sentiment)].fg }}
                   />
                 </div>
               </div>
               <span className="text-xs font-bold w-10 text-right font-mono"
-                style={{ color: sentimentColor(sig.sentiment) }}
+                style={{ color: TONE[sentimentTone(sig.sentiment)].fg }}
               >
                 {sig.score}
               </span>
               <span className="text-xs w-14 text-right font-mono"
-                style={{ color: sig.delta >= 0 ? '#0ecb81' : '#f6465d' }}
+                style={{ color: TONE[sig.delta >= 0 ? 'up' : 'down'].fg }}
               >
                 {sig.delta >= 0 ? '+' : ''}{sig.delta}%
               </span>
               <span className="text-[10px] px-2 py-0.5  font-semibold"
                 style={{
-                  background: sentimentColor(sig.sentiment) + '22',
-                  color: sentimentColor(sig.sentiment),
+                  background: TONE[sentimentTone(sig.sentiment)].fg + '22',
+                  color: TONE[sentimentTone(sig.sentiment)].fg,
                 }}
               >
                 {sig.sentiment}
@@ -178,9 +181,10 @@ export const SentimentWidget: React.FC = () => {
                 key={i} className=" border border-[var(--color-border)] p-3 flex flex-col items-center gap-1 bg-[var(--color-primary)]"
               >
                 <span className="text-sm font-bold text-[var(--color-text)]">{t.symbol}</span>
-                <span className="text-xs font-mono font-bold" style={{ color: t.color }}>{t.change}</span>
-                <span className="text-[10px] px-2 py-0.5 "
-                  style={{ background: t.color + '22', color: t.color }}
+                <span className="text-xs font-mono font-bold" style={{ color: TONE[t.tone].fg }}>{t.change}</span>
+                <span
+                  className="text-[10px] px-2 py-0.5"
+                  style={{ background: TONE[t.tone].bg, color: TONE[t.tone].fg }}
                 >
                   {t.tag}
                 </span>

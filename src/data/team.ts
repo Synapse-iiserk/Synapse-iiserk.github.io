@@ -25,7 +25,7 @@ export const teamMembers: TeamMember[] = [
             'Cloud-native Application Design',
             'Financial Data Engineering',
         ],
-        visionContribution: 'Shuvam envisions iFINN as the bridge between cutting-edge AI research and practical financial intelligence, making sophisticated market analysis tools accessible to everyone while maintaining the rigor demanded by institutional investors.',
+        visionContribution: 'Shuvam envisions iFINN as the bridge between applied AI research and practical financial intelligence, making sophisticated market analysis tools accessible to everyone while maintaining the rigor demanded by institutional investors.',
     },
     {
         slug: 'youktik-sajjan',

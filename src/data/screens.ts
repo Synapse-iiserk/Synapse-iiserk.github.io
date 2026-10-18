@@ -26,7 +26,7 @@ export const showcaseTabs: ShowcaseTab[] = [
             'Candles, volume, RSI and MACD panes with a live WebSocket price chip, every panel docked around the chart you are analysing.',
         bullets: [
             '29 overlays computed server-side on the charted bars',
-            '1m–1d intervals, multi-pane splits, saved layouts',
+            '1m to 1d intervals, multi-pane splits, saved layouts',
             'News, options & funding, signals and parameters one tab away',
         ],
         image: '/screens/workspace-chart.webp',

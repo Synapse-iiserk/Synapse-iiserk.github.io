@@ -42,7 +42,7 @@ export const CoinGeckoWidget: React.FC = () => {
   return (
     <div className="bg-[var(--color-primary-light)]  border border-[var(--color-border)] p-6 ">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-[var(--color-text)]">Live Crypto Markets</h3>
+        <h2 className="font-display text-xl font-medium tracking-tight">Live Crypto Markets</h2>
         <span className="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
           <span className="w-2 h-2  bg-[var(--color-success)] "></span>
           Live Data via CoinGecko

@@ -372,7 +372,7 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
                                 className="mono"
                                 fontSize={12}
                                 fontWeight={600}
-                                fill="#04120c"
+                                fill="var(--color-on-accent)"
                             >
                                 {formatPrice(geometry.last.c)}
                             </text>
@@ -466,7 +466,7 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
                         <span className="text-[var(--color-ink)]">
                             {formatPrice(geometry.last.c)}
                             <span
-                                className={change >= 0 ? 'text-[var(--color-accent)]' : 'text-[#c4544a]'}
+                                className={change >= 0 ? 'text-[var(--color-accent)]' : 'text-[var(--color-danger)]'}
                             >
                                 {'  '}
                                 {change >= 0 ? '+' : ''}

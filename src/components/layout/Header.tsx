@@ -46,7 +46,7 @@ export const Header: React.FC = () => {
                                 className="relative py-1 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]"
                             >
                                 {link.name}
-                                <span className="mono ml-1 text-[10px] text-[var(--color-line-strong)]">↗</span>
+                                <span className="mono ml-1 text-[10px] text-[var(--color-muted)]">↗</span>
                             </a>
                         ) : (
                             <Link
@@ -91,8 +91,7 @@ export const Header: React.FC = () => {
                 </div>
             </div>
 
-            {open && (
-                <div id="mobile-nav" className="border-t border-[var(--color-line)] lg:hidden">
+            <div id="mobile-nav" hidden={!open} className="border-t border-[var(--color-line)] lg:hidden">
                     <nav className="shell flex flex-col py-4" aria-label="Primary mobile">
                         {navLinks.map((link) =>
                             link.external ? (
@@ -121,8 +120,7 @@ export const Header: React.FC = () => {
                             Join the waitlist
                         </Link>
                     </nav>
-                </div>
-            )}
+            </div>
         </header>
     );
 };

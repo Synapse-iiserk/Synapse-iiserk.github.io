@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:copy": "node scripts/lint-copy.mjs",
+    "audit:budget": "node scripts/budget.mjs",
+    "verify": "npm run lint && npm run lint:copy && npm run test:redirect && npm run build && npm run audit:budget",
+    "preview": "vite preview",
+    "test:redirect": "node scripts/test-spa-redirect.mjs"
   },
   "dependencies": {
     "animejs": "^4.5.0",
