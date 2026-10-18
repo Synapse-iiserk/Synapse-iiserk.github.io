@@ -21,7 +21,7 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({ size = 34,
         if (!root) return;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-        createTimeline({ defaults: { ease: 'linear', loop: true } })
+        const loop = createTimeline({ defaults: { ease: 'linear', loop: true } })
             .add(root.querySelector('[data-arc-1]')!, { rotate: '1turn', duration: 2400 })
             .add(root.querySelector('[data-arc-2]')!, { rotate: '-1turn', duration: 3600 }, 0)
             .add(root.querySelector('[data-arc-3]')!, { rotate: '1turn', duration: 5200 }, 0)
@@ -30,6 +30,11 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({ size = 34,
                 { opacity: [0.35, 1], duration: 1100, alternate: true, loop: true, ease: EASE },
                 0,
             );
+
+        return () => {
+            // an orphaned rAF loop would keep running after unmount
+            loop.revert();
+        };
     }, []);
 
     return (
@@ -66,34 +71,6 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({ size = 34,
                 strokeWidth={1}
             />
             <rect data-core x="17" y="17" width="6" height="6" fill="var(--color-accent)" />
-        </svg>
-    );
-};
-
-/** Small inline sparkline for data rails: no animation, pure data. */
-export const Sparkline: React.FC<{ values: number[]; width?: number; height?: number; tone?: 'accent' | 'ink' }> = ({
-    values,
-    width = 88,
-    height = 28,
-    tone = 'accent',
-}) => {
-    if (values.length < 2) return null;
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const span = max - min || 1;
-    const step = width / (values.length - 1);
-    const d = values
-        .map((v, i) => `${i === 0 ? 'M' : 'L'}${(i * step).toFixed(1)} ${(height - ((v - min) / span) * (height - 2) - 1).toFixed(1)}`)
-        .join(' ');
-
-    return (
-        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden className="overflow-visible">
-            <path
-                d={d}
-                fill="none"
-                stroke={tone === 'accent' ? 'var(--color-accent)' : 'var(--color-line-strong)'}
-                strokeWidth={1.25}
-            />
         </svg>
     );
 };

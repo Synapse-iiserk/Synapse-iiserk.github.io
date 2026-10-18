@@ -12,6 +12,7 @@ export const AgentTrace: React.FC<{ symbol?: string; className?: string }> = ({
     className = '',
 }) => {
     const [state, setState] = useState<{ quote: Quote; ms: number } | 'error' | 'loading'>('loading');
+    const [attempt, setAttempt] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -27,7 +28,7 @@ export const AgentTrace: React.FC<{ symbol?: string; className?: string }> = ({
             });
 
         return () => controller.abort();
-    }, [symbol]);
+    }, [symbol, attempt]);
 
     return (
         <div className={`panel px-4 py-4 ${className}`}>
@@ -49,7 +50,17 @@ export const AgentTrace: React.FC<{ symbol?: string; className?: string }> = ({
 
                 {state === 'error' && (
                     <p className="text-[var(--color-muted)]">
-                        tool call failed, so no answer is shown
+                        tool call failed, so no answer is shown.{' '}
+                        <button
+                            type="button"
+                            className="link"
+                            onClick={() => {
+                                setState('loading');
+                                setAttempt((n) => n + 1);
+                            }}
+                        >
+                            call again
+                        </button>
                     </p>
                 )}
 
