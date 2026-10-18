@@ -38,7 +38,7 @@ export const About: React.FC = () => {
             <section className="section">
                 <div className="shell">
                     <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-                        <div className="lg:col-span-7">
+                        <div className="min-w-0 lg:col-span-7">
                             <h2 className="h2 reveal">Mission and method</h2>
                             <div className="mt-6 flex flex-col gap-5 text-[16px] leading-relaxed text-[var(--color-muted)]">
                                 <p>
@@ -68,9 +68,10 @@ export const About: React.FC = () => {
                             </ul>
                         </div>
 
-                        <div className="lg:col-span-5">
+                        <div className="min-w-0 lg:col-span-5">
                             <h2 className="h3">Where we are</h2>
-                            <table className="data-table mt-4">
+                            <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+                            <table className="data-table mt-4 min-w-[26rem]">
                                 <thead>
                                     <tr>
                                         <th scope="col">Phase</th>
@@ -99,6 +100,7 @@ export const About: React.FC = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            </div>
 
                             <p className="mono mt-8 border-t border-[var(--color-line)] pt-4 text-[12px] leading-relaxed text-[var(--color-muted)]">
                                 <span className="text-[var(--color-warn)]">Disclosure.</span> iFINN

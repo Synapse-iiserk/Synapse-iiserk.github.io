@@ -33,7 +33,7 @@ export const TechStack: React.FC = () => {
         <section className="section">
             <div className="shell">
                 <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-                    <div className="lg:col-span-4">
+                    <div className="min-w-0 lg:col-span-4">
                         <span className="eyebrow reveal">Engineering</span>
                         <h2 className="h2 reveal mt-4">Boring in the good way.</h2>
                         <p className="prose mt-4 text-[15px]">
@@ -43,8 +43,9 @@ export const TechStack: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className="lg:col-span-8">
-                        <table className="data-table">
+                    <div className="min-w-0 lg:col-span-8">
+                        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+                        <table className="data-table min-w-[30rem]">
                             <thead>
                                 <tr>
                                     <th scope="col">Layer</th>
@@ -64,6 +65,7 @@ export const TechStack: React.FC = () => {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
 

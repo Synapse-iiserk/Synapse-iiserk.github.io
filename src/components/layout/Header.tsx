@@ -68,7 +68,7 @@ export const Header: React.FC = () => {
                     )}
                 </nav>
 
-                <div className="flex items-center gap-3">
+                <div className="flex shrink-0 items-center gap-3">
                     <Link to="/contact" className="btn btn-primary hidden text-sm sm:inline-flex">
                         Join the waitlist
                     </Link>
@@ -78,7 +78,7 @@ export const Header: React.FC = () => {
                         aria-expanded={open}
                         aria-controls="mobile-nav"
                         aria-label={open ? 'Close menu' : 'Open menu'}
-                        className="border border-[var(--color-line-strong)] p-2 text-[var(--color-ink)] transition-colors hover:border-[var(--color-accent)] lg:hidden"
+                        className="shrink-0 border border-[var(--color-line-strong)] p-2 text-[var(--color-ink)] transition-colors hover:border-[var(--color-accent)] lg:hidden"
                     >
                         <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden fill="none">
                             {open ? (

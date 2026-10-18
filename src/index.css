@@ -69,6 +69,16 @@
         box-shadow: none !important;
     }
 
+    /* Grid and flex items default to min-width:auto, which lets a wide table
+       (the pricing matrix, the stack ledger) push its track past the viewport
+       and scroll the whole page sideways. Every track is allowed to shrink;
+       the data tables that genuinely need the room scroll inside their own
+       overflow container instead. */
+    .grid > *,
+    .flex > * {
+        min-width: 0;
+    }
+
     html {
         scroll-behavior: smooth;
         scroll-padding-top: 5rem;
