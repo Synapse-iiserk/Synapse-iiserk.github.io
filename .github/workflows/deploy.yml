@@ -57,3 +57,11 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # The site once published the repository's own index.html, which loads
+      # /src/main.tsx, while every build step reported success. Verify what
+      # was actually published before calling the deploy done.
+      - name: Verify the published site
+        run: npm run audit:deploy
+        env:
+          DEPLOY_URL: ${{ steps.deployment.outputs.page_url }}
