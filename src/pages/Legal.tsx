@@ -18,7 +18,7 @@ const content: Record<LegalKind, { title: string; intro: string; sections: Legal
                 paragraphs: [
                     'ifinn.org is a static marketing site. It does not set advertising cookies and does not run third-party analytics or tracking pixels.',
                     'The waitlist and contact forms on this site are placeholders in the current build: submitting them does not transmit or store your data anywhere. When the forms are connected to our backend, this policy will be updated before that happens.',
-                    'If you email us (for example investors@ifinn.finance), we use your address and message only to respond to you.',
+                    'If you email us (for example investors@ifinn.org), we use your address and message only to respond to you.',
                 ],
             },
             {
@@ -39,7 +39,7 @@ const content: Record<LegalKind, { title: string; intro: string; sections: Legal
             {
                 heading: 'Contact',
                 paragraphs: [
-                    'For any privacy question or request, write to contact@ifinn.finance and we will respond.',
+                    'For any privacy question or request, write to contact@ifinn.org and we will respond.',
                 ],
             },
         ],
@@ -156,8 +156,8 @@ export const LegalPage: React.FC<{ kind: LegalKind }> = ({ kind }) => {
                         <div className="mt-14 border-t border-[var(--color-line)] pt-4">
                             <p className="mono text-[12px] leading-relaxed text-[var(--color-muted)]">
                                 Questions about this page? Write to{' '}
-                                <a href="mailto:contact@ifinn.finance" className="link">
-                                    contact@ifinn.finance
+                                <a href="mailto:contact@ifinn.org" className="link">
+                                    contact@ifinn.org
                                 </a>
                                 .
                             </p>

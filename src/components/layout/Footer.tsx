@@ -48,11 +48,11 @@ export const Footer: React.FC = () => {
                             research agent that answers with live tool calls.
                         </p>
                         <div className="mono mt-6 flex flex-col gap-1 text-[13px]">
-                            <a href="mailto:investors@ifinn.finance" className="link w-fit">
-                                investors@ifinn.finance
+                            <a href="mailto:investors@ifinn.org" className="link w-fit">
+                                investors@ifinn.org
                             </a>
-                            <a href="mailto:support@ifinn.finance" className="link w-fit">
-                                support@ifinn.finance
+                            <a href="mailto:support@ifinn.org" className="link w-fit">
+                                support@ifinn.org
                             </a>
                         </div>
                     </div>

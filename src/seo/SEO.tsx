@@ -74,7 +74,7 @@ export const SEO: React.FC<SEOProps> = ({
             sameAs: [],
             contactPoint: {
                 '@type': 'ContactPoint',
-                email: 'contact@ifinn.finance',
+                email: 'contact@ifinn.org',
                 contactType: 'customer service',
             },
         },

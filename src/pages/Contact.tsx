@@ -2,9 +2,9 @@ import { useState } from 'react';
 import SEO from '../seo/SEO';
 
 const directLines = [
-    { label: 'Investors', value: 'investors@ifinn.finance', href: 'mailto:investors@ifinn.finance' },
-    { label: 'Support', value: 'support@ifinn.finance', href: 'mailto:support@ifinn.finance' },
-    { label: 'Press', value: 'press@ifinn.finance', href: 'mailto:press@ifinn.finance' },
+    { label: 'Investors', value: 'investors@ifinn.org', href: 'mailto:investors@ifinn.org' },
+    { label: 'Support', value: 'support@ifinn.org', href: 'mailto:support@ifinn.org' },
+    { label: 'Press', value: 'press@ifinn.org', href: 'mailto:press@ifinn.org' },
 ];
 
 const subjects = [

@@ -124,11 +124,11 @@ export const Pricing: React.FC = () => {
                                 case, including the institutional tier.
                             </p>
                             <div className="mono mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[13px]">
-                                <a href="mailto:investors@ifinn.finance" className="link">
-                                    investors@ifinn.finance
+                                <a href="mailto:investors@ifinn.org" className="link">
+                                    investors@ifinn.org
                                 </a>
-                                <a href="mailto:support@ifinn.finance" className="link">
-                                    support@ifinn.finance
+                                <a href="mailto:support@ifinn.org" className="link">
+                                    support@ifinn.org
                                 </a>
                             </div>
                         </div>
@@ -150,7 +150,7 @@ export const Pricing: React.FC = () => {
                                         required
                                         value={email}
                                         onChange={(event) => setEmail(event.target.value)}
-                                        placeholder="you@fund.com"
+                                        placeholder="you@firm.com"
                                         className="field"
                                     />
                                     <button type="submit" className="btn justify-center">

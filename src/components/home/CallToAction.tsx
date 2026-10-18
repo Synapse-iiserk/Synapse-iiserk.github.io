@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 const channels = [
-    { label: 'Investors', value: 'investors@ifinn.finance', href: 'mailto:investors@ifinn.finance' },
-    { label: 'Support', value: 'support@ifinn.finance', href: 'mailto:support@ifinn.finance' },
+    { label: 'Investors', value: 'investors@ifinn.org', href: 'mailto:investors@ifinn.org' },
+    { label: 'Support', value: 'support@ifinn.org', href: 'mailto:support@ifinn.org' },
     { label: 'Code', value: 'github.com/Synapse-iiserk', href: 'https://github.com/Synapse-iiserk' },
     { label: 'Live chart', value: 'ifinn.org/chart', href: '/chart.html' },
 ];
@@ -47,7 +47,7 @@ export const CallToAction: React.FC = () => {
                                     required
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
-                                    placeholder="you@fund.com"
+                                    placeholder="you@firm.com"
                                     className="field"
                                 />
                                 <button type="submit" className="btn btn-primary justify-center">
