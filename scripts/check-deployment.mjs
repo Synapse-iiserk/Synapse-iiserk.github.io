@@ -62,14 +62,21 @@ const check = (ok, label, detail) => {
 
 console.log(`deployment check: ${BASE}`);
 
-// 1. the marker that stops Jekyll from republishing the source tree
-const localMarker = statSync(new URL('../public/.nojekyll', import.meta.url), { throwIfNoEntry: false });
-check(localMarker !== undefined, 'public/.nojekyll exists in the build input');
-try {
-    statSync(new URL('../dist/.nojekyll', import.meta.url));
-    check(true, 'dist/.nojekyll present (run npm run build first)');
-} catch {
-    check(false, 'dist/.nojekyll present (run npm run build first)');
+// 1. the marker that stops Jekyll from republishing the source tree.
+//    Only meaningful in a checkout (the build job); the deploy job runs
+//    without one, so a missing file here is skipped rather than failed.
+const hasCheckout = statSync(new URL('../package.json', import.meta.url), { throwIfNoEntry: false }) !== undefined;
+if (hasCheckout) {
+    check(
+        statSync(new URL('../public/.nojekyll', import.meta.url), { throwIfNoEntry: false }) !== undefined,
+        'public/.nojekyll exists in the build input',
+    );
+    check(
+        statSync(new URL('../dist/.nojekyll', import.meta.url), { throwIfNoEntry: false }) !== undefined,
+        'dist/.nojekyll present (run npm run build first)',
+    );
+} else {
+    console.log('  skip  local .nojekyll assertions (no checkout in this job)');
 }
 
 // 2. the deployed document must load built assets, never source files.

@@ -54,6 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      # The verification script lives in the repository, so the deploy job
+      # needs a checkout to run it.
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
