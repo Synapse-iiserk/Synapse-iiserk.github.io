@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFINN | Advanced Market Analytics</title>
+    <title>iFINN | Live chart</title>
     
     <!-- Libraries (Stable Version 4.0.1) -->
     <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
@@ -13,24 +13,24 @@
     <!-- Custom Styles -->
     <style>
         :root {
-            --bg-dark: #0b0e11;
-            --bg-panel: #1e2329;
-            --bg-elev: #11151c;
-            --border: #2b3139;
-            --text-main: #eaecef;
-            --text-muted: #848e9c;
-            --primary: #fcd535; /* iFINN Yellow */
-            --accent-1: #2962ff;
-            --accent-2: #ff6d00;
-            --accent-3: #9c27b0;
-            --up: #0ecb81;
-            --down: #f6465d;
+            --bg-dark: #0a0e0c;
+            --bg-panel: #0e1411;
+            --bg-elev: #111815;
+            --border: #1b2420;
+            --text-main: #edf2ef;
+            --text-muted: #8c9a93;
+            --primary: #10b981; /* iFINN Yellow */
+            --accent-1: #10b981;
+            --accent-2: #d8a94a;
+            --accent-3: #d8a94a;
+            --up: #10b981;
+            --down: #c4544a;
         }
 
         body { 
             background-color: var(--bg-dark); 
             color: var(--text-main); 
-            font-family: 'Space Grotesk', 'Inter', sans-serif; 
+            font-family: 'Space Grotesk', sans-serif; 
             letter-spacing: -0.01em;
             overflow: hidden; 
             height: 100vh;
@@ -183,8 +183,8 @@
         .pill { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); font-size: 11px; }
         .chip { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 11px; background: rgba(255,255,255,0.03); }
         .side-btn { flex: 1; border: 1px solid var(--border); padding: 6px 0; border-radius: 8px; font-weight: 600; font-size: 12px; background: #0f131a; color: var(--text-muted); }
-        .side-btn.active { border-color: var(--primary); color: #0b0e11; background: var(--primary); }
-        .cta-btn { background: var(--primary); color: #0b0e11; font-weight: 700; border-radius: 8px; padding: 8px 10px; font-size: 12px; width: 100%; }
+        .side-btn.active { border-color: var(--primary); color: #0a0e0c; background: var(--primary); }
+        .cta-btn { background: var(--primary); color: #0a0e0c; font-weight: 700; border-radius: 8px; padding: 8px 10px; font-size: 12px; width: 100%; }
         .text-mini { font-size: 11px; }
 
         /* Mobile Responsive */
@@ -228,37 +228,37 @@
     <!-- HEADER -->
     <header class="header">
         <div class="flex items-center gap-4">
-            <button id="mobile-menu" class="lg:hidden text-gray-400">☰</button>
+            <button id="mobile-menu" class="lg:hidden text-[#8c9a93]">☰</button>
             <h1 class="text-2xl font-bold tracking-tighter">
-                <span class="text-[#fcd535]">SYNAPSE</span> <span class="text-xs font-normal text-gray-500">BINANCE API</span>
+                <span class="text-[#10b981]">SYNAPSE</span> <span class="text-xs font-normal text-[#8c9a93]">BINANCE API</span>
             </h1>
         </div>
 
         <div class="flex items-center gap-4">
             <!-- Timeframe Selector -->
-            <div class="flex bg-[#2b3139] rounded p-0.5 border border-[#474d57] hidden sm:flex">
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#1e2329]" data-tf="1m">1M</button>
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#1e2329]" data-tf="5m">5M</button>
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#1e2329]" data-tf="15m">15M</button>
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded bg-[#fcd535] text-black" data-tf="1h">1H</button>
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#1e2329]" data-tf="4h">4H</button>
-                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#1e2329]" data-tf="1d">1D</button>
+            <div class="flex bg-[#1b2420] rounded p-0.5 border border-[#2a3630] hidden sm:flex">
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#0e1411]" data-tf="1m">1M</button>
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#0e1411]" data-tf="5m">5M</button>
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#0e1411]" data-tf="15m">15M</button>
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded bg-[#10b981] text-black" data-tf="1h">1H</button>
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#0e1411]" data-tf="4h">4H</button>
+                <button class="tf-btn px-2 py-1 text-[10px] font-bold rounded hover:bg-[#0e1411]" data-tf="1d">1D</button>
             </div>
 
             <!-- SIMULATE BUTTON -->
-            <a href="/sim/" class="px-4 py-1.5 text-sm font-bold bg-[#2b3139] hover:bg-purple-600 hover:text-white rounded transition flex items-center gap-2 border border-[#474d57] no-underline text-gray-300">
+            <a href="/sim/" class="px-4 py-1.5 text-sm font-bold bg-[#1b2420] hover:bg-[#10b981] hover:text-[#04120c] hover:text-white rounded transition flex items-center gap-2 border border-[#2a3630] no-underline text-[#edf2ef]">
                 <span>🔬</span> <span class="hidden sm:inline">SIMULATE</span>
             </a>
 
             <!-- REFRESH BUTTON -->
-            <button id="refresh-btn" class="px-4 py-1.5 text-sm font-bold bg-[#2b3139] hover:bg-[#fcd535] hover:text-black rounded transition flex items-center gap-2 border border-[#474d57]">
+            <button id="refresh-btn" class="px-4 py-1.5 text-sm font-bold bg-[#1b2420] hover:bg-[#10b981] hover:text-black rounded transition flex items-center gap-2 border border-[#2a3630]">
                 <span>↻</span> <span class="hidden sm:inline">REFRESH DATA</span>
             </button>
 
             <!-- Global Search -->
             <div class="search-box">
                 <input type="text" id="global-search" placeholder="Search Pairs..." 
-                    class="w-full bg-[#2b3139] border border-[#474d57] rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-[#fcd535] uppercase">
+                    class="w-full bg-[#1b2420] border border-[#2a3630] rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-[#10b981] uppercase">
                 <div id="search-results" class="search-results text-sm"></div>
             </div>
 
@@ -272,13 +272,13 @@
 
         <div class="hidden md:flex items-center gap-4 text-xs font-mono">
             <div class="flex flex-col items-end">
-                <span class="text-gray-500">SERVER TIME</span>
-                <span id="server-time" class="text-[#fcd535]">--:--:--</span>
+                <span class="text-[#8c9a93]">SERVER TIME</span>
+                <span id="server-time" class="text-[#10b981]">--:--:--</span>
             </div>
-            <div class="w-px h-8 bg-gray-700"></div>
+            <div class="w-px h-8 bg-[#0e1411]"></div>
             <div class="flex flex-col items-end">
-                <span class="text-gray-500">API</span>
-                <span class="text-green-500">● CONNECTED</span>
+                <span class="text-[#8c9a93]">API</span>
+                <span class="text-[#10b981]">● CONNECTED</span>
             </div>
         </div>
     </header>
@@ -286,53 +286,53 @@
     <!-- LEFT SIDEBAR: TOOLS -->
     <aside class="sidebar p-2" id="sidebar">
         <div class="mb-4">
-            <h3 class="text-xs font-bold text-gray-500 uppercase px-2 mb-2">Watchlist</h3>
+            <h3 class="text-xs font-bold text-[#8c9a93] uppercase px-2 mb-2">Watchlist</h3>
             <div id="watchlist" class="space-y-1 px-1">
                 <!-- Generated by JS -->
             </div>
         </div>
 
         <div class="mb-4">
-            <h3 class="text-xs font-bold text-gray-500 uppercase px-2 mb-2">Analysis Tools</h3>
+            <h3 class="text-xs font-bold text-[#8c9a93] uppercase px-2 mb-2">Analysis Tools</h3>
             <div id="indicator-list">
                 <!-- Generated by JS -->
             </div>
         </div>
 
         <div class="mb-4">
-            <h3 class="text-xs font-bold text-gray-500 uppercase px-2 mb-2">Chart Settings</h3>
+            <h3 class="text-xs font-bold text-[#8c9a93] uppercase px-2 mb-2">Chart Settings</h3>
             <button id="toggle-log" class="btn-tool">📈 Logarithmic Scale</button>
         </div>
 
         <!-- Trader Desk: Risk & Position Sizer -->
         <div class="mb-4 card p-3 space-y-2">
-            <div class="flex items-center justify-between text-xs text-gray-400">
+            <div class="flex items-center justify-between text-xs text-[#8c9a93]">
                 <span class="font-semibold">Trade Planner</span>
-                <button id="risk-reset" class="text-[10px] text-gray-500 hover:text-[#fcd535]">reset</button>
+                <button id="risk-reset" class="text-[10px] text-[#8c9a93] hover:text-[#10b981]">reset</button>
             </div>
             <div class="grid grid-cols-2 gap-2 text-mini">
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Balance ($)</span>
+                    <span class="text-[#8c9a93]">Balance ($)</span>
                     <input id="risk-balance" type="number" value="1000" class="input-dark" min="0" step="10">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Risk %</span>
+                    <span class="text-[#8c9a93]">Risk %</span>
                     <input id="risk-percent" type="number" value="1" class="input-dark" min="0" step="0.1">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Entry</span>
+                    <span class="text-[#8c9a93]">Entry</span>
                     <input id="risk-entry" type="number" class="input-dark" step="0.1">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Stop</span>
+                    <span class="text-[#8c9a93]">Stop</span>
                     <input id="risk-stop" type="number" class="input-dark" step="0.1">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Take Profit</span>
+                    <span class="text-[#8c9a93]">Take Profit</span>
                     <input id="risk-tp" type="number" class="input-dark" step="0.1">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-gray-500">Leverage</span>
+                    <span class="text-[#8c9a93]">Leverage</span>
                     <input id="risk-lev" type="number" value="5" class="input-dark" min="1" max="125" step="1">
                 </div>
             </div>
@@ -340,29 +340,29 @@
                 <button class="side-btn active" data-side="long" id="risk-long">Long</button>
                 <button class="side-btn" data-side="short" id="risk-short">Short</button>
             </div>
-            <div class="grid grid-cols-2 gap-2 text-mini font-mono text-gray-200" id="risk-summary">
+            <div class="grid grid-cols-2 gap-2 text-mini font-mono text-[#edf2ef]" id="risk-summary">
                 <div class="flex flex-col">
-                    <span class="text-gray-500">Size (USDT)</span>
+                    <span class="text-[#8c9a93]">Size (USDT)</span>
                     <span id="risk-size">-</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-500">Qty</span>
+                    <span class="text-[#8c9a93]">Qty</span>
                     <span id="risk-qty">-</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-500">Liq Est.</span>
+                    <span class="text-[#8c9a93]">Liq Est.</span>
                     <span id="risk-liq">-</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-500">R:R</span>
+                    <span class="text-[#8c9a93]">R:R</span>
                     <span id="risk-rr">-</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-500">Risk $</span>
+                    <span class="text-[#8c9a93]">Risk $</span>
                     <span id="risk-dollar">-</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-gray-500">TP PnL</span>
+                    <span class="text-[#8c9a93]">TP PnL</span>
                     <span id="risk-pnl">-</span>
                 </div>
             </div>
@@ -370,20 +370,20 @@
 
         <!-- Price Alert -->
         <div class="mb-4 card p-3 space-y-2">
-            <div class="flex items-center justify-between text-xs text-gray-400">
+            <div class="flex items-center justify-between text-xs text-[#8c9a93]">
                 <span class="font-semibold">Price Alert</span>
-                <button id="alert-clear" class="text-[10px] text-gray-500 hover:text-[#fcd535]">clear</button>
+                <button id="alert-clear" class="text-[10px] text-[#8c9a93] hover:text-[#10b981]">clear</button>
             </div>
             <div class="flex gap-2">
                 <input id="alert-price" type="number" class="input-dark" placeholder="Set alert price" step="0.1">
                 <button id="alert-set" class="cta-btn">Set</button>
             </div>
-            <div id="alert-status" class="text-mini text-gray-500">No active alert</div>
+            <div id="alert-status" class="text-mini text-[#8c9a93]">No active alert</div>
         </div>
         
-        <div class="mt-auto p-2 border-t border-[#2b3139]">
-            <div class="text-xs text-gray-500 mb-1">iFINN v2.1</div>
-            <div class="text-[10px] text-gray-600">High-Frequency Market Data</div>
+        <div class="mt-auto p-2 border-t border-[#1b2420]">
+            <div class="text-xs text-[#8c9a93] mb-1">iFINN v2.1</div>
+            <div class="text-[10px] text-[#6f7c74]">High-Frequency Market Data</div>
         </div>
     </aside>
 
@@ -391,13 +391,13 @@
     <main class="chart-area">
         <div id="chart-loader" class="loader-overlay">
             <div class="spinner"></div>
-            <div class="mt-2 text-sm text-[#fcd535]" id="loader-text">Initializing Stream...</div>
+            <div class="mt-2 text-sm text-[#10b981]" id="loader-text">Initializing Stream...</div>
         </div>
         <!-- Legend -->
         <div id="chart-legend" class="absolute top-4 left-4 z-20 pointer-events-none bg-black/40 p-2 rounded backdrop-blur-sm text-[10px] font-mono space-y-1">
             <div class="flex gap-3">
                 <span id="leg-symbol" class="font-bold text-white">BTCUSDT</span>
-                <span id="leg-interval" class="text-gray-400">1H</span>
+                <span id="leg-interval" class="text-[#8c9a93]">1H</span>
             </div>
             <div class="flex gap-2">
                 <span>O: <span id="leg-o" class="text-white">--</span></span>
@@ -418,15 +418,15 @@
     </section>
 
     <!-- RIGHT PANEL: ORDER BOOK & TRADES -->
-    <aside class="right-panel border-l border-[#2b3139]">
+    <aside class="right-panel border-l border-[#1b2420]">
         
         <!-- Tabs -->
-        <div class="flex border-b border-[#2b3139]">
-            <button class="flex-1 py-2 text-[10px] font-bold text-[#fcd535] border-b-2 border-[#fcd535]" id="tab-ob">Book</button>
-            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-trades">Trades</button>
-            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-info">Details</button>
-            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-sentiment">Senti.</button>
-            <button class="flex-1 py-2 text-[10px] font-bold text-gray-500 hover:text-gray-300" id="tab-stats">Stats</button>
+        <div class="flex border-b border-[#1b2420]">
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#10b981] border-b-2 border-[#10b981]" id="tab-ob">Book</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#8c9a93] hover:text-[#edf2ef]" id="tab-trades">Trades</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#8c9a93] hover:text-[#edf2ef]" id="tab-info">Details</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#8c9a93] hover:text-[#edf2ef]" id="tab-sentiment">Senti.</button>
+            <button class="flex-1 py-2 text-[10px] font-bold text-[#8c9a93] hover:text-[#edf2ef]" id="tab-stats">Stats</button>
         </div>
 
         <!-- Content Area -->
@@ -434,19 +434,19 @@
             
             <!-- ORDER BOOK -->
             <div id="view-ob" class="h-full flex flex-col p-2">
-                <div class="flex justify-between text-[10px] text-gray-500 px-1 mb-1">
+                <div class="flex justify-between text-[10px] text-[#8c9a93] px-1 mb-1">
                     <span>PRICE</span><span>AMOUNT</span><span>TOTAL</span>
                 </div>
                 <div class="flex-1 overflow-hidden flex flex-col">
-                    <div id="ob-asks" class="flex flex-col justify-end text-[#f6465d] text-xs font-mono h-full"></div>
+                    <div id="ob-asks" class="flex flex-col justify-end text-[#c4544a] text-xs font-mono h-full"></div>
                     <div id="current-price" class="py-1 text-center text-lg font-bold font-mono my-1">--</div>
-                    <div id="ob-bids" class="text-[#0ecb81] text-xs font-mono h-full"></div>
+                    <div id="ob-bids" class="text-[#10b981] text-xs font-mono h-full"></div>
                 </div>
             </div>
 
             <!-- RECENT TRADES -->
             <div id="view-trades" class="h-full hidden flex flex-col">
-                <div class="flex justify-between text-[10px] text-gray-500 px-1 py-1 bg-[#1e2329]">
+                <div class="flex justify-between text-[10px] text-[#8c9a93] px-1 py-1 bg-[#0e1411]">
                     <span>TIME</span><span>PRICE</span><span>AMOUNT</span>
                 </div>
                 <div id="trades-list" class="overflow-y-auto flex-1 font-mono text-xs"></div>
@@ -456,40 +456,40 @@
             <div id="view-sentiment" class="h-full hidden p-3 overflow-y-auto space-y-3">
                 <!-- Fear & Greed Gauge -->
                 <div class="card p-3 text-center space-y-2">
-                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest">CRYPTO FEAR &amp; GREED</div>
+                    <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest">CRYPTO FEAR &amp; GREED</div>
                     <div id="fg-gauge" class="relative mx-auto" style="width:110px;height:62px;">
                         <svg viewBox="0 0 110 62" width="110" height="62">
-                            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#2b3139" stroke-width="10" stroke-linecap="round"/>
-                            <path id="fg-arc" d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#f6465d" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 141.4"/>
+                            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#1b2420" stroke-width="10" stroke-linecap="round"/>
+                            <path id="fg-arc" d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#c4544a" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 141.4"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-end pb-1">
                             <span id="fg-value" class="text-2xl font-bold font-mono text-white">--</span>
                         </div>
                     </div>
-                    <div id="fg-label" class="text-sm font-bold text-gray-400">Loading...</div>
-                    <div id="fg-updated" class="text-[10px] text-gray-600"></div>
+                    <div id="fg-label" class="text-sm font-bold text-[#8c9a93]">Loading...</div>
+                    <div id="fg-updated" class="text-[10px] text-[#6f7c74]"></div>
                 </div>
                 <!-- Historical F&G (7d) -->
                 <div class="card p-3">
-                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">HISTORY (7d)</div>
+                    <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest mb-2">HISTORY (7d)</div>
                     <div id="fg-history" class="space-y-1"></div>
                 </div>
                 <!-- Live CoinGecko Prices -->
                 <div class="card p-3">
                     <div class="flex justify-between items-center mb-2">
-                        <div class="text-[10px] text-gray-500 font-semibold tracking-widest">LIVE MARKET</div>
-                        <div id="cg-updated" class="text-[10px] text-gray-600"></div>
+                        <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest">LIVE MARKET</div>
+                        <div id="cg-updated" class="text-[10px] text-[#6f7c74]"></div>
                     </div>
                     <div id="cg-coins" class="space-y-1.5"></div>
                 </div>
                 <!-- BTC Dominance -->
                 <div class="card p-3">
-                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">BTC DOMINANCE</div>
+                    <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest mb-2">BTC DOMINANCE</div>
                     <div class="flex items-center gap-2">
-                        <div class="flex-1 h-2 bg-[#2b3139] rounded-full overflow-hidden">
-                            <div id="dom-bar" class="h-full rounded-full bg-[#fcd535] transition-all duration-700" style="width:0%"></div>
+                        <div class="flex-1 h-2 bg-[#1b2420]  overflow-hidden">
+                            <div id="dom-bar" class="h-full  bg-[#10b981] transition-all duration-700" style="width:0%"></div>
                         </div>
-                        <span id="dom-pct" class="text-xs font-mono font-bold text-[#fcd535] w-10 text-right">--</span>
+                        <span id="dom-pct" class="text-xs font-mono font-bold text-[#10b981] w-10 text-right">--</span>
                     </div>
                 </div>
             </div>
@@ -504,24 +504,24 @@
                     <div class="stat-label">Volume (Quote)</div><div class="stat-val" id="info-qvol">-</div>
                     <div class="stat-label">Trades (24h)</div><div class="stat-val" id="info-trades">-</div>
                 </div>
-                <div class="border-t border-[#2b3139] pt-2 mt-2">
-                    <h4 class="text-xs font-bold text-gray-500 mb-2">INDICATOR VALUES</h4>
+                <div class="border-t border-[#1b2420] pt-2 mt-2">
+                    <h4 class="text-xs font-bold text-[#8c9a93] mb-2">INDICATOR VALUES</h4>
                     <div class="space-y-1 text-xs font-mono">
-                        <div class="flex justify-between"><span>RSI (14):</span><span id="val-rsi" class="text-[#fcd535]">-</span></div>
-                        <div class="flex justify-between"><span>MACD:</span><span id="val-macd" class="text-[#2962ff]">-</span></div>
-                        <div class="flex justify-between"><span>SMA (20):</span><span id="val-sma" class="text-[#ff6d00]">-</span></div>
+                        <div class="flex justify-between"><span>RSI (14):</span><span id="val-rsi" class="text-[#10b981]">-</span></div>
+                        <div class="flex justify-between"><span>MACD:</span><span id="val-macd" class="text-[#10b981]">-</span></div>
+                        <div class="flex justify-between"><span>SMA (20):</span><span id="val-sma" class="text-[#d8a94a]">-</span></div>
                         <div class="flex justify-between"><span>ATR (14):</span><span id="val-atr" class="text-white">-</span></div>
                     </div>
                 </div>
 
-                <div class="border-t border-[#2b3139] pt-2 mt-2">
-                    <h4 class="text-xs font-bold text-gray-500 mb-2">SESSION METRICS</h4>
+                <div class="border-t border-[#1b2420] pt-2 mt-2">
+                    <h4 class="text-xs font-bold text-[#8c9a93] mb-2">SESSION METRICS</h4>
                     <div class="space-y-1 text-xs font-mono">
-                        <div class="flex justify-between"><span>Spread</span><span id="metric-spread" class="text-[#fcd535]">-</span></div>
-                        <div class="flex justify-between"><span>Best Bid / Ask</span><span id="metric-bbo" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>Last Price</span><span id="metric-mark" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>WS Latency</span><span id="metric-latency" class="text-gray-200">-</span></div>
-                        <div class="flex justify-between"><span>Last Update</span><span id="metric-updated" class="text-gray-200">-</span></div>
+                        <div class="flex justify-between"><span>Spread</span><span id="metric-spread" class="text-[#10b981]">-</span></div>
+                        <div class="flex justify-between"><span>Best Bid / Ask</span><span id="metric-bbo" class="text-[#edf2ef]">-</span></div>
+                        <div class="flex justify-between"><span>Last Price</span><span id="metric-mark" class="text-[#edf2ef]">-</span></div>
+                        <div class="flex justify-between"><span>WS Latency</span><span id="metric-latency" class="text-[#edf2ef]">-</span></div>
+                        <div class="flex justify-between"><span>Last Update</span><span id="metric-updated" class="text-[#edf2ef]">-</span></div>
                     </div>
                 </div>
             </div>
@@ -530,50 +530,50 @@
             <div id="view-stats" class="h-full hidden p-3 overflow-y-auto space-y-3">
                 <!-- Returns Distribution Histogram -->
                 <div class="card p-3">
-                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">LOG-RETURNS DISTRIBUTION</div>
+                    <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest mb-2">LOG-RETURNS DISTRIBUTION</div>
                     <canvas id="returns-canvas" width="260" height="100" style="width:100%;height:100px;border-radius:4px;"></canvas>
                 </div>
                 <!-- Key Statistics -->
                 <div class="card p-3">
-                    <div class="text-[10px] text-gray-500 font-semibold tracking-widest mb-2">KEY STATISTICS</div>
+                    <div class="text-[10px] text-[#8c9a93] font-semibold tracking-widest mb-2">KEY STATISTICS</div>
                     <div class="space-y-2 text-xs font-mono">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-400">Hurst Exponent</span>
+                            <span class="text-[#8c9a93]">Hurst Exponent</span>
                             <div class="text-right">
-                                <span id="stat-hurst" class="font-bold text-[#fcd535]">--</span>
-                                <span id="stat-hurst-desc" class="text-gray-500 text-[10px] ml-1"></span>
+                                <span id="stat-hurst" class="font-bold text-[#10b981]">--</span>
+                                <span id="stat-hurst-desc" class="text-[#8c9a93] text-[10px] ml-1"></span>
                             </div>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-400">Hist. Volatility (20d ann.)</span>
-                            <span id="stat-hv" class="font-bold text-[#ffca28]">--</span>
+                            <span class="text-[#8c9a93]">Hist. Volatility (20d ann.)</span>
+                            <span id="stat-hv" class="font-bold text-[#10b981]">--</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-400">Max Drawdown</span>
-                            <span id="stat-maxdd" class="font-bold text-[#f06292]">--</span>
+                            <span class="text-[#8c9a93]">Max Drawdown</span>
+                            <span id="stat-maxdd" class="font-bold text-[#d8a94a]">--</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-400">Sharpe Ratio (approx)</span>
-                            <span id="stat-sharpe" class="font-bold text-gray-200">--</span>
+                            <span class="text-[#8c9a93]">Sharpe Ratio (approx)</span>
+                            <span id="stat-sharpe" class="font-bold text-[#edf2ef]">--</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-400">Skewness</span>
-                            <span id="stat-skew" class="font-bold text-gray-200">--</span>
+                            <span class="text-[#8c9a93]">Skewness</span>
+                            <span id="stat-skew" class="font-bold text-[#edf2ef]">--</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-400">Kurtosis (excess)</span>
-                            <span id="stat-kurt" class="font-bold text-gray-200">--</span>
+                            <span class="text-[#8c9a93]">Kurtosis (excess)</span>
+                            <span id="stat-kurt" class="font-bold text-[#edf2ef]">--</span>
                         </div>
                     </div>
                 </div>
                 <!-- Regime Guide -->
-                <div class="card p-3 text-[10px] text-gray-500 leading-4">
-                    <div class="font-semibold text-gray-400 mb-1">Hurst Exponent Guide</div>
+                <div class="card p-3 text-[10px] text-[#8c9a93] leading-4">
+                    <div class="font-semibold text-[#8c9a93] mb-1">Hurst Exponent Guide</div>
                     H &gt; 0.55 → Trending (momentum) · H &lt; 0.45 → Mean-reverting · H ≈ 0.5 → Random walk (GBM)
                 </div>
                 <!-- Annotation -->
-                <div class="card p-3 text-[10px] text-gray-500 leading-4">
-                    <div class="font-semibold text-gray-400 mb-1">Returns Histogram</div>
+                <div class="card p-3 text-[10px] text-[#8c9a93] leading-4">
+                    <div class="font-semibold text-[#8c9a93] mb-1">Returns Histogram</div>
                     Green bars = positive returns · Red bars = negative returns · Dashed line = zero
                 </div>
             </div>
@@ -582,20 +582,20 @@
     </aside><!-- /right-panel -->
 
     <!-- MOBILE BOTTOM NAV -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-[#1e2329] border-t border-[#2b3139] flex justify-around items-center h-14 z-50">
-        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[#fcd535]" data-view="chart">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0e1411] border-t border-[#1b2420] flex justify-around items-center h-14 z-50">
+        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[#10b981]" data-view="chart">
             <span class="text-lg">📊</span>
             <span class="text-[10px]">Chart</span>
         </button>
-        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-500" data-view="book">
+        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[#8c9a93]" data-view="book">
             <span class="text-lg">📒</span>
             <span class="text-[10px]">Book</span>
         </button>
-        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-500" data-view="trades">
+        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[#8c9a93]" data-view="trades">
             <span class="text-lg">🤝</span>
             <span class="text-[10px]">Trades</span>
         </button>
-        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-500" data-view="tools">
+        <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[#8c9a93]" data-view="tools">
             <span class="text-lg">🛠️</span>
             <span class="text-[10px]">Tools</span>
         </button>
@@ -631,17 +631,17 @@ const CONFIG = {
 };
 
 const CHART_COLORS = {
-    bg: '#0b0e11',
-    grid: '#1e2329',
-    text: '#848e9c',
-    candleUp: '#0ecb81',
-    candleDown: '#f6465d',
+    bg: '#0a0e0c',
+    grid: '#0e1411',
+    text: '#8c9a93',
+    candleUp: '#10b981',
+    candleDown: '#c4544a',
     crosshair: '#787b86',
     sma: '#ff9800',
     ema: '#2979ff',
-    bb: '#9c27b0',
-    macd: '#2962ff',
-    signal: '#ff6d00',
+    bb: '#d8a94a',
+    macd: '#10b981',
+    signal: '#d8a94a',
     histUp: 'rgba(14, 203, 129, 0.5)',
     histDown: 'rgba(246, 70, 93, 0.5)',
     stochK: '#00bcd4',
@@ -653,11 +653,11 @@ const CHART_COLORS = {
     ichiA: 'rgba(14,203,129,0.18)', ichiB: 'rgba(246,70,93,0.18)',
     lr: '#ffd600', lrBand: 'rgba(255,214,0,0.15)',
     obv: '#26c6da', cmf: '#ab47bc', mfi: '#ef5350',
-    adx: '#ffffff', diPlus: '#0ecb81', diMinus: '#f6465d',
-    cci: '#ff7043', willr: '#29b6f6',
+    adx: '#ffffff', diPlus: '#10b981', diMinus: '#c4544a',
+    cci: '#ff7043', willr: '#8c9a93',
     bbpct: '#ce93d8', bbbw: '#80deea',
     zscore: '#80cbc4',
-    hv: '#ffca28', drawdown: '#f06292',
+    hv: '#10b981', drawdown: '#d8a94a',
 };
 
 // DOM Refs
@@ -752,11 +752,11 @@ async function init() {
     UI.tfBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             UI.tfBtns.forEach(b => {
-                b.classList.remove('bg-[#fcd535]', 'text-black');
-                b.classList.add('hover:bg-[#1e2329]');
+                b.classList.remove('bg-[#10b981]', 'text-black');
+                b.classList.add('hover:bg-[#0e1411]');
             });
-            btn.classList.add('bg-[#fcd535]', 'text-black');
-            btn.classList.remove('hover:bg-[#1e2329]');
+            btn.classList.add('bg-[#10b981]', 'text-black');
+            btn.classList.remove('hover:bg-[#0e1411]');
             CONFIG.activeInterval = btn.dataset.tf;
             loadMarket(CONFIG.activeSymbol);
         });
@@ -889,7 +889,7 @@ function initCharts() {
     seriesMACD = chartOsc.addLineSeries({ color: CHART_COLORS.macd, lineWidth: 1, visible: false });
     seriesSignal = chartOsc.addLineSeries({ color: CHART_COLORS.signal, lineWidth: 1, visible: false });
     seriesHist = chartOsc.addHistogramSeries({ color: '#26a69a', priceFormat: { type: 'volume' }, priceScaleId: '', visible: false });
-    seriesRSI = chartOsc.addLineSeries({ color: '#9c27b0', lineWidth: 1, visible: false });
+    seriesRSI = chartOsc.addLineSeries({ color: '#d8a94a', lineWidth: 1, visible: false });
     seriesStochK = chartOsc.addLineSeries({ color: CHART_COLORS.stochK, lineWidth: 1, visible: false });
     seriesStochD = chartOsc.addLineSeries({ color: CHART_COLORS.stochD, lineWidth: 1, visible: false });
 
@@ -1058,7 +1058,7 @@ function startWS() {
         // AggTrade Update
         if (msg.p) { 
             const tradeEl = document.createElement('div');
-            tradeEl.className = `flex justify-between border-b border-gray-800 ${msg.m ? 'text-[#f6465d]' : 'text-[#0ecb81]'}`;
+            tradeEl.className = `flex justify-between border-b border-[#1b2420] ${msg.m ? 'text-[#c4544a]' : 'text-[#10b981]'}`;
             tradeEl.innerHTML = `<span>${new Date(msg.T).toLocaleTimeString()}</span><span>${msg.p}</span><span>${msg.q}</span>`;
             const list = document.getElementById('trades-list');
             list.prepend(tradeEl);
@@ -1099,7 +1099,7 @@ function renderOrderBook(data) {
 function renderTrades(data) {
     const list = document.getElementById('trades-list');
     list.innerHTML = data.map(t => `
-        <div class="flex justify-between border-b border-gray-800 ${t.isBuyerMaker ? 'text-[#f6465d]' : 'text-[#0ecb81]'}">
+        <div class="flex justify-between border-b border-[#1b2420] ${t.isBuyerMaker ? 'text-[#c4544a]' : 'text-[#10b981]'}">
             <span>${new Date(t.time).toLocaleTimeString()}</span>
             <span>${t.price}</span>
             <span>${t.qty}</span>
@@ -1425,7 +1425,7 @@ function updateIndicators(data) {
             const D=lookback*sx2-sx*sx,sl=D?(lookback*sxy-sx*sy)/D:0,ic=(sy-sl*sx)/lookback;
             const mom=sl*(lookback-1)+ic;
             const prev=hist.length?hist[hist.length-1].value:0;
-            hist.push({time:times[i],value:mom,color:mom>=0?(mom>=prev?'#0ecb81':'#26a69a'):(mom<=prev?'#f6465d':'#ef9a9a')});
+            hist.push({time:times[i],value:mom,color:mom>=0?(mom>=prev?'#10b981':'#26a69a'):(mom<=prev?'#c4544a':'#ef9a9a')});
         }
         return hist;
     };
@@ -1482,16 +1482,16 @@ function updateIndicators(data) {
         const cts=new Array(bins).fill(0);
         for(const r of lr){const b=Math.min(bins-1,Math.floor((r-minR)/bs));cts[b]++;}
         const maxCt=Math.max(...cts);
-        ctx.fillStyle='#0b0e11';ctx.fillRect(0,0,w,h);
+        ctx.fillStyle='#0a0e0c';ctx.fillRect(0,0,w,h);
         const bw=w/bins,zero=Math.min(bins-1,Math.max(0,Math.floor((0-minR)/bs)));
         for(let b=0;b<bins;b++){
             const bh=(cts[b]/maxCt)*(h-16);
             ctx.fillStyle=b<zero?'rgba(246,70,93,0.75)':'rgba(14,203,129,0.75)';
             ctx.fillRect(b*bw,h-16-bh,bw-1,bh);
         }
-        ctx.strokeStyle='#fcd535';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.strokeStyle='#10b981';ctx.lineWidth=1;ctx.setLineDash([3,3]);
         ctx.beginPath();const zx=zero*bw;ctx.moveTo(zx,0);ctx.lineTo(zx,h-16);ctx.stroke();ctx.setLineDash([]);
-        ctx.fillStyle='#848e9c';ctx.font='8px monospace';ctx.textAlign='left';ctx.fillText(minR.toFixed(1)+'%',2,h-2);
+        ctx.fillStyle='#8c9a93';ctx.font='8px monospace';ctx.textAlign='left';ctx.fillText(minR.toFixed(1)+'%',2,h-2);
         ctx.textAlign='center';ctx.fillText('0',zx,h-2);
         ctx.textAlign='right';ctx.fillText(maxR.toFixed(1)+'%',w-2,h-2);
     };
@@ -1502,7 +1502,7 @@ function updateIndicators(data) {
         // Hurst
         const H=calcHurst();
         const hEl=document.getElementById('stat-hurst'),hdEl=document.getElementById('stat-hurst-desc');
-        if(hEl){hEl.textContent=H.toFixed(3);hEl.style.color=H>0.55?'#0ecb81':H<0.45?'#f6465d':'#fcd535';}
+        if(hEl){hEl.textContent=H.toFixed(3);hEl.style.color=H>0.55?'#10b981':H<0.45?'#c4544a':'#10b981';}
         if(hdEl)hdEl.textContent=H>0.55?'Trending':H<0.45?'Mean-Rev':'Rand. Walk';
         // HV
         const hvD=calcHV(20);if(hvD.length){const el=document.getElementById('stat-hv');if(el)el.textContent=hvD[hvD.length-1].value.toFixed(1)+'%';}
@@ -1516,13 +1516,13 @@ function updateIndicators(data) {
             const sd=Math.sqrt(lr.reduce((a,b)=>a+(b-mean)**2,0)/lr.length)||1e-10;
             const sharpe=(mean*Math.sqrt(252))/sd;
             const shEl=document.getElementById('stat-sharpe');
-            if(shEl){shEl.textContent=sharpe.toFixed(2);shEl.style.color=sharpe>=1?'#0ecb81':sharpe>=0?'#fcd535':'#f6465d';}
+            if(shEl){shEl.textContent=sharpe.toFixed(2);shEl.style.color=sharpe>=1?'#10b981':sharpe>=0?'#10b981':'#c4544a';}
             // Skewness
             const skewEl=document.getElementById('stat-skew');
-            if(skewEl){const skew=lr.reduce((a,b)=>a+((b-mean)/sd)**3,0)/lr.length;skewEl.textContent=skew.toFixed(3);skewEl.style.color=skew>0.5?'#0ecb81':skew<-0.5?'#f6465d':'#848e9c';}
+            if(skewEl){const skew=lr.reduce((a,b)=>a+((b-mean)/sd)**3,0)/lr.length;skewEl.textContent=skew.toFixed(3);skewEl.style.color=skew>0.5?'#10b981':skew<-0.5?'#c4544a':'#8c9a93';}
             // Excess Kurtosis
             const kurtEl=document.getElementById('stat-kurt');
-            if(kurtEl){const kurt=lr.reduce((a,b)=>a+((b-mean)/sd)**4,0)/lr.length-3;kurtEl.textContent=kurt.toFixed(2);kurtEl.style.color=kurt>1?'#f6465d':'#848e9c';}
+            if(kurtEl){const kurt=lr.reduce((a,b)=>a+((b-mean)/sd)**4,0)/lr.length-3;kurtEl.textContent=kurt.toFixed(2);kurtEl.style.color=kurt>1?'#c4544a':'#8c9a93';}
         }
     };
 
@@ -1602,9 +1602,9 @@ function updateIndicators(data) {
     if (CONFIG.indicators.pivots) {
         const pv=calcPivots();
         if(pv){
-            [{price:pv.P,color:'#fcd535',title:'P'},{price:pv.R1,color:'#0ecb81',title:'R1'},
-             {price:pv.R2,color:'#0ecb81',title:'R2'},{price:pv.S1,color:'#f6465d',title:'S1'},
-             {price:pv.S2,color:'#f6465d',title:'S2'}].forEach(d=>{
+            [{price:pv.P,color:'#10b981',title:'P'},{price:pv.R1,color:'#10b981',title:'R1'},
+             {price:pv.R2,color:'#10b981',title:'R2'},{price:pv.S1,color:'#c4544a',title:'S1'},
+             {price:pv.S2,color:'#c4544a',title:'S2'}].forEach(d=>{
                 pivotLines.push(seriesCandle.createPriceLine({price:d.price,color:d.color,lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,title:d.title}));
             });
         }
@@ -1740,10 +1740,10 @@ function setPriceAlert() {
         return;
     }
     if (STATE.alertLine) seriesCandle.removePriceLine(STATE.alertLine);
-    STATE.alertLine = seriesCandle.createPriceLine({ price: target, color: '#fcd535', lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: 'ALERT' });
+    STATE.alertLine = seriesCandle.createPriceLine({ price: target, color: '#10b981', lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: 'ALERT' });
     STATE.alertPrice = target;
     UI.alert.status.innerText = `Alert set at ${target}`;
-    UI.alert.status.classList.remove('text-red-400');
+    UI.alert.status.classList.remove('text-[#c4544a]');
 }
 
 function clearPriceAlert() {
@@ -1751,7 +1751,7 @@ function clearPriceAlert() {
     STATE.alertLine = null;
     STATE.alertPrice = null;
     UI.alert.status.innerText = 'No active alert';
-    UI.alert.status.classList.remove('text-red-400');
+    UI.alert.status.classList.remove('text-[#c4544a]');
 }
 
 function checkAlert(previous, current) {
@@ -1760,7 +1760,7 @@ function checkAlert(previous, current) {
     const crossedDown = previous > STATE.alertPrice && current <= STATE.alertPrice;
     if (crossedUp || crossedDown) {
         UI.alert.status.innerText = `Alert hit @ ${STATE.alertPrice}`;
-        UI.alert.status.classList.add('text-red-400');
+        UI.alert.status.classList.add('text-[#c4544a]');
         if (STATE.alertLine) seriesCandle.removePriceLine(STATE.alertLine);
         STATE.alertLine = null;
         STATE.alertPrice = null;
@@ -1786,7 +1786,7 @@ function updateMeta() {
 function toggleIndicator(key, btn) {
     CONFIG.indicators[key] = !CONFIG.indicators[key];
     btn.classList.toggle('active');
-    btn.style.color = CONFIG.indicators[key] ? '#fcd535' : '#848e9c';
+    btn.style.color = CONFIG.indicators[key] ? '#10b981' : '#8c9a93';
     
     (async () => {
         const res = await fetch(`${CONFIG.api}/klines?symbol=${CONFIG.activeSymbol}&interval=${CONFIG.activeInterval}&limit=500`);
@@ -1837,7 +1837,7 @@ function renderIndicatorsToolbox() {
     ];
 
     UI.indicatorsList.innerHTML = groups.map(g => `
-        <div class="text-[9px] uppercase tracking-widest text-gray-600 mt-3 mb-1 px-1">${g.label}</div>
+        <div class="text-[9px] uppercase tracking-widest text-[#6f7c74] mt-3 mb-1 px-1">${g.label}</div>
         ${g.items.map(i => `
             <button id="btn-${i.key}" class="btn-tool" onclick="toggleIndicator('${i.key}', this)">
                 <span style="display:inline-block;width:18px">${i.icon}</span> ${i.name}
@@ -1848,9 +1848,9 @@ function renderIndicatorsToolbox() {
 
 function renderWatchlist() {
     UI.watchlist.innerHTML = CONFIG.watchlist.map(sym => `
-        <div class="flex justify-between items-center p-2 hover:bg-[#2b3139] cursor-pointer rounded text-sm" onclick="selectSymbol('${sym}')">
+        <div class="flex justify-between items-center p-2 hover:bg-[#1b2420] cursor-pointer rounded text-sm" onclick="selectSymbol('${sym}')">
             <span class="font-bold">${sym}</span>
-            <span id="watch-price-${sym}" class="font-mono text-xs text-gray-400">--</span>
+            <span id="watch-price-${sym}" class="font-mono text-xs text-[#8c9a93]">--</span>
         </div>
     `).join('');
 }
@@ -1877,11 +1877,11 @@ async function updateWatchlistPrices() {
 // Tab Switching
 UI.tabs.forEach((tab, idx) => {
     tab.addEventListener('click', () => {
-        UI.tabs.forEach(t => { t.classList.remove('text-[#fcd535]', 'border-b-2', 'border-[#fcd535]'); t.classList.add('text-gray-500'); });
+        UI.tabs.forEach(t => { t.classList.remove('text-[#10b981]', 'border-b-2', 'border-[#10b981]'); t.classList.add('text-[#8c9a93]'); });
         UI.views.forEach(v => v.classList.add('hidden'));
         
-        tab.classList.remove('text-gray-500');
-        tab.classList.add('text-[#fcd535]', 'border-b-2', 'border-[#fcd535]');
+        tab.classList.remove('text-[#8c9a93]');
+        tab.classList.add('text-[#10b981]', 'border-b-2', 'border-[#10b981]');
         UI.views[idx].classList.remove('hidden');
     });
 });
@@ -1897,11 +1897,11 @@ mobileNavBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         const view = btn.dataset.view;
         mobileNavBtns.forEach(b => {
-            b.classList.remove('text-[#fcd535]');
-            b.classList.add('text-gray-500');
+            b.classList.remove('text-[#10b981]');
+            b.classList.add('text-[#8c9a93]');
         });
-        btn.classList.add('text-[#fcd535]');
-        btn.classList.remove('text-gray-500');
+        btn.classList.add('text-[#10b981]');
+        btn.classList.remove('text-[#8c9a93]');
 
         const sidebar = document.getElementById('sidebar');
         const rightPanel = document.querySelector('.right-panel');
@@ -1950,10 +1950,10 @@ UI.refreshBtn.addEventListener('click', async () => {
 
 // ─── FEAR & GREED INDEX ──────────────────────────────────────────────────────
 const FG_COLORS = {
-    'Extreme Fear': '#f6465d',
+    'Extreme Fear': '#c4544a',
     'Fear': '#ff9800',
-    'Neutral': '#fcd535',
-    'Greed': '#0ecb81',
+    'Neutral': '#10b981',
+    'Greed': '#10b981',
     'Extreme Greed': '#00e676'
 };
 
@@ -1966,7 +1966,7 @@ async function fetchFearGreed() {
         const latest = data.data[0];
         const val = parseInt(latest.value);
         const label = latest.value_classification;
-        const color = FG_COLORS[label] || '#fcd535';
+        const color = FG_COLORS[label] || '#10b981';
         const ts = new Date(parseInt(latest.timestamp) * 1000);
 
         // Update gauge arc (semi-circle arc length ≈ 141.4)
@@ -1989,12 +1989,12 @@ async function fetchFearGreed() {
             hist.innerHTML = data.data.slice(0, 7).map(d => {
                 const v = parseInt(d.value);
                 const lbl = d.value_classification;
-                const c = FG_COLORS[lbl] || '#fcd535';
+                const c = FG_COLORS[lbl] || '#10b981';
                 const dt = new Date(parseInt(d.timestamp) * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 return '<div class="flex items-center gap-2 text-[11px]">'
-                    + '<span class="text-gray-500 w-14">' + dt + '</span>'
-                    + '<div class="flex-1 h-1.5 bg-[#2b3139] rounded-full overflow-hidden">'
-                    + '<div class="h-full rounded-full" style="width:' + v + '%;background:' + c + '"></div>'
+                    + '<span class="text-[#8c9a93] w-14">' + dt + '</span>'
+                    + '<div class="flex-1 h-1.5 bg-[#1b2420]  overflow-hidden">'
+                    + '<div class="h-full " style="width:' + v + '%;background:' + c + '"></div>'
                     + '</div>'
                     + '<span class="font-mono font-bold w-6 text-right" style="color:' + c + '">' + v + '</span>'
                     + '</div>';
@@ -2014,15 +2014,15 @@ async function fetchCoinGeckoMarket() {
         if (container) {
             container.innerHTML = coins.map(c => {
                 const chg = c.price_change_percentage_24h || 0;
-                const chgColor = chg >= 0 ? '#0ecb81' : '#f6465d';
+                const chgColor = chg >= 0 ? '#10b981' : '#c4544a';
                 const sign = chg >= 0 ? '+' : '';
                 const fmtPrice = c.current_price >= 1000
                     ? c.current_price.toLocaleString('en-US', { maximumFractionDigits: 0 })
                     : c.current_price.toLocaleString('en-US', { maximumFractionDigits: 4 });
                 return '<div class="flex items-center gap-1 text-[11px] font-mono py-0.5">'
-                    + '<img src="' + c.image + '" class="w-4 h-4 rounded-full" loading="lazy" onerror="this.style.display=\'none\'" />'
+                    + '<img src="' + c.image + '" class="w-4 h-4 " loading="lazy" onerror="this.style.display=\'none\'" />'
                     + '<span class="font-bold text-white w-10 truncate">' + c.symbol.toUpperCase() + '</span>'
-                    + '<span class="flex-1 text-right text-gray-200">$' + fmtPrice + '</span>'
+                    + '<span class="flex-1 text-right text-[#edf2ef]">$' + fmtPrice + '</span>'
                     + '<span class="w-14 text-right font-bold" style="color:' + chgColor + '">' + sign + chg.toFixed(2) + '%</span>'
                     + '</div>';
             }).join('');

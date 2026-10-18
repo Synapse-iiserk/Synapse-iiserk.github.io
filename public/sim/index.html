@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFINN | Algorithm Simulation Lab</title>
+    <title>iFINN | Market simulation</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
     <link rel="icon" href="/favicon.svg">
@@ -14,16 +14,16 @@
     <div style="display:flex;align-items:center;gap:14px">
         <a href="/chart.html" style="color:var(--text-muted);font-size:18px;text-decoration:none">←</a>
         <h1 style="font-size:17px;font-weight:700;letter-spacing:-.02em">
-            <span style="color:#fcd535">iFINN</span>
-            <span style="color:#3a424e;margin:0 6px">|</span>
+            <span style="color:#10b981">iFINN</span>
+            <span style="color:#1f2a24;margin:0 6px">|</span>
             <span style="font-size:13px;font-weight:600">Algorithm Lab</span>
         </h1>
-        <span style="font-size:10px;background:#2b3139;color:#848e9c;padding:2px 8px;border-radius:4px">v3.1</span>
+        <span style="font-size:10px;background:#1b2420;color:#8c9a93;padding:2px 8px;border-radius:4px">v3.1</span>
     </div>
     <div style="display:flex;align-items:center;gap:14px;font-size:11px;font-family:'Courier New',monospace">
         <span id="hdr-symbol" style="color:#fff;font-weight:700">--</span>
-        <span id="hdr-price" style="color:#fcd535">--</span>
-        <span id="hdr-status" style="color:#848e9c">IDLE</span>
+        <span id="hdr-price" style="color:#10b981">--</span>
+        <span id="hdr-status" style="color:#8c9a93">IDLE</span>
     </div>
 </header>
 
@@ -65,7 +65,7 @@
             <input id="bt-horizon" class="ctrl" type="number" value="5" min="1" max="100" style="width:65px" oninput="updateBtLbl()">
             <span style="font-size:11px;color:var(--text-muted)">candles ahead</span>
         </div>
-        <div id="bt-horizon-lbl" style="margin-top:4px;font-size:10px;color:#3a424e">= 5h on 1H</div>
+        <div id="bt-horizon-lbl" style="margin-top:4px;font-size:10px;color:#1f2a24">= 5h on 1H</div>
     </div>
     <div class="card">
         <div class="label">Warm-up Period</div>
@@ -75,7 +75,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="label" style="margin-bottom:8px">Algorithms <span style="color:#3a424e;font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">— 25 models</span></div>
+        <div class="label" style="margin-bottom:8px">Algorithms <span style="color:#1f2a24;font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">— 25 models</span></div>
         <div class="algo-grid" id="bt-chips"></div>
         <div style="display:flex;gap:6px;margin-top:8px">
             <button class="btn-sec" onclick="btAll(1)">All</button>
@@ -84,14 +84,14 @@
     </div>
     <button id="bt-run" class="btn-primary" onclick="runBT()" disabled>▶ RUN BACKTEST</button>
     <button id="bt-csv" class="btn-sec" onclick="exportBT()" style="display:none;width:100%">↓ Export CSV</button>
-    <p style="font-size:10px;color:#3a424e;line-height:1.5">Walk-forward: signals use only past data, compared against price N candles later. Zero lookahead bias.</p>
+    <p style="font-size:10px;color:#1f2a24;line-height:1.5">Walk-forward: signals use only past data, compared against price N candles later. Zero lookahead bias.</p>
 </aside>
 <main class="sim-main">
-    <div id="bt-idle"><div class="idle-art">🔬</div><h2 style="text-align:center;font-size:20px;font-weight:700;margin-bottom:8px">Walk-Forward Backtest</h2><p style="text-align:center;font-size:13px;color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.6">Select a symbol, configure parameters, click <strong style="color:#fcd535">Run Backtest</strong>. Tests all 25 algorithms with zero lookahead bias.</p></div>
+    <div id="bt-idle"><div class="idle-art">🔬</div><h2 style="text-align:center;font-size:20px;font-weight:700;margin-bottom:8px">Walk-Forward Backtest</h2><p style="text-align:center;font-size:13px;color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.6">Select a symbol, configure parameters, click <strong style="color:#10b981">Run Backtest</strong>. Tests all 25 algorithms with zero lookahead bias.</p></div>
     <div id="bt-running" style="display:none">
         <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px">Simulation Progress</div>
         <div class="progress-track" style="margin-bottom:6px"><div class="progress-fill" id="bt-fill"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:#3a424e;margin-bottom:14px;font-family:'Courier New',monospace"><span id="bt-prog-lbl">Loading…</span><span id="bt-prog-pct">0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#1f2a24;margin-bottom:14px;font-family:'Courier New',monospace"><span id="bt-prog-lbl">Loading…</span><span id="bt-prog-pct">0%</span></div>
         <div class="log-console" id="bt-log"></div>
     </div>
     <div id="bt-results" style="display:none">
@@ -140,7 +140,7 @@
             <option value="5m">5 Minutes</option><option value="15m">15 Minutes</option>
             <option value="30m">30 Minutes</option>
         </select>
-        <div style="margin-top:5px;font-size:10px;color:#3a424e">Waits one candle close per round</div>
+        <div style="margin-top:5px;font-size:10px;color:#1f2a24">Waits one candle close per round</div>
     </div>
     <div class="card">
         <div class="label">Session Duration</div>
@@ -148,7 +148,7 @@
             <option value="5">5 rounds</option><option value="10" selected>10 rounds</option>
             <option value="15">15 rounds</option><option value="20">20 rounds</option><option value="30">30 rounds</option>
         </select>
-        <div id="lv-dur-lbl" style="margin-top:5px;font-size:10px;color:#3a424e">≈ 10 minutes</div>
+        <div id="lv-dur-lbl" style="margin-top:5px;font-size:10px;color:#1f2a24">≈ 10 minutes</div>
     </div>
     <div class="card">
         <div class="label">Starting Capital</div>
@@ -159,7 +159,7 @@
                 <option value="GBP">GBP</option><option value="JPY">JPY</option><option value="SGD">SGD</option><option value="AED">AED</option>
             </select>
         </div>
-        <div id="lv-usdt-eq" style="margin-top:5px;font-size:10px;color:#3a424e">≈ 1.19 USDT</div>
+        <div id="lv-usdt-eq" style="margin-top:5px;font-size:10px;color:#1f2a24">≈ 1.19 USDT</div>
     </div>
     <div class="card">
         <div class="label">Allocation Mode</div>
@@ -180,7 +180,7 @@
     <button id="lv-start" class="btn-primary" onclick="startSession()" disabled>▶ START SESSION</button>
     <button id="lv-stop" class="btn-danger" onclick="stopSession()" style="display:none">⬛ STOP SESSION</button>
     <button id="lv-csv" class="btn-sec" onclick="exportLive()" style="display:none;width:100%">↓ Export CSV</button>
-    <p style="font-size:10px;color:#3a424e;line-height:1.5">Paper trading only — no real money. Each algo gets an equal share of capital, predicts direction, and result is verified at candle close. Flat candles (0% move) are skipped fairly.</p>
+    <p style="font-size:10px;color:#1f2a24;line-height:1.5">Paper trading only — no real money. Each algo gets an equal share of capital, predicts direction, and result is verified at candle close. Flat candles (0% move) are skipped fairly.</p>
 </aside>
 <main class="sim-main">
     <!-- IDLE -->
@@ -214,15 +214,15 @@
             <div class="pstat" style="display:flex;align-items:center;justify-content:center;flex-direction:column">
                 <div class="countdown-ring" style="margin-bottom:4px">
                     <svg width="60" height="60" viewBox="0 0 60 60">
-                        <circle cx="30" cy="30" r="26" fill="none" stroke="#2b3139" stroke-width="4"/>
-                        <circle id="lv-cd-ring" cx="30" cy="30" r="26" fill="none" stroke="#fcd535" stroke-width="4" stroke-dasharray="163.4" stroke-dashoffset="0" stroke-linecap="round"/>
+                        <circle cx="30" cy="30" r="26" fill="none" stroke="#1b2420" stroke-width="4"/>
+                        <circle id="lv-cd-ring" cx="30" cy="30" r="26" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="163.4" stroke-dashoffset="0" stroke-linecap="round"/>
                     </svg>
                     <span class="countdown-val" id="lv-cd-num">--</span>
                 </div>
                 <div class="pstat-lbl" id="lv-cd-lbl">Next close</div>
             </div>
         </div>
-        <div id="lv-phase" style="background:#fcd53515;border:1px solid #fcd53533;border-radius:6px;padding:10px 16px;margin-bottom:14px;font-size:12px;display:flex;align-items:center;gap:10px">
+        <div id="lv-phase" style="background:#10b98115;border:1px solid #10b98133;border-radius:6px;padding:10px 16px;margin-bottom:14px;font-size:12px;display:flex;align-items:center;gap:10px">
             <span class="pulse" id="lv-phase-icon" style="font-size:14px">📡</span>
             <span id="lv-phase-txt">Initialising…</span>
         </div>
@@ -719,7 +719,7 @@ function bindSearch(inId,dropId,onSel){
         const q=inp.value.toUpperCase().trim();
         if(!q){drop.classList.remove('show');return;}
         const m=symbols.filter(s=>s.symbol.includes(q)||s.base.includes(q)).slice(0,25);
-        drop.innerHTML=m.map(s=>`<div class="sdrop-item" onclick="${onSel}('${s.symbol}')"><span style="font-weight:700">${s.symbol}</span><span style="color:var(--text-muted);font-size:10px">${s.base}/${s.quote}</span></div>`).join('')||'<div class="sdrop-item" style="color:#3a424e">No results</div>';
+        drop.innerHTML=m.map(s=>`<div class="sdrop-item" onclick="${onSel}('${s.symbol}')"><span style="font-weight:700">${s.symbol}</span><span style="color:var(--text-muted);font-size:10px">${s.base}/${s.quote}</span></div>`).join('')||'<div class="sdrop-item" style="color:#1f2a24">No results</div>';
         drop.classList.add('show');
     });
     document.addEventListener('click',e=>{if(!e.target.closest(`#${inId}`)&&!e.target.closest(`#${dropId}`))drop.classList.remove('show');});
@@ -740,7 +740,7 @@ function switchTab(tab){
 // ════════════════════════════════════════════════════════════
 let btSym=null,btResults=null,btSortKey='accuracy',btSortDir=-1;
 bindSearch('bt-sym','bt-sym-drop','btSel');
-function btSel(sym){btSym=sym;document.getElementById('bt-sym').value=sym;document.getElementById('bt-sym-drop').classList.remove('show');document.getElementById('bt-sym-sel').textContent='✓ '+sym;document.getElementById('bt-sym-sel').style.color='#0ecb81';document.getElementById('bt-run').disabled=false;document.getElementById('hdr-symbol').textContent=sym;}
+function btSel(sym){btSym=sym;document.getElementById('bt-sym').value=sym;document.getElementById('bt-sym-drop').classList.remove('show');document.getElementById('bt-sym-sel').textContent='✓ '+sym;document.getElementById('bt-sym-sel').style.color='#10b981';document.getElementById('bt-run').disabled=false;document.getElementById('hdr-symbol').textContent=sym;}
 (()=>{const chips=document.getElementById('bt-chips');chips.innerHTML=ALGOS.map(a=>`<div class="algo-chip active" id="bc-${a.key}" onclick="btChip('${a.key}',this)">${a.name}</div>`).join('');})();
 function btChip(k,el){btActive.has(k)?btActive.delete(k):btActive.add(k);el.classList.toggle('active');}
 function btAll(on){ALGOS.forEach(a=>{on?btActive.add(a.key):btActive.delete(a.key);const el=document.getElementById(`bc-${a.key}`);on?el.classList.add('active'):el.classList.remove('active');});}
@@ -795,17 +795,17 @@ async function runBT(){
 
 function renderBT(data,horizon,warmup){
     const tot=btResults.reduce((a,r)=>a+r.signals,0),cor=btResults.reduce((a,r)=>a+r.correct,0),ov=tot?(cor/tot*100):0;
-    document.getElementById('bt-stats').innerHTML=[{val:btResults.length,lbl:'Algorithms',c:'#fcd535'},{val:tot.toLocaleString(),lbl:'Total Signals',c:'#29b6f6'},{val:ov.toFixed(1)+'%',lbl:'Ensemble Acc',c:ov>=55?'#0ecb81':ov>=50?'#fcd535':'#f6465d'},{val:btResults[0].name.split(' ')[0],lbl:`Best(${btResults[0].accuracy.toFixed(1)}%)`,c:'#0ecb81'}].map(s=>`<div class="stat-box"><div class="stat-val" style="color:${s.c}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+    document.getElementById('bt-stats').innerHTML=[{val:btResults.length,lbl:'Algorithms',c:'#10b981'},{val:tot.toLocaleString(),lbl:'Total Signals',c:'#8c9a93'},{val:ov.toFixed(1)+'%',lbl:'Ensemble Acc',c:ov>=55?'#10b981':ov>=50?'#10b981':'#c4544a'},{val:btResults[0].name.split(' ')[0],lbl:`Best(${btResults[0].accuracy.toFixed(1)}%)`,c:'#10b981'}].map(s=>`<div class="stat-box"><div class="stat-val" style="color:${s.c}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
     const lastData=data.slice(-102),lc=lastData.map(d=>d.close);
     let b=0,s=0,n=0;btResults.forEach(r=>{try{const sig=SIG[r.key]({data:lastData,closes:lc});if(sig===1)b++;else if(sig===-1)s++;else n++;}catch(_){}});
-    const tot2=b+s+n,dom=b>s?'BUY':s>b?'SELL':'NEUTRAL',dc=dom==='BUY'?'#0ecb81':dom==='SELL'?'#f6465d':'#fcd535';
-    document.getElementById('bt-ensemble').innerHTML=`<div><div class="label" style="margin-bottom:4px">Ensemble Signal (current)</div><div class="esig" style="color:${dc}">${dom}</div></div><div style="margin-left:auto;text-align:right"><div class="label">Confidence</div><div style="font-size:22px;font-weight:800">${tot2?Math.round(Math.max(b,s,n)/tot2*100):0}%</div><div style="font-size:10px;color:#3a424e;margin-top:4px">🟢×${b} 🔴×${s} ⚪×${n}</div></div>`;
-    const top3=btResults.slice(0,3),cols=['#fcd535','#0ecb81','#29b6f6'];
+    const tot2=b+s+n,dom=b>s?'BUY':s>b?'SELL':'NEUTRAL',dc=dom==='BUY'?'#10b981':dom==='SELL'?'#c4544a':'#10b981';
+    document.getElementById('bt-ensemble').innerHTML=`<div><div class="label" style="margin-bottom:4px">Ensemble Signal (current)</div><div class="esig" style="color:${dc}">${dom}</div></div><div style="margin-left:auto;text-align:right"><div class="label">Confidence</div><div style="font-size:22px;font-weight:800">${tot2?Math.round(Math.max(b,s,n)/tot2*100):0}%</div><div style="font-size:10px;color:#1f2a24;margin-top:4px">🟢×${b} 🔴×${s} ⚪×${n}</div></div>`;
+    const top3=btResults.slice(0,3),cols=['#10b981','#10b981','#8c9a93'];
     const cv=document.getElementById('bt-equity');const ctx=cv.getContext('2d');const W=cv.offsetWidth||660,H=160;cv.width=W;cv.height=H;
     const curves=top3.map(algo=>{let eq=[1];for(let i=warmup;i<=data.length-horizon-2;i++){const sub=data.slice(0,i+1),cls=sub.map(d=>d.close);let sig;try{sig=SIG[algo.key]({data:sub,closes:cls});}catch(_){sig=0;}if(sig){const ret=(data[i+horizon].close-data[i].close)/data[i].close;eq.push(eq[eq.length-1]*(1+sig*ret));}else eq.push(eq[eq.length-1]);}return eq;});
     const all=curves.flat(),minV=Math.min(...all),maxV=Math.max(...all),rng=(maxV-minV)||0.01;
-    ctx.fillStyle='#11151c';ctx.fillRect(0,0,W,H);
-    const zy=H-8-((1-minV)/rng)*(H-20);ctx.strokeStyle='#2b3139';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(0,zy);ctx.lineTo(W,zy);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#111815';ctx.fillRect(0,0,W,H);
+    const zy=H-8-((1-minV)/rng)*(H-20);ctx.strokeStyle='#1b2420';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(0,zy);ctx.lineTo(W,zy);ctx.stroke();ctx.setLineDash([]);
     curves.forEach((c,ci)=>{ctx.strokeStyle=cols[ci];ctx.lineWidth=ci===0?2:1.5;ctx.beginPath();c.forEach((v,i)=>{const x=(i/c.length)*W,y=H-8-((v-minV)/rng)*(H-20);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();});
     document.getElementById('bt-eq-legend').innerHTML=top3.map((a,i)=>`<span style="color:${cols[i]}">● ${a.name}</span>`).join('');
     renderBTTable(btResults);
@@ -813,9 +813,9 @@ function renderBT(data,horizon,warmup){
 
 function renderBTTable(rows){
     document.getElementById('bt-body').innerHTML=rows.map(r=>{
-        const bw=Math.min(100,r.accuracy),bc=r.accuracy>=65?'#0ecb81':r.accuracy>=55?'#fcd535':r.accuracy>=50?'#ff7043':'#f6465d';
-        const rc=r.rank===1?'#fcd535':r.rank===2?'#c0c0c0':r.rank===3?'#cd7f32':'#2b3139';
-        return`<tr><td><span class="rank-badge" style="background:${rc}22;color:${rc}">#${r.rank}</span></td><td><div style="font-weight:700">${r.name}</div><div style="font-size:10px;color:var(--text-muted)">${r.group}</div></td><td style="font-family:'Courier New',monospace;color:var(--text-muted)">${r.signals.toLocaleString()}</td><td style="color:#0ecb81;font-family:'Courier New',monospace">${r.correct.toLocaleString()}</td><td style="font-weight:700;color:${bc};font-family:'Courier New',monospace">${r.accuracy.toFixed(1)}%</td><td><div class="acc-bar-wrap"><div class="acc-bar" style="width:${bw}%;background:${bc}"></div></div></td><td style="color:${r.avgReturn>=0?'#0ecb81':'#f6465d'};font-family:'Courier New',monospace">${r.avgReturn>=0?'+':''}${r.avgReturn.toFixed(3)}%</td><td style="color:${r.sharpe>=1?'#0ecb81':r.sharpe>=0?'#fcd535':'#f6465d'};font-family:'Courier New',monospace">${r.sharpe.toFixed(2)}</td><td class="col-streak" style="color:var(--text-muted);font-family:'Courier New',monospace">${r.maxStreak}</td><td><span class="grade grade-${r.grade}">${r.grade}</span></td></tr>`;
+        const bw=Math.min(100,r.accuracy),bc=r.accuracy>=65?'#10b981':r.accuracy>=55?'#10b981':r.accuracy>=50?'#ff7043':'#c4544a';
+        const rc=r.rank===1?'#10b981':r.rank===2?'#c0c0c0':r.rank===3?'#cd7f32':'#1b2420';
+        return`<tr><td><span class="rank-badge" style="background:${rc}22;color:${rc}">#${r.rank}</span></td><td><div style="font-weight:700">${r.name}</div><div style="font-size:10px;color:var(--text-muted)">${r.group}</div></td><td style="font-family:'Courier New',monospace;color:var(--text-muted)">${r.signals.toLocaleString()}</td><td style="color:#10b981;font-family:'Courier New',monospace">${r.correct.toLocaleString()}</td><td style="font-weight:700;color:${bc};font-family:'Courier New',monospace">${r.accuracy.toFixed(1)}%</td><td><div class="acc-bar-wrap"><div class="acc-bar" style="width:${bw}%;background:${bc}"></div></div></td><td style="color:${r.avgReturn>=0?'#10b981':'#c4544a'};font-family:'Courier New',monospace">${r.avgReturn>=0?'+':''}${r.avgReturn.toFixed(3)}%</td><td style="color:${r.sharpe>=1?'#10b981':r.sharpe>=0?'#10b981':'#c4544a'};font-family:'Courier New',monospace">${r.sharpe.toFixed(2)}</td><td class="col-streak" style="color:var(--text-muted);font-family:'Courier New',monospace">${r.maxStreak}</td><td><span class="grade grade-${r.grade}">${r.grade}</span></td></tr>`;
     }).join('');
 }
 function btSort(k){if(btSortKey===k)btSortDir*=-1;else{btSortKey=k;btSortDir=-1;}renderBTTable([...btResults].sort((a,b)=>{const va=a[k],vb=b[k];return typeof va==='string'?va.localeCompare(vb)*btSortDir:(va-vb)*btSortDir;}));}
@@ -826,14 +826,14 @@ function exportBT(){if(!btResults)return;const rows=['Rank,Algorithm,Group,Signa
 // ════════════════════════════════════════════════════════════
 let lvSym=null,lvSess=null,lvEqHist=[],lvRoundLog=[],cdInt=null;
 bindSearch('lv-sym','lv-sym-drop','lvSel');
-function lvSel(sym){lvSym=sym;document.getElementById('lv-sym').value=sym;document.getElementById('lv-sym-drop').classList.remove('show');document.getElementById('lv-sym-sel').textContent='✓ '+sym;document.getElementById('lv-sym-sel').style.color='#0ecb81';document.getElementById('lv-start').disabled=false;document.getElementById('hdr-symbol').textContent=sym;updateLvPerAlgo();}
+function lvSel(sym){lvSym=sym;document.getElementById('lv-sym').value=sym;document.getElementById('lv-sym-drop').classList.remove('show');document.getElementById('lv-sym-sel').textContent='✓ '+sym;document.getElementById('lv-sym-sel').style.color='#10b981';document.getElementById('lv-start').disabled=false;document.getElementById('hdr-symbol').textContent=sym;updateLvPerAlgo();}
 (()=>{const chips=document.getElementById('lv-chips');chips.innerHTML=ALGOS.map(a=>`<div class="algo-chip active" id="lc-${a.key}" onclick="lvChip('${a.key}',this)">${a.name}</div>`).join('');})();
 function lvChip(k,el){lvActive.has(k)?lvActive.delete(k):lvActive.add(k);el.classList.toggle('active');updateLvPerAlgo();}
 function lvAll(on){ALGOS.forEach(a=>{on?lvActive.add(a.key):lvActive.delete(a.key);const el=document.getElementById(`lc-${a.key}`);on?el.classList.add('active'):el.classList.remove('active');});updateLvPerAlgo();}
 function updateLvDuration(){const tf=document.getElementById('lv-tf').value,r=+document.getElementById('lv-rounds').value||10;const mins={'1m':1,'3m':3,'5m':5,'15m':15,'30m':30};const t=(mins[tf]||1)*r;document.getElementById('lv-dur-lbl').textContent=`≈ ${t<60?t+' min':(t/60).toFixed(1)+' h'} total`;}
 function updateLvPerAlgo(){const n=lvActive.size||1,amt=+document.getElementById('lv-amount').value||100,cur=document.getElementById('lv-cur').value,per=(amt/n).toFixed(2);document.getElementById('lv-per-algo').textContent=`${per} ${cur} / algo`;document.getElementById('lv-usdt-eq').textContent=`≈ ${toUSDT(amt,cur).toFixed(4)} USDT total`;}
 function lvLog(msg,cls=''){const el=document.getElementById('lv-log');const d=document.createElement('div');if(cls)d.className='log-'+cls;d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;el.appendChild(d);el.scrollTop=el.scrollHeight;}
-function setPhase(icon,txt,col='#fcd535'){document.getElementById('lv-phase-icon').textContent=icon;document.getElementById('lv-phase-txt').textContent=txt;document.getElementById('lv-phase').style.borderColor=col+'55';document.getElementById('lv-phase').style.background=col+'12';}
+function setPhase(icon,txt,col='#10b981'){document.getElementById('lv-phase-icon').textContent=icon;document.getElementById('lv-phase-txt').textContent=txt;document.getElementById('lv-phase').style.borderColor=col+'55';document.getElementById('lv-phase').style.background=col+'12';}
 function startCD(secs){clearInterval(cdInt);const ring=document.getElementById('lv-cd-ring'),num=document.getElementById('lv-cd-num'),circ=163.4;let rem=secs;function tick(){ring.style.strokeDashoffset=(circ*(1-rem/secs)).toFixed(2);const m=Math.floor(rem/60).toString().padStart(2,'0'),s=(rem%60).toString().padStart(2,'0');num.textContent=rem>=60?`${m}:${s}`:`${rem}s`;if(rem>0)rem--;}tick();cdInt=setInterval(tick,1000);}
 function stopCD(){clearInterval(cdInt);document.getElementById('lv-cd-ring').style.strokeDashoffset='0';document.getElementById('lv-cd-num').textContent='--';}
 
@@ -914,7 +914,7 @@ async function runRound(){
     const s=lvSess;s.round++;
     document.getElementById('lv-round-disp').textContent=`${s.round}/${s.totalRounds}`;
     document.getElementById('hdr-status').textContent=`ROUND ${s.round}`;
-    setPhase('📡',`Round ${s.round}/${s.totalRounds} — Fetching market data…`,'#fcd535');
+    setPhase('📡',`Round ${s.round}/${s.totalRounds} — Fetching market data…`,'#10b981');
     lvLog(`─── Round ${s.round} ───`,'info');
     let data;
     try{
@@ -932,7 +932,7 @@ async function runRound(){
     const entryPrice=entryCandle.close;
     lvLog(`Entry price: ${entryPrice.toFixed(6)} (candle closed ${new Date(entryTime*1000).toLocaleTimeString()})`);
     document.getElementById('hdr-price').textContent=entryPrice.toFixed(4);
-    setPhase('🧮',`Round ${s.round} — Generating signals…`,'#29b6f6');
+    setPhase('🧮',`Round ${s.round} — Generating signals…`,'#8c9a93');
 
     // Generate signals for all active algos
     Object.values(s.algos).forEach(algo=>{
@@ -944,19 +944,19 @@ async function runRound(){
     const activeSignals=Object.values(s.algos).filter(a=>a.pendingVerify).length;
     if(activeSignals===0){
         lvLog('No signals this round — all HOLD','warn');
-        setPhase('⏭',`Round ${s.round} — No signals, skipping wait…`,'#848e9c');
+        setPhase('⏭',`Round ${s.round} — No signals, skipping wait…`,'#8c9a93');
     } else {
         renderCards('predicting');
         const tfSecs={'1m':60,'3m':180,'5m':300,'15m':900,'30m':1800};
         const waitSecs=tfSecs[s.tf]||60;
-        setPhase('⏱',`Round ${s.round} — Waiting ${waitSecs}s for candle close…`,'#fcd535');
+        setPhase('⏱',`Round ${s.round} — Waiting ${waitSecs}s for candle close…`,'#10b981');
         lvLog(`Waiting ${waitSecs}s for candle to close…`);startCD(waitSecs);
         await sleep(waitSecs*1000);
         if(!lvSess||!lvSess.running)return;
         stopCD();
     }
 
-    setPhase('🔄',`Round ${s.round} — Fetching exit price (with retry)…`,'#29b6f6');
+    setPhase('🔄',`Round ${s.round} — Fetching exit price (with retry)…`,'#8c9a93');
     // Poll for a new COMPLETED candle after entryTime (up to 5×3s = 15s of retries)
     const exitData=await fetchExitCandle(s.sym,s.tf,entryTime,5,3000);
     let exitPrice;
@@ -974,7 +974,7 @@ async function runRound(){
         }catch(_){exitPrice=entryPrice;}
         lvLog(`Fallback exit price: ${exitPrice.toFixed(6)}`);
     }
-    setPhase('✅',`Round ${s.round} — Verifying results…`,'#0ecb81');
+    setPhase('✅',`Round ${s.round} — Verifying results…`,'#10b981');
     const actualRet=(exitPrice-entryPrice)/entryPrice;
     const actualRetPct=(actualRet*100);
 
@@ -1018,15 +1018,15 @@ async function runRound(){
     const totalPnlPct=((realTotal-s.amount)/s.amount*100);
     lvEqHist.push({round:s.round,total:realTotal});
     lvRoundLog.push({round:s.round,entryPrice,exitPrice,wins:rW,losses:rL,flats:rFlat,pnl:rPnl});
-    const rc=rPnl>=0?'#0ecb81':'#f6465d';
+    const rc=rPnl>=0?'#10b981':'#c4544a';
     const rh=document.getElementById('lv-history');
     const row=document.createElement('div');row.className='round-row';
-    const flatNote=rFlat>0?` <span style="color:#3a424e;font-size:10px">${rFlat}flat</span>`:'';
+    const flatNote=rFlat>0?` <span style="color:#1f2a24;font-size:10px">${rFlat}flat</span>`:'';
     row.innerHTML=`<span style="font-size:10px;color:var(--text-muted);width:24px;flex-shrink:0">R${s.round}</span><span style="font-size:11px;font-family:'Courier New',monospace">${entryPrice.toFixed(isFlat?6:4)}→${exitPrice.toFixed(isFlat?6:4)}</span><span style="margin-left:auto;font-size:11px;color:${rc};font-weight:700">${isFlat?'FLAT':(rPnl>=0?'+':'')+rPnl.toFixed(4)+' '+s.currency}</span><span style="margin-left:8px;font-size:10px;color:var(--text-muted)">W${rW}/L${rL}${flatNote}</span>`;
     rh.prepend(row);
     renderCards('verified');updatePortHdr();drawMiniEq();
     lvLog(`Round ${s.round} done. Total: ${realTotal.toFixed(4)} ${s.currency} (${totalPnlPct>=0?'+':''}${totalPnlPct.toFixed(4)}% overall)`,'ok');
-    if(s.round<s.totalRounds&&s.running){setPhase('🔄',`Round ${s.round} complete. Next in 2s…`,'#0ecb81');await sleep(2000);if(s.running)await runRound();}
+    if(s.round<s.totalRounds&&s.running){setPhase('🔄',`Round ${s.round} complete. Next in 2s…`,'#10b981');await sleep(2000);if(s.running)await runRound();}
     else endSession();
 }
 
@@ -1045,16 +1045,16 @@ function endSession(){
     const totT=Object.values(s.algos).reduce((a,b)=>a+b.trades,0),totW=Object.values(s.algos).reduce((a,b)=>a+b.wins,0);
     const totFlats=Object.values(s.algos).reduce((a,b)=>a+b.flats,0);
     document.getElementById('lv-done-stats').innerHTML=[
-        {val:`${finalTotal.toFixed(4)} ${s.currency}`,lbl:'Final Capital',c:won?'#0ecb81':'#f6465d'},
-        {val:`${pnl>=0?'+':''}${pnl.toFixed(4)} ${s.currency}`,lbl:'Net P&L',c:won?'#0ecb81':'#f6465d'},
-        {val:`${pnlP>=0?'+':''}${pnlP.toFixed(4)}%`,lbl:'Return',c:won?'#0ecb81':'#f6465d'},
-        {val:totT>0?((totW/totT)*100).toFixed(1)+'%':'--',lbl:'Win Rate',c:'#fcd535'},
-        {val:totFlats.toLocaleString(),lbl:'Flat Rounds (skipped)',c:'#848e9c'}
+        {val:`${finalTotal.toFixed(4)} ${s.currency}`,lbl:'Final Capital',c:won?'#10b981':'#c4544a'},
+        {val:`${pnl>=0?'+':''}${pnl.toFixed(4)} ${s.currency}`,lbl:'Net P&L',c:won?'#10b981':'#c4544a'},
+        {val:`${pnlP>=0?'+':''}${pnlP.toFixed(4)}%`,lbl:'Return',c:won?'#10b981':'#c4544a'},
+        {val:totT>0?((totW/totT)*100).toFixed(1)+'%':'--',lbl:'Win Rate',c:'#10b981'},
+        {val:totFlats.toLocaleString(),lbl:'Flat Rounds (skipped)',c:'#8c9a93'}
     ].map(st=>`<div class="stat-box"><div class="stat-val" style="color:${st.c}">${st.val}</div><div class="stat-lbl">${st.lbl}</div></div>`).join('');
     const ranked=Object.values(s.algos).sort((a,b)=>b.balance-a.balance);
     document.getElementById('lv-standings').innerHTML=ranked.map((a,i)=>{
-        const rc2=i===0?'#fcd535':i===1?'#c0c0c0':i===2?'#cd7f32':'#2b3139';
-        const c=a.balance>=(a.startingBalance||s.perAlgo)?'#0ecb81':'#f6465d';
+        const rc2=i===0?'#10b981':i===1?'#c0c0c0':i===2?'#cd7f32':'#1b2420';
+        const c=a.balance>=(a.startingBalance||s.perAlgo)?'#10b981':'#c4544a';
         const wr=a.trades>0?((a.wins/a.trades)*100).toFixed(0)+'%':'--';
         const flatNote=a.flats>0?` · ${a.flats}↔`:'';
         return`<div class="round-row"><span class="rank-badge" style="background:${rc2}22;color:${rc2}">#${i+1}</span><span style="font-size:12px;font-weight:700;flex:1">${a.name}</span><span style="font-size:11px;color:var(--text-muted);margin-right:12px">${wr} WR · ${a.trades}T${flatNote}</span><span style="font-size:13px;font-weight:700;color:${c}">${a.balance.toFixed(4)} ${s.currency}</span></div>`;
@@ -1068,7 +1068,7 @@ function renderCards(phase='idle'){
     document.getElementById('lv-cards').innerHTML=Object.values(lvSess.algos).map(a=>{
         const sig=a.currentSignal,sigCls=sig===1?'signal-buy':sig===-1?'signal-sell':'signal-hold';
         const badge=sig===1?'BUY':sig===-1?'SELL':'HOLD',bdgCls=sig===1?'badge-buy':sig===-1?'badge-sell':'badge-hold';
-        const sigC=sig===1?'#0ecb81':sig===-1?'#f6465d':'#fcd535';
+        const sigC=sig===1?'#10b981':sig===-1?'#c4544a':'#10b981';
         const pnl=a.balance-(a.startingBalance||lvSess.perAlgo),last=a.history[a.history.length-1];
         let vrCls='',emoji='';
         if(phase==='verified'&&last&&last.round===lvSess.round){
@@ -1077,7 +1077,7 @@ function renderCards(phase='idle'){
         }
         const wr=a.trades>0?((a.wins/a.trades)*100).toFixed(0)+'%':'--';
         const pnlDisplay=`${pnl>=0?'+':''}${Math.abs(pnl)<0.001?pnl.toFixed(6):pnl.toFixed(4)}`;
-        return`<div class="algo-card ${sigCls} ${vrCls}"><div class="acard-name" title="${a.name}">${a.name}</div><div style="display:flex;align-items:center;gap:6px"><div class="acard-signal" style="color:${sigC}">${sig===0?'–':sig===1?'▲':'▼'}</div><span class="signal-badge ${bdgCls}">${badge}</span></div><div class="acard-alloc">${a.balance.toFixed(4)} ${lvSess.currency}</div><div class="acard-pnl" style="color:${pnl>=0?'#0ecb81':'#f6465d'}">${pnlDisplay}</div><div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:9px;color:var(--text-muted)">W${a.wins}/L${a.losses}${a.flats?'/F'+a.flats:''}</span><span style="font-size:9px;color:var(--text-muted)">${wr} WR</span></div>${emoji?`<div class="acard-result">${emoji}</div>`:''}</div>`;
+        return`<div class="algo-card ${sigCls} ${vrCls}"><div class="acard-name" title="${a.name}">${a.name}</div><div style="display:flex;align-items:center;gap:6px"><div class="acard-signal" style="color:${sigC}">${sig===0?'–':sig===1?'▲':'▼'}</div><span class="signal-badge ${bdgCls}">${badge}</span></div><div class="acard-alloc">${a.balance.toFixed(4)} ${lvSess.currency}</div><div class="acard-pnl" style="color:${pnl>=0?'#10b981':'#c4544a'}">${pnlDisplay}</div><div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:9px;color:var(--text-muted)">W${a.wins}/L${a.losses}${a.flats?'/F'+a.flats:''}</span><span style="font-size:9px;color:var(--text-muted)">${wr} WR</span></div>${emoji?`<div class="acard-result">${emoji}</div>`:''}</div>`;
     }).join('');
 }
 
@@ -1087,11 +1087,11 @@ function updatePortHdr(){
     const pnlPct=pnl/s.amount*100;
     const totT=Object.values(s.algos).reduce((a,b)=>a+b.trades,0),totW=Object.values(s.algos).reduce((a,b)=>a+b.wins,0);
     document.getElementById('lv-total').textContent=`${total.toFixed(4)} ${s.currency}`;
-    document.getElementById('lv-total').style.color=pnl>=0?'#0ecb81':'#f6465d';
+    document.getElementById('lv-total').style.color=pnl>=0?'#10b981':'#c4544a';
     document.getElementById('lv-total-pct').textContent=`${pnlPct>=0?'+':''}${pnlPct.toFixed(4)}%`;
-    document.getElementById('lv-total-pct').style.color=pnl>=0?'#0ecb81':'#f6465d';
+    document.getElementById('lv-total-pct').style.color=pnl>=0?'#10b981':'#c4544a';
     document.getElementById('lv-pnl').textContent=`${pnl>=0?'+':''}${pnl.toFixed(4)} ${s.currency}`;
-    document.getElementById('lv-pnl').style.color=pnl>=0?'#0ecb81':'#f6465d';
+    document.getElementById('lv-pnl').style.color=pnl>=0?'#10b981':'#c4544a';
     document.getElementById('lv-wr').textContent=totT>0?((totW/totT)*100).toFixed(1)+'%':'--';
 }
 
@@ -1099,23 +1099,23 @@ function drawMiniEq(){
     const cv=document.getElementById('lv-eq-mini');if(!cv||lvEqHist.length<2)return;
     const ctx=cv.getContext('2d');const W=cv.offsetWidth||320,H=130;cv.width=W;cv.height=H;
     const vals=lvEqHist.map(e=>e.total),minV=Math.min(...vals),maxV=Math.max(...vals),rng=(maxV-minV)||0.0001;
-    ctx.fillStyle='#11151c';ctx.fillRect(0,0,W,H);
-    const by=H-8-((lvSess.amount-minV)/rng)*(H-20);ctx.strokeStyle='#2b3139';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);
-    const col=vals[vals.length-1]>=lvSess.amount?'#0ecb81':'#f6465d';ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();vals.forEach((v,i)=>{const x=(i/(vals.length-1||1))*W,y=H-8-((v-minV)/rng)*(H-20);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();
+    ctx.fillStyle='#111815';ctx.fillRect(0,0,W,H);
+    const by=H-8-((lvSess.amount-minV)/rng)*(H-20);ctx.strokeStyle='#1b2420';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);
+    const col=vals[vals.length-1]>=lvSess.amount?'#10b981':'#c4544a';ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();vals.forEach((v,i)=>{const x=(i/(vals.length-1||1))*W,y=H-8-((v-minV)/rng)*(H-20);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();
     // Labels
-    ctx.fillStyle='#848e9c';ctx.font='9px monospace';ctx.textAlign='left';ctx.fillText(minV.toFixed(4),2,H-2);ctx.textAlign='right';ctx.fillText(maxV.toFixed(4),W-2,10);
+    ctx.fillStyle='#8c9a93';ctx.font='9px monospace';ctx.textAlign='left';ctx.fillText(minV.toFixed(4),2,H-2);ctx.textAlign='right';ctx.fillText(maxV.toFixed(4),W-2,10);
 }
 
 function drawFinalEq(){
     const cv=document.getElementById('lv-eq-final');if(!cv||lvEqHist.length<2)return;
     const ctx=cv.getContext('2d');const W=cv.offsetWidth||600,H=160;cv.width=W;cv.height=H;
     const vals=lvEqHist.map(e=>e.total),minV=Math.min(...vals),maxV=Math.max(...vals),rng=(maxV-minV)||0.0001;
-    ctx.fillStyle='#11151c';ctx.fillRect(0,0,W,H);
-    const by=H-12-((lvSess.amount-minV)/rng)*(H-24);ctx.strokeStyle='#2b3139';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);
-    const col=vals[vals.length-1]>=lvSess.amount?'#0ecb81':'#f6465d';
+    ctx.fillStyle='#111815';ctx.fillRect(0,0,W,H);
+    const by=H-12-((lvSess.amount-minV)/rng)*(H-24);ctx.strokeStyle='#1b2420';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);
+    const col=vals[vals.length-1]>=lvSess.amount?'#10b981':'#c4544a';
     ctx.beginPath();vals.forEach((v,i)=>{const x=(i/(vals.length-1||1))*W,y=H-12-((v-minV)/rng)*(H-24);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fillStyle=col+'22';ctx.fill();
     ctx.beginPath();vals.forEach((v,i)=>{const x=(i/(vals.length-1||1))*W,y=H-12-((v-minV)/rng)*(H-24);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-    ctx.fillStyle='#848e9c';ctx.font='9px monospace';ctx.textAlign='left';ctx.fillText(minV.toFixed(4),4,H-2);ctx.textAlign='right';ctx.fillText(maxV.toFixed(4),W-4,12);
+    ctx.fillStyle='#8c9a93';ctx.font='9px monospace';ctx.textAlign='left';ctx.fillText(minV.toFixed(4),4,H-2);ctx.textAlign='right';ctx.fillText(maxV.toFixed(4),W-4,12);
 }
 
 function exportLive(){
@@ -1130,7 +1130,7 @@ function exportLive(){
 // ════════════════════════════════════════════════════════════
 // TAB 3 — ALGO DOCS
 // ════════════════════════════════════════════════════════════
-const GROUP_COLORS={Trend:'#fcd535',Momentum:'#0ecb81',Volume:'#29b6f6',Volatility:'#ff7043',Statistical:'#ce93d8'};
+const GROUP_COLORS={Trend:'#10b981',Momentum:'#10b981',Volume:'#8c9a93',Volatility:'#ff7043',Statistical:'#ce93d8'};
 
 function renderDocs(){
     filterDocs();
@@ -1147,7 +1147,7 @@ function filterDocs(){
     const gc=GROUP_COLORS;
     document.getElementById('docs-grid').innerHTML=filtered.map(a=>{
         const doc=ALGO_DOCS[a.key]||{formula:'—',signal:'—',interpretation:'Documentation not available.',bestFor:'—'};
-        const col=gc[a.group]||'#848e9c';
+        const col=gc[a.group]||'#8c9a93';
         return`<div class="card" style="border-top:2px solid ${col};transition:transform .15s" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
             <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">
                 <div style="flex:1">
@@ -1156,20 +1156,20 @@ function filterDocs(){
                 </div>
             </div>
             <div style="margin-bottom:10px">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#3a424e;margin-bottom:4px">Formula</div>
-                <div style="font-size:11px;font-family:'Courier New',monospace;background:#080a0d;border:1px solid #2b3139;border-radius:4px;padding:8px 10px;line-height:1.6;word-break:break-word;color:#c9d1d9">${doc.formula}</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#1f2a24;margin-bottom:4px">Formula</div>
+                <div style="font-size:11px;font-family:'Courier New',monospace;background:#080a0d;border:1px solid #1b2420;border-radius:4px;padding:8px 10px;line-height:1.6;word-break:break-word;color:#c9d1d9">${doc.formula}</div>
             </div>
             <div style="margin-bottom:10px">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#3a424e;margin-bottom:4px">Signal Conditions</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#1f2a24;margin-bottom:4px">Signal Conditions</div>
                 <div style="font-size:11px;color:var(--text-muted);line-height:1.5">${doc.signal}</div>
             </div>
             <div style="margin-bottom:10px">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#3a424e;margin-bottom:4px">How it works</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#1f2a24;margin-bottom:4px">How it works</div>
                 <div style="font-size:11px;color:var(--text-main);line-height:1.6">${doc.interpretation}</div>
             </div>
-            <div style="padding-top:8px;border-top:1px solid #2b3139">
-                <span style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#3a424e">Best for: </span>
-                <span style="font-size:11px;color:#fcd535">${doc.bestFor}</span>
+            <div style="padding-top:8px;border-top:1px solid #1b2420">
+                <span style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#1f2a24">Best for: </span>
+                <span style="font-size:11px;color:#10b981">${doc.bestFor}</span>
             </div>
         </div>`;
     }).join('');
