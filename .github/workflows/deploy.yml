@@ -47,6 +47,12 @@ jobs:
         with:
           path: './dist'
 
+      # The .nojekyll marker is what stops GitHub Pages from republishing the
+      # source tree over the build. It must exist in the input and survive
+      # into the output; assert that here, where both are on disk.
+      - name: Verify build output
+        run: npm run audit:build
+
   deploy:
     environment:
       name: github-pages

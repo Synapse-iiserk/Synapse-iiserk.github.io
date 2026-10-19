@@ -18,8 +18,15 @@
  */
 import { statSync } from 'node:fs';
 
+// Flags and the base URL can appear in any order, so filter argv rather than
+// indexing it: `--local https://site` must not treat the flag as the URL.
+const ARGS = process.argv.slice(2);
+const LOCAL_ONLY = ARGS.includes('--local');
+const BUILD_ONLY = ARGS.includes('--build-only');
+const URL_ARG = ARGS.find((a) => !a.startsWith('--'));
+
 // CI passes the freshly deployed page_url; locally this defaults to production
-const BASE = (process.argv[2] || process.env.DEPLOY_URL || 'https://ifinn.org').replace(/\/$/, '');
+const BASE = (URL_ARG || process.env.DEPLOY_URL || 'https://ifinn.org').replace(/\/$/, '');
 const TIMEOUT = 20_000;
 
 const get = async (path) => {
@@ -63,20 +70,33 @@ const check = (ok, label, detail) => {
 console.log(`deployment check: ${BASE}`);
 
 // 1. the marker that stops Jekyll from republishing the source tree.
-//    Only meaningful in a checkout (the build job); the deploy job runs
-//    without one, so a missing file here is skipped rather than failed.
-const hasCheckout = statSync(new URL('../package.json', import.meta.url), { throwIfNoEntry: false }) !== undefined;
-if (hasCheckout) {
+//    It has to exist in two places, and each is checked where it is built:
+//    public/.nojekyll is the input Vite copies, dist/.nojekyll is the output
+//    that actually gets published. The deploy job checks out the repository
+//    but never builds, so it has no dist/ to inspect; those assertions run
+//    with --local in the build job instead, where both files exist.
+if (LOCAL_ONLY) {
     check(
         statSync(new URL('../public/.nojekyll', import.meta.url), { throwIfNoEntry: false }) !== undefined,
         'public/.nojekyll exists in the build input',
     );
     check(
         statSync(new URL('../dist/.nojekyll', import.meta.url), { throwIfNoEntry: false }) !== undefined,
-        'dist/.nojekyll present (run npm run build first)',
+        'dist/.nojekyll present in the build output',
     );
 } else {
-    console.log('  skip  local .nojekyll assertions (no checkout in this job)');
+    console.log('  skip  local .nojekyll assertions (pass --local in the build job)');
+}
+
+// --build-only checks what was produced and stops: used by the build job,
+// before anything is published.
+if (BUILD_ONLY) {
+    if (failed) {
+        console.error(`\n${failed} build check(s) failed`);
+        process.exit(1);
+    }
+    console.log('build output check: all assertions pass');
+    process.exit(0);
 }
 
 // 2. the deployed document must load built assets, never source files.

@@ -12,7 +12,9 @@
     "verify": "npm run lint && npm run lint:copy && npm run test:redirect && npm run build && npm run audit:budget",
     "preview": "vite preview",
     "test:redirect": "node scripts/test-spa-redirect.mjs",
-    "audit:deploy": "node scripts/check-deployment.mjs"
+    "audit:deploy": "node scripts/check-deployment.mjs",
+    "audit:deploy:local": "node scripts/check-deployment.mjs --local",
+    "audit:build": "node scripts/check-deployment.mjs --local --build-only"
   },
   "dependencies": {
     "animejs": "^4.5.0",
