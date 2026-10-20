@@ -19,7 +19,7 @@ export const About: React.FC = () => {
         <>
             <SEO
                 title="About"
-                description="iFINN is Team Synapse at IISER Kolkata: a quantitative research terminal built so that every number on the screen can be traced back to an algorithm or a tool call."
+                description="iFINN is built at IISER Kolkata: a quantitative research terminal built so that every number on the screen can be traced back to an algorithm or a tool call."
                 canonicalUrl="/about"
             />
 

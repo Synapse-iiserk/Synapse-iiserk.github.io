@@ -3,7 +3,7 @@ import SeatRequestForm from '../ui/SeatRequestForm';
 const channels = [
     { label: 'Investors', value: 'investors@ifinn.org', href: 'mailto:investors@ifinn.org' },
     { label: 'Support', value: 'support@ifinn.org', href: 'mailto:support@ifinn.org' },
-    { label: 'Code', value: 'github.com/Synapse-iiserk', href: 'https://github.com/Synapse-iiserk' },
+    { label: 'Code', value: 'GitHub', href: 'https://github.com/Synapse-iiserk' },
     { label: 'Live chart', value: 'ifinn.org/chart', href: '/chart.html' },
 ];
 

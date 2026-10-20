@@ -1,7 +1,7 @@
 # ifinn.org
 
-The public site for iFINN, the quantitative research platform built by Team
-Synapse at IISER Kolkata. Static SPA, deployed to GitHub Pages on every push
+The public site for iFINN, the quantitative research platform built at IISER
+Kolkata. Static SPA, deployed to GitHub Pages on every push
 to `main`.
 
 Live: <https://ifinn.org>

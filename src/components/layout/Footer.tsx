@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
                             <span className="font-display text-lg font-semibold tracking-tight">iFINN</span>
                         </Link>
                         <p className="prose mt-4 text-[15px]">
-                            A quantitative research terminal built by Team Synapse at IISER Kolkata:
+                            A quantitative research terminal built at IISER Kolkata:
                             528 vetted algorithms, backtesting and paper trading on one engine, and a
                             research agent that answers with live tool calls.
                         </p>
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
                     </p>
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <p className="mono text-[12px] text-[var(--color-muted)]">
-                            © {year} iFINN · Team Synapse, IISER Kolkata
+                            © {year} iFINN · IISER Kolkata
                         </p>
                         <p className="mono text-[12px] text-[var(--color-muted)]">
                             MIT-licensed core · self-hostable with Docker

@@ -1,4 +1,4 @@
-// Team member data for Synapse
+// Team member data for iFINN
 export interface TeamMember {
     slug: string;
     name: string;
