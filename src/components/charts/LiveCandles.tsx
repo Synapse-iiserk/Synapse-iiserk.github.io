@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { line as shapeLine } from 'd3-shape';
 import { createTimeline, cubicBezier, stagger, svg } from 'animejs';
@@ -12,6 +12,7 @@ import {
     type Candle,
 } from '../../lib/market';
 import { useVisibleInterval } from '../../lib/useVisibleInterval';
+import { useNarrow } from '../../lib/useNarrow';
 import { readKlines, writeKlines } from '../../lib/klineCache';
 
 const UP = '#10B981';
@@ -22,7 +23,6 @@ const EASE = cubicBezier(0.22, 1, 0.36, 1);
    legible size instead of being scaled down to a ~4px strip */
 const W_WIDE = 1000;
 const W_NARROW = 600;
-const NARROW_QUERY = '(max-width: 639px)';
 const H = 420;
 const PAD_L = 10;
 const PAD_R = 72;
@@ -40,13 +40,6 @@ const INTERVALS = [
     { id: '4h', label: '4h' },
     { id: '1d', label: '1d' },
 ] as const;
-
-const subscribeNarrow = (onChange: () => void) => {
-    const query = window.matchMedia(NARROW_QUERY);
-    query.addEventListener('change', onChange);
-    return () => query.removeEventListener('change', onChange);
-};
-const isNarrow = () => window.matchMedia(NARROW_QUERY).matches;
 
 type Status = 'loading' | 'ready' | 'stale' | 'error';
 
@@ -70,7 +63,7 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
     const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
     const [hover, setHover] = useState<number | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
-    const narrow = useSyncExternalStore(subscribeNarrow, isNarrow, () => false);
+    const narrow = useNarrow();
     const W = narrow ? W_NARROW : W_WIDE;
     const tickEvery = narrow ? 48 : 24;
     const animatedKey = useRef<string | null>(null);

@@ -2,18 +2,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { area as shapeArea, line as shapeLine } from 'd3-shape';
 import { createTimeline, cubicBezier, stagger, svg } from 'animejs';
-import { fetchKlines, macdEquity, type Candle, type EquityPoint } from '../../lib/market';
+import { fetchKlines, formatDay, macdEquity, type Candle, type EquityPoint } from '../../lib/market';
 import { useVisibleInterval } from '../../lib/useVisibleInterval';
+import { useNarrow } from '../../lib/useNarrow';
 import { readKlines, writeKlines } from '../../lib/klineCache';
 
 const EASE = cubicBezier(0.22, 1, 0.36, 1);
-const W = 1000;
+const W_WIDE = 1000;
+const W_NARROW = 440;
 const H = 320;
 const PAD_T = 18;
 const PAD_B = 34;
 const PAD_X = 12;
-// right gutter reserved for the price scale, so the end labels never sit on it
-const PLOT_RIGHT = W - 132;
+// right gutter holds the end labels and the percent scale, side by side
+const GUTTER_WIDE = 132;
+const GUTTER_NARROW = 104;
+// end labels closer than this would print on top of each other
+const LABEL_GAP = 15;
 
 type Status = 'loading' | 'ready' | 'stale' | 'error';
 
@@ -43,6 +48,9 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
     const [failed, setFailed] = useState(false);
     const svgRef = useRef<SVGSVGElement>(null);
     const animatedKey = useRef<string | null>(null);
+    const narrow = useNarrow();
+    const W = narrow ? W_NARROW : W_WIDE;
+    const plotRight = W - (narrow ? GUTTER_NARROW : GUTTER_WIDE);
 
     const load = useCallback(async () => {
         try {
@@ -77,7 +85,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
     const geometry = useMemo(() => {
         if (points.length < 2) return null;
 
-        const x = scaleLinear().domain([0, points.length - 1]).range([PAD_X, PLOT_RIGHT]);
+        const x = scaleLinear().domain([0, points.length - 1]).range([PAD_X, plotRight]);
         const values = points.flatMap((p) => [p.strategy, p.hold]);
         const min = Math.min(...values, 1);
         const max = Math.max(...values, 1);
@@ -101,8 +109,20 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
         const last = points[points.length - 1];
         const exposed = points.filter((p) => p.position === 1).length / points.length;
 
-        return { x, y, strategyLine, holdLine, strategyArea, entries, exits, last, exposed };
-    }, [points]);
+        // keep the two end labels apart, pushing them away from their midpoint
+        let signalY = y(last.strategy) + 4;
+        let holdY = y(last.hold) + 4;
+        if (Math.abs(signalY - holdY) < LABEL_GAP) {
+            const mid = (signalY + holdY) / 2;
+            const signalAbove = signalY <= holdY;
+            signalY = mid + (signalAbove ? -LABEL_GAP / 2 : LABEL_GAP / 2);
+            holdY = mid + (signalAbove ? LABEL_GAP / 2 : -LABEL_GAP / 2);
+        }
+
+        const dateTicks = [0, Math.floor((points.length - 1) / 2), points.length - 1];
+
+        return { x, y, strategyLine, holdLine, strategyArea, entries, exits, last, exposed, signalY, holdY, dateTicks };
+    }, [points, plotRight]);
 
     useEffect(() => {
         if (!geometry || !svgRef.current) return;
@@ -117,6 +137,19 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
             .add(svg.createDrawable(root.querySelector('[data-signal]')!), { draw: ['0 0', '0 1'] }, 220)
             .add(root.querySelectorAll('[data-marker]'), { opacity: [0, 1], delay: stagger(24) }, 800);
     }, [geometry, symbol, interval]);
+
+    const legend = [
+        { label: 'signal', swatch: 'h-0.5 w-4 bg-[var(--color-accent)]' },
+        { label: 'buy and hold', swatch: 'h-px w-4 bg-[var(--color-muted)]' },
+        { label: 'enter', swatch: 'h-2 w-2 bg-[var(--color-accent)]' },
+        { label: 'exit', swatch: 'h-2 w-2 border border-[var(--color-ink)] bg-[var(--color-ground)]' },
+    ];
+    const legendItems = legend.map((item) => (
+        <span key={item.label} className="flex items-center gap-1.5">
+            <span className={`inline-block ${item.swatch}`} />
+            {item.label}
+        </span>
+    ));
 
     const last = geometry?.last;
 
@@ -136,20 +169,16 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         {symbol} {interval} · MACD(12, 26, 9) crossover vs buy and hold
                     </span>
                     {status === 'stale' && <span>cached</span>}
-                    <span className="hidden items-center gap-3 sm:flex">
-                        <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-0.5 w-4 bg-[var(--color-accent)]" />
-                            signal
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-px w-4 bg-[var(--color-muted)]" />
-                            buy and hold
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-2 w-2 bg-[var(--color-accent)]" />
-                            enter
-                        </span>
+                    <span className="hidden items-center gap-3 md:flex" aria-hidden="true">
+                        {legendItems}
                     </span>
+                </div>
+                {/* below md the legend gets its own row instead of disappearing */}
+                <div
+                    className="mono flex flex-wrap gap-x-4 gap-y-1 border-b border-[var(--color-line)] px-3 py-2 text-[11px] text-[var(--color-muted)] md:hidden"
+                    aria-hidden="true"
+                >
+                    {legendItems}
                 </div>
 
                 <svg
@@ -164,7 +193,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                     {/* zero-return baseline */}
                     <line
                         x1={PAD_X}
-                        x2={PLOT_RIGHT}
+                        x2={plotRight}
                         y1={geometry?.y(1)}
                         y2={geometry?.y(1)}
                         stroke="var(--color-line-strong)"
@@ -177,7 +206,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         <g key={tick}>
                             <line
                                 x1={PAD_X}
-                                x2={PLOT_RIGHT}
+                                x2={plotRight}
                                 y1={geometry.y(tick)}
                                 y2={geometry.y(tick)}
                                 stroke="var(--color-line)"
@@ -195,6 +224,20 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                                 {pct(tick - 1)}
                             </text>
                         </g>
+                    ))}
+
+                    {geometry?.dateTicks.map((i, n) => (
+                        <text
+                            key={`d-${i}`}
+                            x={geometry.x(i)}
+                            y={H - 12}
+                            className="mono"
+                            fontSize={11}
+                            fill="var(--color-muted)"
+                            textAnchor={n === 0 ? 'start' : n === 2 ? 'end' : 'middle'}
+                        >
+                            {formatDay(points[i].t)}
+                        </text>
                     ))}
 
                     {status === 'error' && (
@@ -252,7 +295,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         <g>
                             <text
                                 x={geometry.x(points.length - 1) + 8}
-                                y={geometry.y(last.strategy) + 4}
+                                y={geometry.signalY}
                                 className="mono"
                                 fontSize={12}
                                 fontWeight={600}
@@ -262,7 +305,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                             </text>
                             <text
                                 x={geometry.x(points.length - 1) + 8}
-                                y={geometry.y(last.hold) + 14}
+                                y={geometry.holdY}
                                 className="mono"
                                 fontSize={12}
                                 fill="var(--color-muted)"
@@ -272,14 +315,15 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         </g>
                     )}
 
+                    {/* trades sit on the signal curve, at the bar where they changed it */}
                     {geometry?.entries.map((i) => (
                         <rect
                             key={`in-${i}`}
                             data-marker={1}
-                            x={geometry.x(i) - 2.5}
-                            y={PAD_T + 6}
-                            width={5}
-                            height={5}
+                            x={geometry.x(i) - 3}
+                            y={geometry.y(points[i].strategy) - 3}
+                            width={6}
+                            height={6}
                             fill="var(--color-accent)"
                         />
                     ))}
@@ -287,11 +331,13 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         <rect
                             key={`out-${i}`}
                             data-marker={1}
-                            x={geometry.x(i) - 2.5}
-                            y={PAD_T + 6}
-                            width={5}
-                            height={5}
-                            fill="var(--color-muted)"
+                            x={geometry.x(i) - 3}
+                            y={geometry.y(points[i].strategy) - 3}
+                            width={6}
+                            height={6}
+                            fill="var(--color-ground)"
+                            stroke="var(--color-ink)"
+                            strokeWidth={1.25}
                         />
                     ))}
                 </svg>
