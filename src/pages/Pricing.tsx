@@ -24,24 +24,17 @@ const rows: { capability: string; cells: [Cell, Cell, Cell] }[] = [
     { capability: 'Support', cells: ['Email', 'Priority', 'Dedicated'] },
 ];
 
+// plain ink is the default; colour is kept for the cells that set tiers apart
 const cellTone = (value: Cell) =>
     value === 'Not included'
         ? 'text-[var(--color-muted)]'
         : value === 'Limited'
           ? 'text-[var(--color-warn)]'
-          : 'text-[var(--color-accent)]';
+          : value === 'Included'
+            ? 'text-[var(--color-ink)]'
+            : 'text-[var(--color-accent)]';
 
 export const Pricing: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [submitted, setSubmitted] = useState(false);
-
-    const onSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        if (!email) return;
-        setSubmitted(true);
-        setEmail('');
-    };
-
     return (
         <>
             <SEO

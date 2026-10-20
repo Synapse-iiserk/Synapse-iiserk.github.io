@@ -36,8 +36,20 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Copy lint
+        run: npm run lint:copy
+
+      - name: CSS layer lint
+        run: npm run lint:css
+
+      - name: SPA redirect test
+        run: npm run test:redirect
+
       - name: Build
         run: npm run build
+
+      - name: Bundle budget
+        run: npm run audit:budget
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
