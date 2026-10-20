@@ -541,6 +541,259 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
     }
+
+    /* ---------- chart motion ---------- */
+
+    /* SVG children scale around their own box, not the canvas origin */
+    .chart-svg .candle {
+        transform-box: fill-box;
+        transform-origin: 50% 50%;
+    }
+
+    .chart-svg .vol {
+        transform-box: fill-box;
+        transform-origin: 50% 100%;
+    }
+
+    .chart-svg [data-marker] {
+        transform-box: fill-box;
+        transform-origin: 50% 50%;
+    }
+
+    .chart-svg [data-grid] {
+        transform-box: fill-box;
+        transform-origin: 0 50%;
+    }
+
+    /* drawn but not yet on screen: held back so the entrance starts from nothing */
+    .chart-svg.awaiting :is([data-candle], [data-volume], [data-bb-area], [data-bb-line], [data-ema], [data-last], [data-hold], [data-signal], [data-marker], [data-end]) {
+        opacity: 0;
+    }
+
+    /* the open bar and the price tag move to new values instead of jumping */
+    .chart-svg .live-body {
+        transition:
+            y 280ms var(--ease-out-expo),
+            height 280ms var(--ease-out-expo);
+    }
+
+    .chart-svg .glide {
+        transition: transform 320ms var(--ease-out-expo);
+    }
+
+    .chart-svg .live-ring {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: live-ring 1.8s var(--ease-out-expo) infinite;
+    }
+
+    .chart-svg .tick-flash {
+        animation: tick-flash 700ms var(--ease-out-expo) both;
+    }
+
+    .live-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--color-muted);
+    }
+
+    .live-dot.is-live {
+        background: var(--color-accent);
+        animation: live-blink 1.2s steps(2, jump-none) infinite;
+    }
+
+    .seg {
+        transition:
+            color 160ms var(--ease-out-expo),
+            transform 160ms var(--ease-out-expo);
+    }
+
+    .seg:active {
+        transform: scale(0.92);
+    }
+
+    @keyframes live-ring {
+        from {
+            transform: scale(1);
+            opacity: 0.9;
+        }
+
+        to {
+            transform: scale(4.5);
+            opacity: 0;
+        }
+    }
+
+    @keyframes tick-flash {
+        from {
+            opacity: 0.85;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes live-blink {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0.25;
+        }
+    }
+
+    /* ---------- scroll reveal ----------
+       Content is visible by default. useScrollReveal adds .motion to <html>
+       only when motion is allowed, marks targets below the fold with .rv
+       before first paint, and flips them to .rv-in as they enter. */
+
+    html.motion .rv {
+        transition:
+            opacity 700ms var(--ease-out-expo),
+            transform 900ms var(--ease-out-expo),
+            clip-path 900ms var(--ease-out-expo);
+        transition-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    html.motion .rv:not(.rv-in) {
+        opacity: 0;
+        transform: translateY(36px);
+    }
+
+    /* headings rise out of a mask */
+    html.motion .rv.reveal:not(.rv-in) {
+        opacity: 1;
+        transform: translateY(0.6em);
+        clip-path: inset(0 0 100% 0);
+    }
+
+    html.motion .rv.reveal {
+        clip-path: inset(0 0 -0.25em 0);
+    }
+
+    /* frames and charts wipe open from the left */
+    html.motion .rv.shot:not(.rv-in) {
+        opacity: 1;
+        transform: none;
+        clip-path: inset(0 100% 0 0);
+    }
+
+    html.motion .rv.shot.rv-in {
+        clip-path: inset(0 0 0 0);
+        transition-duration: 700ms, 900ms, 1100ms;
+    }
+
+    /* table rows slide in from the side */
+    html.motion tr.rv:not(.rv-in) {
+        transform: translateX(-28px);
+    }
+
+    /* hairline rules draw across */
+    html.motion .rv.rule-draw:not(.rv-in) {
+        opacity: 1;
+        transform: scaleX(0);
+    }
+
+    html.motion .rv.rule-draw {
+        transform-origin: 0 50%;
+    }
+
+    /* ---------- hero load sequence ---------- */
+
+    html.motion .hero-word {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding-bottom: 0.08em;
+        margin-bottom: -0.08em;
+    }
+
+    html.motion .hero-word > span {
+        display: inline-block;
+        animation: word-rise 1000ms var(--ease-out-expo) both;
+        animation-delay: calc(120ms + var(--w, 0) * 70ms);
+    }
+
+    html.motion .hero-in {
+        animation: hero-in 900ms var(--ease-out-expo) both;
+        animation-delay: calc(var(--d, 0) * 1ms);
+    }
+
+    html.motion .hero-rule {
+        transform-origin: 0 50%;
+        animation: rule-draw 1100ms var(--ease-out-expo) both;
+        animation-delay: calc(var(--d, 0) * 1ms);
+    }
+
+    @keyframes word-rise {
+        from {
+            transform: translateY(105%) rotate(4deg);
+        }
+
+        to {
+            transform: none;
+        }
+    }
+
+    @keyframes hero-in {
+        from {
+            opacity: 0;
+            transform: translateY(28px);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes rule-draw {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    /* ---------- product tour panel switch ---------- */
+
+    html.motion .panel-wipe .shot {
+        animation: panel-wipe 760ms var(--ease-out-expo) both;
+    }
+
+    html.motion .panel-wipe .shot img {
+        animation: panel-zoom 1200ms var(--ease-out-expo) both;
+    }
+
+    html.motion .panel-wipe .panel-copy > * {
+        animation: hero-in 700ms var(--ease-out-expo) both;
+        animation-delay: calc(200ms + var(--d, 0) * 1ms);
+    }
+
+    @keyframes panel-wipe {
+        from {
+            clip-path: inset(0 0 0 100%);
+        }
+
+        to {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    @keyframes panel-zoom {
+        from {
+            transform: scale(1.06);
+        }
+
+        to {
+            transform: none;
+        }
+    }
 }
 
 /* ---------- scroll progress hairline (decorative) ---------- */
@@ -565,30 +818,10 @@
     transform: scaleX(0);
 }
 
-/* ---------- motion: one curve, headings only, additive ---------- */
-
-@keyframes rise {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
+/* ---------- page-level motion (scroll progress, tour hook) ---------- */
 
 /* finished state is the default; motion is layered on with @supports */
 @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-        .reveal {
-            animation: rise 560ms var(--ease-out-expo) both;
-            animation-timeline: view();
-            animation-range: entry 0% entry 55%;
-        }
-    }
-
     @supports (animation-timeline: scroll()) {
         .progress-hair::after {
             animation: grow-progress linear both;
@@ -607,20 +840,6 @@
     }
 }
 
-/* type-once effect for the hero transcript */
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-.panel-fade {
-    animation: fade-in 220ms var(--ease-out-expo) both;
-}
 
 /* ---------- reduced motion ---------- */
 

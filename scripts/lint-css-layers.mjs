@@ -15,7 +15,7 @@ const css = readFileSync(FILE, 'utf8').replace(/\/\*[\s\S]*?\*\//g, (c) => c.rep
 
 // rules that are allowed to stay unlayered: progressive-enhancement motion
 // hooks that no utility is ever expected to override
-const ALLOWED = new Set(['.reveal', '.progress-hair', '.progress-hair::after', '.panel-fade']);
+const ALLOWED = new Set(['.reveal', '.progress-hair', '.progress-hair::after']);
 
 const findings = [];
 let depth = 0;

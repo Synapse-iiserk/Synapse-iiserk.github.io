@@ -81,6 +81,23 @@ export function ema(values: number[], period: number): (number | null)[] {
     return out;
 }
 
+export interface Band {
+    mid: number;
+    upper: number;
+    lower: number;
+}
+
+/** Bollinger bands: SMA(period) plus and minus `width` population standard deviations. */
+export function bollinger(values: number[], period = 20, width = 2): (Band | null)[] {
+    return values.map((_, i) => {
+        if (i < period - 1) return null;
+        const window = values.slice(i - period + 1, i + 1);
+        const mid = window.reduce((sum, v) => sum + v, 0) / period;
+        const sd = Math.sqrt(window.reduce((sum, v) => sum + (v - mid) ** 2, 0) / period);
+        return { mid, upper: mid + width * sd, lower: mid - width * sd };
+    });
+}
+
 export interface MacdResult {
     line: (number | null)[];
     signal: (number | null)[];
@@ -144,9 +161,11 @@ export function macdEquity(candles: Candle[], feeBps = 10): EquityPoint[] {
 }
 
 const priceFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const centsFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const compactFormat = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
-export const formatPrice = (v: number): string => priceFormat.format(v);
+/** whole dollars above 1,000 (BTC), cents below it (ETH, SOL) */
+export const formatPrice = (v: number): string => (Math.abs(v) >= 1000 ? priceFormat : centsFormat).format(v);
 export const formatCompact = (v: number): string => compactFormat.format(v);
 
 export function formatClock(t: number): string {
@@ -160,4 +179,63 @@ export function formatDay(t: number): string {
 export function pctChange(from: number, to: number): number {
     if (!from) return 0;
     return ((to - from) / from) * 100;
+}
+const STREAM_ENDPOINT = 'wss://stream.binance.com:9443/ws';
+
+export type StreamState = 'connecting' | 'live' | 'down';
+
+/**
+ * Live kline stream from Binance's public WebSocket. Every message is the
+ * current state of the open bar (or the final state of a bar that just
+ * closed), so the caller replaces or appends by open time. Reconnects with
+ * backoff; returns a function that closes it for good.
+ */
+export function subscribeKlines(
+    symbol: string,
+    interval: string,
+    onBar: (bar: Candle) => void,
+    onState: (state: StreamState) => void,
+): () => void {
+    let socket: WebSocket | null = null;
+    let retry = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let closed = false;
+
+    const connect = () => {
+        if (closed) return;
+        onState('connecting');
+        socket = new WebSocket(`${STREAM_ENDPOINT}/${symbol.toLowerCase()}@kline_${interval}`);
+        socket.onopen = () => {
+            retry = 0;
+            onState('live');
+        };
+        socket.onmessage = (event) => {
+            try {
+                const { k } = JSON.parse(event.data as string) as {
+                    k?: { t: number; o: string; h: string; l: string; c: string; v: string };
+                };
+                if (k) onBar({ t: k.t, o: +k.o, h: +k.h, l: +k.l, c: +k.c, v: +k.v });
+            } catch {
+                // a malformed frame is dropped, never drawn
+            }
+        };
+        socket.onclose = () => {
+            if (closed) return;
+            onState('down');
+            retry += 1;
+            timer = setTimeout(connect, Math.min(30_000, 1000 * 2 ** retry));
+        };
+        socket.onerror = () => socket?.close();
+    };
+
+    connect();
+
+    return () => {
+        closed = true;
+        clearTimeout(timer);
+        if (socket) {
+            socket.onclose = null;
+            socket.close();
+        }
+    };
 }

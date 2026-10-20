@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { area as shapeArea, line as shapeLine } from 'd3-shape';
-import { createTimeline, cubicBezier, stagger, svg } from 'animejs';
+import { createTimeline, stagger, svg } from 'animejs';
 import { fetchKlines, formatDay, macdEquity, type Candle, type EquityPoint } from '../../lib/market';
 import { useVisibleInterval } from '../../lib/useVisibleInterval';
 import { useNarrow } from '../../lib/useNarrow';
 import { readKlines, writeKlines } from '../../lib/klineCache';
+import { EASE, EASE_BACK, reducedMotion, useInViewOnce, useScramble } from '../../lib/motion';
 
-const EASE = cubicBezier(0.22, 1, 0.36, 1);
 const W_WIDE = 1000;
 const W_NARROW = 440;
 const H = 320;
@@ -47,7 +47,9 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
     const [staleAt, setStaleAt] = useState<number | null>(null);
     const [failed, setFailed] = useState(false);
     const svgRef = useRef<SVGSVGElement>(null);
-    const animatedKey = useRef<string | null>(null);
+    const inView = useInViewOnce(svgRef, 0.35);
+    /** how long the signal takes to draw; the dot, the fill and the trades all ride it */
+    const DRAW_MS = 1800;
     const narrow = useNarrow();
     const W = narrow ? W_NARROW : W_WIDE;
     const plotRight = W - (narrow ? GUTTER_NARROW : GUTTER_WIDE);
@@ -124,19 +126,66 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
         return { x, y, strategyLine, holdLine, strategyArea, entries, exits, last, exposed, signalY, holdY, dateTicks };
     }, [points, plotRight]);
 
-    useEffect(() => {
-        if (!geometry || !svgRef.current) return;
-        const key = `${symbol}:${interval}`;
-        if (animatedKey.current === key) return;
-        animatedKey.current = key;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const drawnKey = geometry && inView ? `${symbol}:${interval}` : undefined;
 
+    /*
+     * Entrance, once the chart is on screen: the benchmark draws first, then
+     * the signal follows it with a dot riding its leading edge, the fill wipes
+     * in underneath, and each trade pops at the moment the line reaches it.
+     */
+    useLayoutEffect(() => {
         const root = svgRef.current;
-        createTimeline({ defaults: { duration: 900, ease: EASE } })
-            .add(svg.createDrawable(root.querySelector('[data-hold]')!), { draw: ['0 0', '0 1'] }, 0)
-            .add(svg.createDrawable(root.querySelector('[data-signal]')!), { draw: ['0 0', '0 1'] }, 220)
-            .add(root.querySelectorAll('[data-marker]'), { opacity: [0, 1], delay: stagger(24) }, 800);
-    }, [geometry, symbol, interval]);
+        if (!drawnKey || !root || reducedMotion()) return;
+        const signal = root.querySelector<SVGGeometryElement>('[data-signal]');
+        const hold = root.querySelector<SVGGeometryElement>('[data-hold]');
+        const head = root.querySelector('[data-head]');
+        const wipe = root.querySelector('[data-wipe]');
+        if (!signal || !hold || !head || !wipe) return;
+        const start = 300;
+        const wipeTo = Number(wipe.getAttribute('width'));
+
+        const holdDraw = svg.createDrawable(hold);
+        const signalDraw = svg.createDrawable(signal);
+        const markers = root.querySelectorAll('[data-marker]');
+        const ends = root.querySelectorAll('[data-end]');
+
+        const tl = createTimeline({ defaults: { ease: EASE } });
+        // everything starts in its pre-entrance state at once
+        tl.set(holdDraw, { draw: '0 0' }, 0)
+            .set(signalDraw, { draw: '0 0' }, 0)
+            .set(wipe, { width: 0 }, 0)
+            .set(markers, { scale: 0, opacity: 0 }, 0)
+            .set(ends, { opacity: 0 }, 0)
+            .set(root.querySelectorAll('[data-grid]'), { scaleX: 0 }, 0);
+
+        tl.add(root.querySelectorAll('[data-grid]'), { scaleX: [0, 1], duration: 900, delay: stagger(80) }, 0)
+            .add(holdDraw, { draw: ['0 0', '0 1'], duration: DRAW_MS, ease: 'inOut(2)' }, 0)
+            .add(signalDraw, { draw: ['0 0', '0 1'], duration: DRAW_MS, ease: 'linear' }, start)
+            .add(head, { ...svg.createMotionPath(signal), duration: DRAW_MS, ease: 'linear' }, start)
+            .add(head, { opacity: [0, 1], duration: 200 }, start)
+            .add(head, { opacity: 0, scale: [1, 3], duration: 500 }, start + DRAW_MS)
+            .add(wipe, { width: [0, wipeTo], duration: DRAW_MS, ease: 'linear' }, start)
+            .add(
+                markers,
+                {
+                    scale: [0, 1],
+                    opacity: [0, 1],
+                    duration: 520,
+                    ease: EASE_BACK,
+                    delay: (el?: unknown) => Number((el as SVGElement).dataset.frac) * DRAW_MS,
+                },
+                start,
+            )
+            .add(ends, { opacity: [0, 1], translateX: [-16, 0], duration: 600, delay: stagger(120) }, start + DRAW_MS - 100);
+
+        // paint the first frame now, before the browser shows the finished chart
+        tl.seek(0);
+
+        return () => {
+            tl.revert();
+        };
+    }, [drawnKey, plotRight]);
+
 
     const legend = [
         { label: 'signal', swatch: 'h-0.5 w-4 bg-[var(--color-accent)]' },
@@ -152,6 +201,8 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
     ));
 
     const last = geometry?.last;
+    const signalText = useScramble(last ? pct(last.strategy - 1) : '', drawnKey ?? '', 900, DRAW_MS);
+    const holdText = useScramble(last ? pct(last.hold - 1) : '', drawnKey ?? '', 900, DRAW_MS + 150);
 
     const summary = last
         ? `MACD crossover strategy returned ${pct(last.strategy - 1)} against buy and hold ${pct(
@@ -186,7 +237,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                     viewBox={`0 0 ${W} ${H}`}
                     role="img"
                     aria-label={summary}
-                    className="w-full"
+                    className={`chart-svg w-full ${geometry && !drawnKey && !reducedMotion() ? 'awaiting' : ''}`}
                 >
                     <title>{summary}</title>
 
@@ -205,6 +256,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                     {geometry?.y.ticks(4).map((tick) => (
                         <g key={tick}>
                             <line
+                                data-grid
                                 x1={PAD_X}
                                 x2={plotRight}
                                 y1={geometry.y(tick)}
@@ -265,8 +317,14 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         </g>
                     )}
 
+                    <defs>
+                        <clipPath id="equity-wipe">
+                            <rect data-wipe x={0} y={0} width={plotRight + 1} height={H} />
+                        </clipPath>
+                    </defs>
+
                     {geometry?.strategyArea && (
-                        <path d={geometry.strategyArea} fill="var(--color-accent)" opacity={0.07} />
+                        <path d={geometry.strategyArea} fill="var(--color-accent)" opacity={0.07} clipPath="url(#equity-wipe)" />
                     )}
 
                     {geometry?.holdLine && (
@@ -290,10 +348,14 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         />
                     )}
 
+                    {/* rides the signal's leading edge during the entrance; hidden at rest */}
+                    <circle data-head r={4} cx={0} cy={0} fill="var(--color-accent)" opacity={0} />
+
                     {/* value labels pinned to the end of each curve */}
                     {geometry && last && (
                         <g>
                             <text
+                                data-end
                                 x={geometry.x(points.length - 1) + 8}
                                 y={geometry.signalY}
                                 className="mono"
@@ -304,6 +366,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                                 {pct(last.strategy - 1)}
                             </text>
                             <text
+                                data-end
                                 x={geometry.x(points.length - 1) + 8}
                                 y={geometry.holdY}
                                 className="mono"
@@ -320,6 +383,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         <rect
                             key={`in-${i}`}
                             data-marker={1}
+                            data-frac={i / (points.length - 1)}
                             x={geometry.x(i) - 3}
                             y={geometry.y(points[i].strategy) - 3}
                             width={6}
@@ -331,6 +395,7 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                         <rect
                             key={`out-${i}`}
                             data-marker={1}
+                            data-frac={i / (points.length - 1)}
                             x={geometry.x(i) - 3}
                             y={geometry.y(points[i].strategy) - 3}
                             width={6}
@@ -353,10 +418,10 @@ export const EquityCurve: React.FC<EquityCurveProps> = ({
                     )}
                     {(status === 'ready' || status === 'stale') && geometry && last && (
                         <span>
-                            <span className="text-[var(--color-accent)]">signal {pct(last.strategy - 1)}</span>
+                            <span className="text-[var(--color-accent)]">signal {signalText}</span>
                             <span className="text-[var(--color-muted)]">
                                 {' '}
-                                · buy and hold {pct(last.hold - 1)} · in market{' '}
+                                · buy and hold {holdText} · in market{' '}
                                 {(geometry.exposed * 100).toFixed(0)}% of bars
                             </span>
                         </span>

@@ -1,8 +1,14 @@
-import { Outlet } from 'react-router-dom';
+import { useCallback } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { useScrollReveal } from '../../lib/useScrollReveal';
 import Header from './Header';
 import Footer from './Footer';
 
 export const Layout: React.FC = () => {
+    const { pathname } = useLocation();
+    const main = useCallback(() => document.getElementById('main'), []);
+    useScrollReveal(main, pathname);
+
     return (
         <div className="flex min-h-screen flex-col bg-[var(--color-ground)]">
             <div className="progress-hair" aria-hidden />

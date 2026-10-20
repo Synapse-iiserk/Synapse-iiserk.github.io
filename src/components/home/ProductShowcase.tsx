@@ -4,7 +4,8 @@ import { showcaseTabs } from '../../data/screens';
 
 /**
  * Product tour: eight screens of the running platform behind a terminal-style
- * tab bar. Keyboard navigable; the panel crossfades, nothing else moves.
+ * tab bar. Keyboard navigable. Switching desks wipes the new frame in while its
+ * copy rises underneath.
  */
 export const ProductShowcase: React.FC = () => {
     const [activeId, setActiveId] = useState(showcaseTabs[0].id);
@@ -82,15 +83,15 @@ export const ProductShowcase: React.FC = () => {
 
                     <div className="lg:col-span-8">
                         <div role="tabpanel" id="tour-panel" aria-labelledby={`tour-tab-${active.id}`}>
-                            <div key={active.id} className="panel-fade">
+                            <div key={active.id} className="panel-wipe" data-no-reveal>
                                     <BrowserFrame src={active.image} alt={active.title} url={active.url} />
 
-                                    <div className="mt-6 grid gap-8 sm:grid-cols-2">
+                                    <div className="panel-copy mt-6 grid gap-8 sm:grid-cols-2">
                                         <div>
                                             <h3 className="h3">{active.title}</h3>
                                             <p className="prose mt-3 text-[15px]">{active.description}</p>
                                         </div>
-                                        <ul className="border-t border-[var(--color-line)]">
+                                        <ul className="border-t border-[var(--color-line)]" style={{ '--d': 120 } as React.CSSProperties}>
                                             {active.bullets.map((bullet) => (
                                                 <li
                                                     key={bullet}

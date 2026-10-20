@@ -13,8 +13,8 @@ screen can be traced back to an algorithm or a tool call. That claim sets the
 bar for everything else here: the figures in the copy are checked against the
 platform repository, and anything that cannot be evidenced is not printed.
 
-Three live components fetch real public data in the browser (Binance klines
-and the 24h ticker). They show their source, their last update time, and
+Three live components fetch real public data in the browser (Binance klines,
+the kline WebSocket stream and the 24h ticker). They show their source, their last update time, and
 their own failure states. There is no mock data pretending to be live.
 
 ## Commands
@@ -57,9 +57,13 @@ The rules exist so a later edit cannot quietly drift back to a default look.
   `shadow-lg` generate nothing at all.
 - **Three fonts with distinct jobs.** Space Grotesk for display, Archivo for
   body, IBM Plex Mono for anything numeric. Type scale on a 1.333 ratio.
-- **One easing curve.** `cubic-bezier(0.22, 1, 0.36, 1)`. Entrances run on
-  headings only, once, and are skipped entirely under
-  `prefers-reduced-motion`.
+- **Motion is choreographed, never required.** Content is authored visible;
+  motion is layered on only when `prefers-reduced-motion` allows it. The hero
+  headline rises word by word out of a mask and its figures decode like a
+  terminal readout. Charts enter with a scan line that the candles spring up
+  behind. Headings, rows, tables and frames reveal on scroll
+  (`src/lib/useScrollReveal.ts`). Under reduced motion all of it is skipped
+  and every element renders in its final state.
 - **Colour comes from tokens.** `npm run lint:copy` fails the build on raw
   hex values in style attributes and on Tailwind's default palette, which is
   how two analytics widgets drifted off-system before.
@@ -71,6 +75,12 @@ scales, shapes and array maths; anime.js drives the entrances. The equity
 curve computes a MACD crossover strategy in the browser from public klines,
 applied from the following bar so there is no look-ahead, charged 10 bps per
 position change.
+
+**The hero chart streams.** History comes from REST; the open bar comes from
+Binance's public kline WebSocket, merged at most every 250 ms, so the last
+candle and its price tag move as trades print. The socket closes while the tab
+is hidden and reconnects with backoff. BTC, ETH and SOL, 1h/4h/1d, with
+EMA(20) and Bollinger(20, 2) overlays that can be toggled.
 
 **One polling loop** (`src/lib/useVisibleInterval.ts`) backs every chart and
 widget on the site. It pauses while the tab is hidden, refreshes on return,
