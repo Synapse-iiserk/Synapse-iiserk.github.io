@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { line as shapeLine } from 'd3-shape';
 import { createTimeline, cubicBezier, stagger, svg } from 'animejs';
@@ -18,7 +18,11 @@ const UP = '#10B981';
 const DOWN = '#C4544A';
 const EASE = cubicBezier(0.22, 1, 0.36, 1);
 
-const W = 1000;
+/* drawing width: narrower on phones so the 11-12 unit labels render at a
+   legible size instead of being scaled down to a ~4px strip */
+const W_WIDE = 1000;
+const W_NARROW = 600;
+const NARROW_QUERY = '(max-width: 639px)';
 const H = 420;
 const PAD_L = 10;
 const PAD_R = 72;
@@ -28,12 +32,21 @@ const PRICE_BOTTOM = PRICE_TOP + PRICE_H;
 const VOL_TOP = PRICE_BOTTOM + 26;
 const VOL_H = 64;
 const VOL_BOTTOM = VOL_TOP + VOL_H;
+/** half the rendered width of a "13 Oct 14:30" axis label at 11px mono */
+const AXIS_LABEL_HALF = 42;
 
 const INTERVALS = [
     { id: '1h', label: '1h' },
     { id: '4h', label: '4h' },
     { id: '1d', label: '1d' },
 ] as const;
+
+const subscribeNarrow = (onChange: () => void) => {
+    const query = window.matchMedia(NARROW_QUERY);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+};
+const isNarrow = () => window.matchMedia(NARROW_QUERY).matches;
 
 type Status = 'loading' | 'ready' | 'stale' | 'error';
 
@@ -57,6 +70,9 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
     const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
     const [hover, setHover] = useState<number | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
+    const narrow = useSyncExternalStore(subscribeNarrow, isNarrow, () => false);
+    const W = narrow ? W_NARROW : W_WIDE;
+    const tickEvery = narrow ? 48 : 24;
     const animatedKey = useRef<string | null>(null);
     const failedRef = useRef(false);
     const [failed, setFailed] = useState(false);
@@ -136,7 +152,7 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
             priceTicks: y.ticks(4),
             maxVolume,
         };
-    }, [candles]);
+    }, [candles, W]);
 
     // one entrance per series: candles fade up, the EMA line draws itself
     useEffect(() => {
@@ -162,6 +178,47 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
         setHover(idx >= 0 && idx < candles!.length ? idx : null);
     };
 
+    /**
+     * Keyboard access to the series. The crosshair is otherwise pointer-only,
+     * which leaves the data unreadable without a mouse: arrows step one bar,
+     * PageUp/PageDown jump 24 bars, Home/End go to the ends, Escape releases.
+     */
+    const onDataKeyDown = (event: React.KeyboardEvent<SVGSVGElement>) => {
+        if (!geometry || !candles || candles.length === 0) return;
+        const last = candles.length - 1;
+        const current = hover ?? last;
+        let next: number;
+
+        switch (event.key) {
+            case 'ArrowRight':
+                next = Math.min(current + 1, last);
+                break;
+            case 'ArrowLeft':
+                next = Math.max(current - 1, 0);
+                break;
+            case 'PageUp':
+                next = Math.min(current + 24, last);
+                break;
+            case 'PageDown':
+                next = Math.max(current - 24, 0);
+                break;
+            case 'Home':
+                next = 0;
+                break;
+            case 'End':
+                next = last;
+                break;
+            case 'Escape':
+                setHover(null);
+                return;
+            default:
+                return;
+        }
+
+        event.preventDefault();
+        setHover(next);
+    };
+
     const onKeyDown = (event: React.KeyboardEvent) => {
         const index = INTERVALS.findIndex((i) => i.id === interval);
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
@@ -179,6 +236,11 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
 
     const readout = candles && geometry ? (hover !== null ? candles[hover] : geometry.last) : null;
     const change = candles && geometry ? pctChange(candles[0].c, candles[candles.length - 1].c) : 0;
+
+    const focused = hover !== null && candles ? candles[hover] : null;
+    const announcement = focused
+        ? `${formatDay(focused.t)} ${formatClock(focused.t)}, open ${formatPrice(focused.o)}, high ${formatPrice(focused.h)}, low ${formatPrice(focused.l)}, close ${formatPrice(focused.c)}, bar ${hover! + 1} of ${candles!.length}`
+        : '';
 
     const summary = candles && geometry
         ? `${symbol} ${interval} candlestick chart, ${candles.length} bars, last price ${formatPrice(geometry.last.c)} dollars, ${change >= 0 ? 'up' : 'down'} ${Math.abs(change).toFixed(2)} percent over the window. Source: Binance public klines.`
@@ -219,9 +281,13 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
                     viewBox={`0 0 ${W} ${H}`}
                     role="img"
                     aria-label={summary}
+                    aria-describedby={geometry ? 'candles-keys' : undefined}
+                    tabIndex={geometry ? 0 : -1}
                     className="w-full"
                     onPointerMove={onPointerMove}
                     onPointerLeave={() => setHover(null)}
+                    onKeyDown={onDataKeyDown}
+                    onBlur={() => setHover(null)}
                 >
                     <title>{summary}</title>
 
@@ -380,18 +446,19 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
                     )}
 
                     {candles?.map((c, i) => {
-                        if (!geometry || i % 24 !== 0) return null;
-                        const isFirst = i === 0;
-                        const isLast = i + 24 > candles.length - 1;
+                        // a tick every 24 bars (48 on phones), offset by half a period so neither
+                        // end label sits on the plot edge; centred and clamped, so none can overlap
+                        if (!geometry || i % tickEvery !== tickEvery / 2) return null;
+                        const x = PAD_L + i * geometry.step + geometry.step / 2;
                         return (
                             <text
                                 key={`t-${c.t}`}
-                                x={PAD_L + i * geometry.step + geometry.step / 2}
+                                x={Math.min(Math.max(x, PAD_L + AXIS_LABEL_HALF), W - PAD_R - AXIS_LABEL_HALF)}
                                 y={VOL_BOTTOM + 18}
                                 className="mono"
                                 fontSize={11}
                                 fill="var(--color-muted)"
-                                textAnchor={isFirst ? 'start' : isLast ? 'end' : 'middle'}
+                                textAnchor="middle"
                             >
                                 {formatDay(c.t)} {formatClock(c.t)}
                             </text>
@@ -452,6 +519,13 @@ export const LiveCandles: React.FC<LiveCandlesProps> = ({ symbol = 'BTCUSDT', li
                         </text>
                     )}
                 </svg>
+                <p id="candles-keys" className="sr-only">
+                    Use the arrow keys to step through bars, Page Up and Page Down to jump 24 bars, Home and End
+                    for the first and last bar.
+                </p>
+                <p className="sr-only" aria-live="polite">
+                    {announcement}
+                </p>
             </div>
 
             <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">

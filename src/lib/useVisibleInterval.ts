@@ -5,7 +5,7 @@ interface VisibleIntervalOptions {
     delay: number;
     /** set when the last run failed: the period is doubled, up to maxDelay */
     failed?: boolean;
-    /** ceiling for the backed-off period */
+    /** ceiling for the backed-off period (never below `delay`; defaults to 4 × delay) */
     maxDelay?: number;
     /** run once immediately on mount */
     immediate?: boolean;
@@ -20,8 +20,9 @@ interface VisibleIntervalOptions {
  *  - always tears its timer down on unmount
  */
 export function useVisibleInterval(run: () => unknown, options: VisibleIntervalOptions): void {
-    const { delay, failed = false, maxDelay = 30_000, immediate = true, resetKey } = options;
+    const { delay, failed = false, maxDelay = delay * 4, immediate = true, resetKey } = options;
     const saved = useRef(run);
+    const startedFor = useRef<string | undefined | null>(null);
 
     // keep the latest callback without restarting the loop (refs are not read during render)
     useEffect(() => {
@@ -30,6 +31,7 @@ export function useVisibleInterval(run: () => unknown, options: VisibleIntervalO
 
     useEffect(() => {
         const fire = () => {
+            if (document.hidden) return;
             try {
                 saved.current();
             } catch {
@@ -37,9 +39,13 @@ export function useVisibleInterval(run: () => unknown, options: VisibleIntervalO
             }
         };
 
-        if (immediate) fire();
+        // fire at once on mount or a new resetKey, but not when only `failed`
+        // flipped: that would retry straight after a failure, defeating the backoff
+        const isNewSeries = startedFor.current !== (resetKey ?? '');
+        startedFor.current = resetKey ?? '';
+        if (immediate && isNewSeries) fire();
 
-        const period = Math.min(failed ? delay * 2 : delay, maxDelay);
+        const period = failed ? Math.max(delay, Math.min(delay * 2, maxDelay)) : delay;
         const timer = window.setInterval(fire, period);
 
         const onVisibility = () => {

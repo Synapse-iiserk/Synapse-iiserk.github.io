@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useVisibleInterval } from '../../lib/useVisibleInterval';
 
 interface CoinData {
   id: string;
@@ -15,29 +16,31 @@ export const CoinGeckoWidget: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchCoins = async () => {
-      try {
-        const response = await fetch(
-          'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false'
-        );
-        if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
-        setCoins(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [failed, setFailed] = useState(false);
 
-    fetchCoins();
-    const interval = setInterval(fetchCoins, 60000); // Update every minute
-    return () => clearInterval(interval);
+  const fetchCoins = useCallback(async () => {
+    try {
+      const response = await fetch(
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false'
+      );
+      if (!response.ok) throw new Error('Failed to fetch data');
+      const data = await response.json();
+      setCoins(data);
+      setError(null);
+      setFailed(false);
+    } catch (err) {
+      // a failed refresh keeps the last good table; only an empty widget shows the error
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      setFailed(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useVisibleInterval(fetchCoins, { delay: 60_000, failed });
+
   if (loading) return <div className="p-6 text-center text-[var(--color-text-muted)]">Loading live market data...</div>;
-  if (error) return <div className="p-6 text-center text-[var(--color-danger)]">Error: {error}</div>;
+  if (error && coins.length === 0) return <div className="p-6 text-center text-[var(--color-danger)]">Error: {error}</div>;
 
   return (
     <div className="bg-[var(--color-primary-light)]  border border-[var(--color-border)] p-6 ">
