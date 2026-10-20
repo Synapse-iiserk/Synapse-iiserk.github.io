@@ -11,13 +11,13 @@ const content: Record<LegalKind, { title: string; intro: string; sections: Legal
     privacy: {
         title: 'Privacy Policy',
         intro:
-            'This page describes what happens to data when you visit ifinn.org. The short version: this marketing site is static, has no advertising or analytics trackers, and the forms on it do not store anything in this build.',
+            'This page describes what happens to data when you visit ifinn.org. The short version: this marketing site is static, has no advertising or analytics trackers, and the forms on it store nothing: they open a pre-filled email in your own mail app.',
         sections: [
             {
                 heading: 'This website',
                 paragraphs: [
                     'ifinn.org is a static marketing site. It does not set advertising cookies and does not run third-party analytics or tracking pixels.',
-                    'The waitlist and contact forms on this site are placeholders in the current build: submitting them does not transmit or store your data anywhere. When the forms are connected to our backend, this policy will be updated before that happens.',
+                    'The waitlist and contact forms on this site do not transmit or store anything themselves. Submitting one opens a draft email in your own mail app; nothing reaches us unless you choose to send it. If the forms are ever connected to a backend, this policy will be updated before that happens.',
                     'If you email us (for example investors@ifinn.org), we use your address and message only to respond to you.',
                 ],
             },

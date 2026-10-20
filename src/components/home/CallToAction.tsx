@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import SeatRequestForm from '../ui/SeatRequestForm';
 
 const channels = [
     { label: 'Investors', value: 'investors@ifinn.org', href: 'mailto:investors@ifinn.org' },
@@ -8,17 +8,6 @@ const channels = [
 ];
 
 export const CallToAction: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [submitted, setSubmitted] = useState(false);
-
-    const onSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        if (!email) return;
-        // Wire this to the waitlist endpoint when the backend route ships.
-        setSubmitted(true);
-        setEmail('');
-    };
-
     return (
         <section className="section">
             <div className="shell">
@@ -32,32 +21,11 @@ export const CallToAction: React.FC = () => {
                             they do.
                         </p>
 
-                        {submitted ? (
-                            <p className="panel mt-8 px-4 py-4 text-[15px] text-[var(--color-ink)]">
-                                You are on the list. We will write once, when a seat opens.
-                            </p>
-                        ) : (
-                            <form onSubmit={onSubmit} className="mt-8 flex max-w-lg flex-col gap-3 sm:flex-row">
-                                <label htmlFor="waitlist-email" className="sr-only">
-                                    Email address
-                                </label>
-                                <input
-                                    id="waitlist-email"
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
-                                    placeholder="you@firm.com"
-                                    className="field"
-                                />
-                                <button type="submit" className="btn btn-primary justify-center">
-                                    Request a seat
-                                </button>
-                            </form>
-                        )}
+                        <SeatRequestForm id="waitlist-email" className="mt-8" />
 
                         <p className="mono mt-4 text-[12px] text-[var(--color-muted)]">
-                            One email when a seat opens. No newsletter, no drip sequence.
+                            Opens a one-line email in your own mail app. We write back once, when a
+                            seat opens. No newsletter, no drip sequence.
                         </p>
                     </div>
 

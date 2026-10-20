@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import SEO from '../seo/SEO';
+import SeatRequestForm from '../components/ui/SeatRequestForm';
 
 type Cell = 'Included' | 'Not included' | 'Limited' | 'Unlimited' | 'Email' | 'Priority' | 'Dedicated';
 
@@ -137,27 +137,7 @@ export const Pricing: React.FC = () => {
                             <h3 className="mono border-t border-[var(--color-ink)] pt-3 text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted)]">
                                 Launch notice
                             </h3>
-                            {submitted ? (
-                                <p className="mt-3 text-[15px]">You are on the list. One email when seats open.</p>
-                            ) : (
-                                <form onSubmit={onSubmit} className="mt-3 flex max-w-lg flex-col gap-3 sm:flex-row">
-                                    <label htmlFor="pricing-email" className="sr-only">
-                                        Email address
-                                    </label>
-                                    <input
-                                        id="pricing-email"
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={(event) => setEmail(event.target.value)}
-                                        placeholder="you@firm.com"
-                                        className="field"
-                                    />
-                                    <button type="submit" className="btn justify-center">
-                                        Notify me
-                                    </button>
-                                </form>
-                            )}
+                            <SeatRequestForm id="pricing-email" label="Notify me" primary={false} className="mt-3" />
                         </div>
                     </div>
 
